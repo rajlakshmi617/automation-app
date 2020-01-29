@@ -45,7 +45,9 @@
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
             <li class="mat-tree-node">
             <button mat-icon-button disabled></button>
-            {{node.filename}}:  {{node.type}}
+            <input type="text" name="file" value="{{node.filename}}" /> :
+            <input type="text" name="file" value="{{node.type}}" />
+                        <!-- {{node.filename}}:  {{node.type}} -->
             </li>
         </mat-tree-node>
         
@@ -58,7 +60,8 @@
                     {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                 </mat-icon>
                 </button>
-                {{node.filename}}
+                <input type="text" name="file" value="{{node.filename}}"/>
+                <!-- {{node.filename}} -->
             </div>
             <ul [class.example-tree-invisible]="!nestedTreeControl.isExpanded(node)">
                 <ng-container matTreeNodeOutlet></ng-container>

@@ -1,0 +1,13 @@
+mat-tree-node input, mat-nested-tree-node mat-tree-node input{
+    border-color: #9E9E9E;    
+    margin:2px;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+mat-nested-tree-node input{
+    border-color: black;    
+    margin:2px;
+    border-radius: 4px;
+    padding: 5px;
+}
