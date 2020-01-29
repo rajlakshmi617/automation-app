@@ -64,7 +64,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     margin-top: 5%;
 }
 .formlabel{
-    /* position: absolute; */
     left: 0;
     font: inherit;
     pointer-events: none;
