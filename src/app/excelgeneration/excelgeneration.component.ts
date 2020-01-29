@@ -137,15 +137,15 @@ export class ExcelgenerationComponent{
       const reader = new FileReader();
       reader.onloadend = (e) => {
         this.data = reader.result.toString();
-        // console.log('reader.result.toString()', JSON.parse(reader.result.toString()));
-        this.service.myMethod(this.data);
-        this.showContainer = false;
-        // handle data processing
       };
       reader.readAsText(event.target.files[0]);
     }
   }
 
+  renderjson(){
+    this.showContainer = false;
+    this.service.myMethod(this.data);
+  }
   ngOnInit() {
     this.filteredOptions = this.myControl.valueChanges
       .pipe(

@@ -74,3 +74,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     transform-origin: 0 0;
     transition: transform .4s cubic-bezier(.25,.8,.25,1),color .4s cubic-bezier(.25,.8,.25,1),width .4s cubic-bezier(.25,.8,.25,1);
 }
+.generatebtn{
+    position: absolute;
+    /* top: 50%; */
+}
+.btnwrapper{
+    text-align: center;
+}
