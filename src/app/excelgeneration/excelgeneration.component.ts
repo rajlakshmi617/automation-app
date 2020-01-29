@@ -2,6 +2,8 @@ import { Component, Injectable } from '@angular/core';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {FormControl} from '@angular/forms';
+import {map, startWith} from 'rxjs/operators';
 
 /**
  * Json node data with nested structure. Each node has a filename and a value or a list of children
@@ -109,7 +111,9 @@ import {BehaviorSubject, Observable, Subject} from 'rxjs';
   providers: [FileDatabase]
 })
 export class ExcelgenerationComponent{
-
+  myControl = new FormControl();
+  options: string[] = ['One', 'Two', 'Three'];
+  filteredOptions: Observable<string[]>;
   public data:any = TREE_DATA;
   nestedTreeControl: NestedTreeControl<FileNode>;
   nestedDataSource: MatTreeNestedDataSource<FileNode>;
@@ -143,6 +147,16 @@ export class ExcelgenerationComponent{
   }
 
   ngOnInit() {
+    this.filteredOptions = this.myControl.valueChanges
+      .pipe(
+        startWith(''),
+        map(value => this._filter(value))
+    );
+  }
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.options.filter(option => option.toLowerCase().includes(filterValue));
   }
 
 }

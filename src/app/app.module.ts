@@ -6,8 +6,9 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FieldvalidationComponent } from './fieldvalidation/fieldvalidation.component';
 import {MatMenuModule,MatInputModule, MatButtonModule, MatSelectModule, MatIconModule, MatToolbarModule,
-  MatTabsModule, MatButtonToggleModule, MatTreeModule} from '@angular/material';
+  MatTabsModule, MatButtonToggleModule, MatTreeModule, MatAutocompleteModule} from '@angular/material';
 import { ExcelgenerationComponent } from './excelgeneration/excelgeneration.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,8 @@ import { ExcelgenerationComponent } from './excelgeneration/excelgeneration.comp
   imports: [
     BrowserModule,
     AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     MatMenuModule,
     MatInputModule,
@@ -27,7 +30,8 @@ import { ExcelgenerationComponent } from './excelgeneration/excelgeneration.comp
     MatToolbarModule,
     MatTabsModule,
     MatButtonToggleModule,
-    MatTreeModule
+    MatTreeModule,
+    MatAutocompleteModule
   ],
   providers: [],
   bootstrap: [AppComponent]

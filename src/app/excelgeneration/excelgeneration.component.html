@@ -1,15 +1,44 @@
 <div class="container" *ngIf="showContainer">
-    <h4>Upload a JSON file</h4>
-    <fieldset style="height: 180px;">
-        <legend>JSON File Upload</legend>
-        <div>
-            <label>Files to upload : </label>
-            <input type="file" name="files" (change)="uploadFile($event)" />
-            <div id="filedrag">
-                Drop files here
-            </div>
+    <div class="row">
+        <div class="col-md-6">
+            <form class="example-form">
+                <mat-form-field class="example-full-width">
+                    <input matInput placeholder="API Endpoint URL" value="">
+                </mat-form-field>
+                <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Test Description" value="">
+                </mat-form-field>
+                <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Output JSON File Path" value="">
+                </mat-form-field>
+                <mat-form-field class="example-full-width">
+                    <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete">
+                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                        {{option}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+                <mat-form-field class="example-full-width">
+                    <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete">
+                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                        {{option}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </form>
         </div>
-    </fieldset>
+        <div class="col-md-6">
+                <div class="uploadfile">
+                    <p class="formlabel">Upload Input JSON File</p>
+                    <input type="file" name="files" (change)="uploadFile($event)" />
+                    <div id="filedrag">
+                        Drop files here
+                    </div>
+                </div>
+        </div>
+    </div>
 </div>
 <div class="treecontainer" *ngIf="!showContainer">
     <mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl" class="example-tree">

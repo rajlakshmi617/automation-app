@@ -35,10 +35,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     cursor: default;
 }
 .container{
-    width: 50%;
-    align-content: center;
-    margin-left: 22%;
-    height: 250px !important;
+
 }
 .treecontainer{
     margin-top: 2%;
@@ -49,4 +46,32 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 .mat-tree-node{
     min-height: 40px !important;
+}
+.mat-form-field-label-wrapper{
+    font-size: 16px;
+}
+.example-form {
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%;
+    margin-top: 5%;
+}
+  
+.example-full-width {
+    width: 100%;
+}
+.uploadfile{
+    margin-top: 5%;
+}
+.formlabel{
+    /* position: absolute; */
+    left: 0;
+    font: inherit;
+    pointer-events: none;
+    width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    transform-origin: 0 0;
+    transition: transform .4s cubic-bezier(.25,.8,.25,1),color .4s cubic-bezier(.25,.8,.25,1),width .4s cubic-bezier(.25,.8,.25,1);
 }
