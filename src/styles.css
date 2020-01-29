@@ -24,7 +24,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   margin-bottom: 0;
   list-style-type: none;
 }
-#filedrag {
+#drop_zone {
     font-weight: bold;
     text-align: center;
     padding: 3em 0;

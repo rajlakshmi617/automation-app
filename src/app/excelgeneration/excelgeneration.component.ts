@@ -115,6 +115,7 @@ export class ExcelgenerationComponent{
   options: string[] = ['One', 'Two', 'Three'];
   filteredOptions: Observable<string[]>;
   public data:any = TREE_DATA;
+  public fileName: string;
   nestedTreeControl: NestedTreeControl<FileNode>;
   nestedDataSource: MatTreeNestedDataSource<FileNode>;
   public TREE_DATA: any;
@@ -140,6 +141,40 @@ export class ExcelgenerationComponent{
       };
       reader.readAsText(event.target.files[0]);
     }
+  }
+
+  dropHandler(ev) {
+    // Prevent default behavior (Prevent file from being opened)
+    ev.preventDefault();
+  
+    if (ev.dataTransfer.items) {
+      // Use DataTransferItemList interface to access the file(s)
+      for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+        // If dropped items aren't files, reject them
+        if (ev.dataTransfer.items[i].kind === 'file') {
+          var file = ev.dataTransfer.items[i].getAsFile();
+          console.log('-->1','... file[' + i + '].name = ' + file.name);
+          this.fileName = file.name;
+          const reader = new FileReader();
+          reader.onloadend = (e) => {
+            this.data = reader.result.toString();
+          };
+          reader.readAsText(ev.dataTransfer.files[0]);
+        }
+      }
+    } else {
+      // Use DataTransfer interface to access the file(s)
+      for (var i = 0; i < ev.dataTransfer.files.length; i++) {
+        console.log('-->2','... file[' + i + '].name = ' + ev.dataTransfer.files[i].name);
+      }
+    }
+  }
+
+  dragOverHandler(ev) {
+    console.log('File(s) in drop zone'); 
+  
+    // Prevent default behavior (Prevent file from being opened)
+    ev.preventDefault();
   }
 
   renderjson(){
