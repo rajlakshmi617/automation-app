@@ -120,6 +120,7 @@ export class ExcelgenerationComponent{
   nestedDataSource: MatTreeNestedDataSource<FileNode>;
   public TREE_DATA: any;
   public showContainer = true;
+  optionType = "string";
   constructor(private service:FileDatabase) { 
     
     this.nestedTreeControl = new NestedTreeControl<FileNode>
