@@ -1,0 +1,41 @@
+<div class="container" *ngIf="showContainer">
+    <h4>Upload a JSON file</h4>
+    <fieldset style="height: 180px;">
+        <legend>JSON File Upload</legend>
+        <div>
+            <label>Files to upload : </label>
+            <input type="file" name="files" (change)="uploadFile($event)" />
+            <div id="filedrag">
+                Drop files here
+            </div>
+        </div>
+    </fieldset>
+</div>
+<div class="treecontainer" *ngIf="!showContainer">
+    <mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl" class="example-tree">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+            <li class="mat-tree-node">
+            <button mat-icon-button disabled></button>
+            {{node.filename}}:  {{node.type}}
+            </li>
+        </mat-tree-node>
+        
+        <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
+            <li>
+            <div class="mat-tree-node">
+                <button mat-icon-button matTreeNodeToggle
+                        [attr.aria-label]="'toggle ' + node.filename">
+                <mat-icon class="mat-icon-rtl-mirror">
+                    {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                </mat-icon>
+                </button>
+                {{node.filename}}
+            </div>
+            <ul [class.example-tree-invisible]="!nestedTreeControl.isExpanded(node)">
+                <ng-container matTreeNodeOutlet></ng-container>
+            </ul>
+            </li>
+        </mat-nested-tree-node>
+    </mat-tree>   
+</div>
+    

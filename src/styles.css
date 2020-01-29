@@ -1,0 +1,52 @@
+/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.mat-tab-label-container{
+  background-color: #4735b9;
+}
+.mat-tab-label-content{
+  color: #ffffff;
+}
+.mat-tab-label{
+  opacity: 1.6 !important;
+}
+.mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar{
+  background-color: #e01e19;
+  padding: 1px;
+}
+.example-tree-invisible {
+  display: none;
+}  
+.example-tree ul,
+.example-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+#filedrag {
+    font-weight: bold;
+    text-align: center;
+    padding: 3em 0;
+    margin: 1em 0;
+    color: #555;
+    border: 2px dashed #555;
+    border-radius: 7px;
+    cursor: default;
+}
+.container{
+    width: 50%;
+    align-content: center;
+    margin-left: 22%;
+    height: 250px !important;
+}
+.treecontainer{
+    margin-top: 2%;
+    margin-left: 2%;
+    border-style:dotted;
+    border-color: lightcoral;
+    width: 45%;
+}
+.mat-tree-node{
+    min-height: 40px !important;
+}
