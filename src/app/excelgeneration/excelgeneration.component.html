@@ -64,15 +64,19 @@
             <mat-form-field appearance="outline" class="textTree">
                 <input matInput placeholder="Placeholder" value="{{node.type}}">
             </mat-form-field>
-            <mat-form-field appearance="outline" class="textTree"> 
-                <mat-select [(value)]="optionType"> 
-                    <mat-option value="string">String</mat-option>
-                    <mat-option value="numeric">Numeric</mat-option>
-                </mat-select>
+            <mat-form-field appearance="outline">
+                <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete">
+                  <mat-option *ngFor="let option of dataTypeFilterOptions | async" [value]="option">
+                    {{option}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            <mat-form-field appearance="outline">
+              <input matInput placeholder="{{optionType=='string'? 'String Length' : 'Max Value'}}">
             </mat-form-field>
-            <mat-form-field appearance="outline" class="textTree">
-                <input matInput placeholder="{{optionType=='string'? 'String Length' : 'Max Value'}}">
-            </mat-form-field>
+            <button mat-stroked-button color="primary">Primary</button>
+            <mat-icon>clear</mat-icon>
             </li>
         </mat-tree-node>
         
