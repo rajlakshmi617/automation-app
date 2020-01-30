@@ -16,37 +16,6 @@ import {map, startWith} from 'rxjs/operators';
  }
 
  /**
- * The Json tree data in string. The data could be parsed into Json object
- */
-
- const TREE_DATA = JSON.stringify({
-  Applications: {
-    Calender: 'app',
-    Chrome: 'app',
-    Webstrom: 'app'
-  },
-  Documents: {
-    angular: {
-      src: {
-        compiler: 'ts',
-        core: 'ts'
-      },
-    },
-    Material:{
-      src: {
-        button: 'ts',
-        checkbox: 'ts'
-      }
-    }
-  },
-  Downloads:{
-    october: 'pdf',
-    november: 'pdf',
-    december: 'doc'
-  }
- });
- console.log('old data', TREE_DATA);
- /**
  * File database, it can build a tree structured Json object from string.
  * Each node in Json object represents a file or a directory. For a file, it has filename and type.
  * For a directory, it has filename and children (a list of files or directories).
@@ -62,10 +31,9 @@ import {map, startWith} from 'rxjs/operators';
   private myMethodSubject = new Subject<any>();
   constructor() {
     this.myMethod$ = this.myMethodSubject.asObservable();
-    // this.initialize();
   }
   myMethod(data) {
-    // console.log(data); // I have data! Let's return it so subscribers can use it!
+    // I have data! Let's return it so subscribers can use it!
     // we can do stuff with data if we want
     this.myMethodSubject.next(data);
     this.initialize(data);
@@ -114,7 +82,12 @@ export class ExcelgenerationComponent{
   myControl = new FormControl();
   options: string[] = ['One', 'Two', 'Three'];
   filteredOptions: Observable<string[]>;
-  public data:any = TREE_DATA;
+  public panelOpenState = true;
+  step = 0;
+  setStep(index: number) {
+    this.step = index;
+  }
+  public data:any;
   public fileName: string;
   nestedTreeControl: NestedTreeControl<FileNode>;
   nestedDataSource: MatTreeNestedDataSource<FileNode>;
@@ -153,7 +126,7 @@ export class ExcelgenerationComponent{
         // If dropped items aren't files, reject them
         if (ev.dataTransfer.items[i].kind === 'file') {
           var file = ev.dataTransfer.items[i].getAsFile();
-          console.log('-->1','... file[' + i + '].name = ' + file.name);
+          // console.log('-->1','... file[' + i + '].name = ' + file.name);
           this.fileName = file.name;
           const reader = new FileReader();
           reader.onloadend = (e) => {
@@ -165,14 +138,12 @@ export class ExcelgenerationComponent{
     } else {
       // Use DataTransfer interface to access the file(s)
       for (var i = 0; i < ev.dataTransfer.files.length; i++) {
-        console.log('-->2','... file[' + i + '].name = ' + ev.dataTransfer.files[i].name);
+        // console.log('-->2','... file[' + i + '].name = ' + ev.dataTransfer.files[i].name);
       }
     }
   }
 
   dragOverHandler(ev) {
-    console.log('File(s) in drop zone'); 
-  
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
   }
@@ -180,7 +151,9 @@ export class ExcelgenerationComponent{
   renderjson(){
     this.showContainer = false;
     this.service.myMethod(this.data);
+    this.step = 1;
   }
+
   ngOnInit() {
     this.filteredOptions = this.myControl.valueChanges
       .pipe(
@@ -190,7 +163,6 @@ export class ExcelgenerationComponent{
   }
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-
     return this.options.filter(option => option.toLowerCase().includes(filterValue));
   }
 

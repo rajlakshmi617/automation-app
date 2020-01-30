@@ -34,8 +34,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     border-radius: 7px;
     cursor: default;
 }
-.container{
-
+.openfolder{
+    margin-left: 83%;
 }
 .treecontainer{
     margin-top: 2%;
@@ -80,4 +80,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 .btnwrapper{
     text-align: center;
+}
+.mat-expansion-panel-header{
+    background-color: antiquewhite;
 }
