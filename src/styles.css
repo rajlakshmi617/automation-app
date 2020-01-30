@@ -40,12 +40,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .treecontainer{
     margin-top: 2%;
     margin-left: 2%;
-    border-style:dotted;
-    border-color: lightcoral;
-    width: 45%;
+    border-style:solid;
+    border-color: #9c9c9c;
+    border-width: 2px;
+    width: 48%;
+    overflow: auto !important;
+    max-height: 500px;
 }
 .mat-tree-node{
-    min-height: 40px !important;
+    min-height: 40px !important;  
+    overflow: inherit !important; 
 }
 .mat-form-field-label-wrapper{
     font-size: 16px;
@@ -70,7 +74,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     width: 100%;
     white-space: nowrap;
     text-overflow: ellipsis;
-    overflow: hidden;
     transform-origin: 0 0;
     transition: transform .4s cubic-bezier(.25,.8,.25,1),color .4s cubic-bezier(.25,.8,.25,1),width .4s cubic-bezier(.25,.8,.25,1);
 }
@@ -83,4 +86,46 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 .mat-expansion-panel-header{
     background-color: antiquewhite;
+}
+.textTree {
+    width: 88px !important;
+    padding: 0 4px 0 4px;
+    top: -2px;
+    left: -12px;
+}
+
+.textTree .mat-form-field-infix {
+    
+    padding: inherit !important;
+}
+
+.textTree .mat-form-field-flex {
+    padding: 0 !important; 
+    margin-top: 0 !important; 
+    position: relative;
+}
+.textTree .mat-input-element{
+    padding: 0px 5px 7px 5px !important;
+}
+.textTree .mat-select {
+    padding: 0px 5px 7px 5px !important;
+}
+
+.textTree .mat-form-field-wrapper {
+    padding-bottom : 0 !important;
+}
+
+.textTree .mat-select-arrow-wrapper {
+    vertical-align: baseline;
+}
+
+.mat-icon-button .mat-button-base {
+    width:  20px !important;
+    height: 28px !important;
+    line-height: 0 !important; 
+
+}
+
+.textTree .mat-form-field-outline {
+    top: 1em;
 }

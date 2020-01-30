@@ -81,6 +81,7 @@ import {map, startWith} from 'rxjs/operators';
 export class ExcelgenerationComponent{
   myControl = new FormControl();
   options: string[] = ['One', 'Two', 'Three'];
+  dataTypeOptions : string[] = ['String', 'Numeric'];
   filteredOptions: Observable<string[]>;
   public panelOpenState = true;
   step = 0;
@@ -93,6 +94,8 @@ export class ExcelgenerationComponent{
   nestedDataSource: MatTreeNestedDataSource<FileNode>;
   public TREE_DATA: any;
   public showContainer = true;
+  //optionType = "string";
+  dataTypeFilterOptions: Observable<string[]>; 
   constructor(private service:FileDatabase) { 
     
     this.nestedTreeControl = new NestedTreeControl<FileNode>
@@ -158,12 +161,24 @@ export class ExcelgenerationComponent{
     this.filteredOptions = this.myControl.valueChanges
       .pipe(
         startWith(''),
-        map(value => this._filter(value))
+        map(value => this._filter(value, 1))
     );
+
+    this.dataTypeFilterOptions = this.myControl.valueChanges
+      .pipe(
+        startWith(''),
+        map(value => this._filter(value, 2))
+      )
   }
-  private _filter(value: string): string[] {
+  private _filter(value: string, flag: number = 1): string[] {
     const filterValue = value.toLowerCase();
     return this.options.filter(option => option.toLowerCase().includes(filterValue));
+    if(flag==1){
+      return this.options.filter(option => option.toLowerCase().includes(filterValue));
+    }      
+    else if(flag==2){
+      return this.dataTypeOptions.filter(option => option.toLowerCase().includes(filterValue));
+    }
   }
 
 }
