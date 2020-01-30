@@ -1,4 +1,4 @@
-mat-tree-node input, mat-nested-tree-node mat-tree-node input{
+/* mat-tree-node mat-form-field  input, mat-nested-tree-node mat-tree-node mat-form-field input{
     border-color: rgb(216, 212, 212);    
     margin:2px;
     border-radius: 4px;
@@ -6,11 +6,11 @@ mat-tree-node input, mat-nested-tree-node mat-tree-node input{
     width : 80px;
 }
 
-mat-nested-tree-node input{
+mat-nested-tree-node mat-form-field input{
     border-color: rgb(173, 169, 169);      
     margin:2px;
     border-radius: 4px;
     padding-left: 4px;
     width : 80px;
     font-size: 11px;
-}
+} */

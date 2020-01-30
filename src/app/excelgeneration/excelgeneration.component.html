@@ -58,19 +58,19 @@
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
             <li class="mat-tree-node">
             <button mat-icon-button disabled></button>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="textTree">
                 <input matInput placeholder="Placeholder" value="{{node.filename}}">
-            </mat-form-field> :
-            <mat-form-field appearance="outline">
+            </mat-form-field> <span style="left:-12px;">:</span>
+            <mat-form-field appearance="outline" class="textTree">
                 <input matInput placeholder="Placeholder" value="{{node.type}}">
             </mat-form-field>
-            <mat-form-field appearance="outline"> 
+            <mat-form-field appearance="outline" class="textTree"> 
                 <mat-select [(value)]="optionType"> 
                     <mat-option value="string">String</mat-option>
                     <mat-option value="numeric">Numeric</mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="textTree">
                 <input matInput placeholder="{{optionType=='string'? 'String Length' : 'Max Value'}}">
             </mat-form-field>
             </li>
@@ -85,7 +85,7 @@
                     {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                 </mat-icon>
                 </button>
-                <mat-form-field appearance="outline">
+                <mat-form-field appearance="outline" class="textTree">
                     <input  matInput type="text" name="file" value="{{node.filename}}"/>
                 </mat-form-field>                
             </div>
