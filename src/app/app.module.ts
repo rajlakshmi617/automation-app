@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FieldvalidationComponent } from './fieldvalidation/fieldvalidation.component';
 import {MatMenuModule,MatInputModule, MatButtonModule, MatSelectModule, MatIconModule, MatToolbarModule,
-  MatTabsModule, MatButtonToggleModule, MatTreeModule, MatAutocompleteModule} from '@angular/material';
+  MatTabsModule, MatButtonToggleModule, MatTreeModule, MatAutocompleteModule, MatExpansionModule} from '@angular/material';
 import { ExcelgenerationComponent } from './excelgeneration/excelgeneration.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
@@ -31,7 +31,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     MatTabsModule,
     MatButtonToggleModule,
     MatTreeModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatExpansionModule
   ],
   providers: [],
   bootstrap: [AppComponent]
