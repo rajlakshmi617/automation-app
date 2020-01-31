@@ -54,15 +54,15 @@
     </div>
 </div>
 <div class="treecontainer" *ngIf="!showContainer">
-    <mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl" class="example-tree">
+    <mat-tree #treeSelector [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl" class="example-tree">
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
             <li class="mat-tree-node">
             <button mat-icon-button disabled></button>
             <mat-form-field appearance="outline">
-                <input matInput placeholder="Placeholder" value="{{node.filename}}">
+                <input matInput placeholder="Placeholder" value="{{node.filename}}" [(ngModel)]="node.filename">
             </mat-form-field> :
             <mat-form-field appearance="outline">
-                <input matInput placeholder="Placeholder" value="{{node.type}}">
+                <input matInput placeholder="Placeholder" value="{{node.type}}" [(ngModel)]="node.type">
             </mat-form-field>
             <!-- <mat-form-field appearance="outline"> 
                 <mat-select [(value)]="optionType"> 
@@ -81,7 +81,7 @@
             <mat-form-field appearance="outline">
                 <input matInput placeholder="{{optionType=='string'? 'String Length' : 'Max Value'}}">
             </mat-form-field>
-            <button mat-stroked-button color="primary">Primary</button>
+            <button mat-stroked-button color="primary" (click)="generateKey()">Primary</button>
             <mat-icon>clear</mat-icon>
             </li>
         </mat-tree-node>
@@ -96,7 +96,7 @@
                 </mat-icon>
                 </button>
                 <mat-form-field appearance="outline">
-                    <input  matInput type="text" name="file" value="{{node.filename}}"/>
+                    <input  matInput type="text" name="file" value="{{node.filename}}" [(ngModel)]="node.filename"/>
                 </mat-form-field>                
             </div>
             <ul [class.example-tree-invisible]="!nestedTreeControl.isExpanded(node)">
@@ -104,6 +104,11 @@
             </ul>
             </li>
         </mat-nested-tree-node>
-    </mat-tree>   
+    </mat-tree>  
+    <div class="row">
+        <div class="col-md-12" class="btnwrapper">
+            <button mat-raised-button color="primary" class="generateJsonBtn" (click)="generateJson(nestedDataSource.data)">Generate JSON</button>
+        </div>
+    </div>
 </div>
     
