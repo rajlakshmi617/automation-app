@@ -85,10 +85,10 @@
                             <li class="mat-tree-node">
                             <button mat-icon-button disabled></button>
                             <mat-form-field appearance="outline" class="textTree">
-                                <input matInput placeholder="Placeholder" value="{{node.filename}}">
+                                <input matInput placeholder="Placeholder" value="{{node.filename}}" [(ngModel)]="node.filename">
                             </mat-form-field> <span style="left:-12px;">:</span>
                             <mat-form-field appearance="outline" class="textTree">
-                                <input matInput placeholder="Placeholder" value="{{node.type}}">
+                                <input matInput placeholder="Placeholder" value="{{node.type}}" [(ngModel)]="node.type">
                             </mat-form-field>
                             <mat-form-field appearance="outline" class="textTree">
                                 <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
@@ -102,7 +102,9 @@
                                 <input matInput placeholder="{{optionType=='string'? 'String Length' : 'Max Value'}}">
                             </mat-form-field>
                             <button mat-stroked-button color="primary">Primary</button>
-                            <mat-icon>clear</mat-icon>
+                            <button mat-icon-button aria-label="clear icon-button" (click)="deleteNode(node, nestedDataSource)">
+                                    <mat-icon>clear</mat-icon>
+                            </button>
                             </li>
                         </mat-tree-node>
                         
@@ -136,6 +138,9 @@
                 </div>
                 <div class="row placebtn">
                     <button mat-raised-button color="primary">Test</button>                    
+                </div>
+                <div class="row placebtn">
+                    <button mat-raised-button color="primary" class="generateJsonBtn" (click)="generateJson(nestedDataSource.data)">Generate JSON</button>
                 </div>
             </div>
             <div class="col-md-4">

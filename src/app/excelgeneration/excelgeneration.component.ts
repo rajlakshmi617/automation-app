@@ -1,4 +1,4 @@
-import { Component, Injectable } from '@angular/core';
+import { Component, Injectable, ViewChild } from '@angular/core';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {Observable} from 'rxjs';
@@ -122,4 +122,17 @@ export class ExcelgenerationComponent{
     }
   }
 
+  treeData(node){
+    console.log(this.nestedDataSource, node);
+  }
+
+  generateJson(data){
+    console.log(data)
+    let jsonObj = data;
+    
+  }
+
+  generateKey(){
+    console.log('to generate keys');
+  }
 }
