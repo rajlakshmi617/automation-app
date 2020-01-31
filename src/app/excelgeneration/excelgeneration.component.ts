@@ -80,9 +80,16 @@ import {map, startWith} from 'rxjs/operators';
 })
 export class ExcelgenerationComponent{
   myControl = new FormControl();
-  options: string[] = ['One', 'Two', 'Three'];
+  requestTypeControl = new FormControl();
+  responseCodeControl = new FormControl();
+  options : string[] =['one', 'two', 'three'];
+  requestType: string[] = ['GET', 'POST', 'PUT', 'DELETE'];
+  expectedResponseCode: string[] = ['200', '204', '404', '500'];
   dataTypeOptions : string[] = ['String', 'Numeric'];
-  filteredOptions: Observable<string[]>;
+  dataTypeFilterOptions: Observable<string[]>;
+  requestTypeFilteredOptions: Observable<string[]>;   
+  responseTypeFilterOptions : Observable<string[]>;
+  
   public panelOpenState = true;
   step = 0;
   setStep(index: number) {
@@ -95,7 +102,6 @@ export class ExcelgenerationComponent{
   public TREE_DATA: any;
   public showContainer = true;
   //optionType = "string";
-  dataTypeFilterOptions: Observable<string[]>; 
   constructor(private service:FileDatabase) { 
     
     this.nestedTreeControl = new NestedTreeControl<FileNode>
@@ -158,27 +164,31 @@ export class ExcelgenerationComponent{
   }
 
   ngOnInit() {
-    this.filteredOptions = this.myControl.valueChanges
-      .pipe(
-        startWith(''),
-        map(value => this._filter(value, 1))
-    );
-
     this.dataTypeFilterOptions = this.myControl.valueChanges
       .pipe(
         startWith(''),
-        map(value => this._filter(value, 2))
-      )
+        map(value => this._filter(value, this.dataTypeOptions))
+    );
+
+    this.requestTypeFilteredOptions = this.requestTypeControl.valueChanges  
+      .pipe(
+        startWith(''),
+        map(value => this._filter(value, this.requestType))
+    );
+
+    this.responseTypeFilterOptions = this.responseCodeControl.valueChanges
+      .pipe(
+        startWith(''),
+        map(value => this._filter(value, this.expectedResponseCode))
+    );     
   }
-  private _filter(value: string, flag: number = 1): string[] {
-    const filterValue = value.toLowerCase();
-    return this.options.filter(option => option.toLowerCase().includes(filterValue));
-    if(flag==1){
-      return this.options.filter(option => option.toLowerCase().includes(filterValue));
-    }      
-    else if(flag==2){
-      return this.dataTypeOptions.filter(option => option.toLowerCase().includes(filterValue));
-    }
+  
+  
+  
+  private _filter(value: string, result: any): string[] { 
+    const filterValue = value.toLowerCase(); 
+    return result.filter(option => option.toLowerCase().includes(filterValue));    
   }
+  
 
 }
