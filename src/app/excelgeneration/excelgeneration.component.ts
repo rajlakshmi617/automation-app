@@ -1,10 +1,10 @@
-import { Component, Injectable } from '@angular/core';
+import { Component, Injectable, ViewChild, ElementRef} from '@angular/core';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
-import {FormControl} from '@angular/forms';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {map, startWith} from 'rxjs/operators';
-
+import {FileService} from '../file.service';
 /**
  * Json node data with nested structure. Each node has a filename and a value or a list of children
  */
@@ -15,73 +15,18 @@ import {map, startWith} from 'rxjs/operators';
     type: any;
  }
 
- /**
- * File database, it can build a tree structured Json object from string.
- * Each node in Json object represents a file or a directory. For a file, it has filename and type.
- * For a directory, it has filename and children (a list of files or directories).
- * The input will be a json object string, and the output is a list of `FileNode` with nested
- * structure.
- */
-
- @Injectable()
- export class FileDatabase {
-  dataChange = new BehaviorSubject<FileNode[]>([]);
-  get data(): FileNode[] { return this.dataChange.value; }
-  myMethod$: Observable<any>;
-  private myMethodSubject = new Subject<any>();
-  constructor() {
-    this.myMethod$ = this.myMethodSubject.asObservable();
-  }
-  myMethod(data) {
-    // I have data! Let's return it so subscribers can use it!
-    // we can do stuff with data if we want
-    this.myMethodSubject.next(data);
-    this.initialize(data);
-  }
-  initialize(treedata){
-    // Parse the string to json object.
-    const stringyData = JSON.stringify(treedata);
-    const dataObject = JSON.parse(stringyData);
-    // Build the tree nodes from Json object. The result is a list of `FileNode` with nested
-    // file node as children.
-    const data = this.buildFileTree(JSON.parse(dataObject), 0);
-
-    // Notify the change.
-    this.dataChange.next(data);
-  }
-  /**
-   * Build the file structure tree. The `value` is the Json object, or a sub-tree of a Json object.
-   * The return value is the list of `FileNode`.
-   */
-  buildFileTree(obj: {[key: string]: any}, level: number): FileNode[] {
-    return Object.keys(obj).reduce<FileNode[]>((accumulator, key) => {
-      const value = obj[key];
-      const node = new FileNode();
-      node.filename = key;
-
-      if (value != null) {
-        if (typeof value === 'object') {
-          node.children = this.buildFileTree(value, level + 1);
-        } else {
-          node.type = value;
-        }
-      }
-
-      return accumulator.concat(node);
-    }, []);
-  }
- }
 
 @Component({
   selector: 'app-excelgeneration',
   templateUrl: './excelgeneration.component.html',
   styleUrls: ['./excelgeneration.component.css'],
-  providers: [FileDatabase]
+  providers: [FileService]
 })
 export class ExcelgenerationComponent{
+  @ViewChild('fileUploader', null) fileUploader:ElementRef;
+  AutomationForm :  FormGroup;
   myControl = new FormControl();
-  requestTypeControl = new FormControl();
-  responseCodeControl = new FormControl();
+  
   options : string[] =['one', 'two', 'three'];
   requestType: string[] = ['GET', 'POST', 'PUT', 'DELETE'];
   expectedResponseCode: string[] = ['200', '204', '404', '500'];
@@ -97,13 +42,31 @@ export class ExcelgenerationComponent{
   }
   public data:any;
   public fileName: string;
+
+  public endPointURL : string;
+  public testDescription : string;
+  public requestTypeControl : any;
+  public responseCodeControl : any;
+
+  uploadFilePath : string;
   nestedTreeControl: NestedTreeControl<FileNode>;
   nestedDataSource: MatTreeNestedDataSource<FileNode>;
   public TREE_DATA: any;
+  uploadFileFlag : boolean;
+  uploadFileCheck : boolean;
+  dropFileFlag:boolean;
+  public validForm : boolean;
   public showContainer = true;
   //optionType = "string";
-  constructor(private service:FileDatabase) { 
-    
+  constructor(private service:FileService, private fb : FormBuilder) { 
+
+    this.AutomationForm = this.fb.group({
+      endPointURL : ["", Validators.required],
+      testDescription : [""],
+      requestTypeControl : ["", Validators.required],
+      responseCodeControl : ["", Validators.required]
+    });
+
     this.nestedTreeControl = new NestedTreeControl<FileNode>
     (this._getChildren);
     this.nestedDataSource = new MatTreeNestedDataSource();
@@ -113,7 +76,12 @@ export class ExcelgenerationComponent{
 
   private _getChildren = (node: FileNode) => node.children;
 
+
+
   uploadFile(event) {
+    this.uploadFileFlag = true;
+    this.uploadFileCheck = true;
+    this.uploadFilePath = event.target.value;
     if (event.target.files.length !== 1) {
       console.error('No file selected');
     } else {
@@ -123,13 +91,19 @@ export class ExcelgenerationComponent{
       };
       reader.readAsText(event.target.files[0]);
     }
+    if(this.uploadFileFlag === true){
+      this.fileName = null;
+    }
+    this.uploadFileFlag = false;
   }
 
   dropHandler(ev) {
+    this.dropFileFlag = true;
+    this.fileUploader.nativeElement.value = null;
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
-  
-    if (ev.dataTransfer.items) {
+    this.uploadFilePath = ev.dataTransfer.files[0].name; //only name coming
+    if (ev.dataTransfer.items) {  
       // Use DataTransferItemList interface to access the file(s)
       for (var i = 0; i < ev.dataTransfer.items.length; i++) {
         // If dropped items aren't files, reject them
@@ -161,29 +135,41 @@ export class ExcelgenerationComponent{
     this.showContainer = false;
     this.service.myMethod(this.data);
     this.step = 1;
+    
+    var AutoTestFormData ={
+      "endPointURL" : this.AutomationForm.value.endPointURL,
+      "testDescription" : this.AutomationForm.value.testDescription,
+      "requestTypeControl" : this.AutomationForm.value.requestTypeControl,
+      "responseCodeControl" : this.AutomationForm.value.responseCodeControl,
+      "path" : this.uploadFilePath
+    };
+
+    console.log(AutoTestFormData);
   }
 
   ngOnInit() {
+    this.uploadFileFlag =false;
+    this.dropFileFlag = false;
+    this.uploadFileCheck = false;
+    var formData = this.AutomationForm.controls;
     this.dataTypeFilterOptions = this.myControl.valueChanges
       .pipe(
         startWith(''),
         map(value => this._filter(value, this.dataTypeOptions))
     );
 
-    this.requestTypeFilteredOptions = this.requestTypeControl.valueChanges  
+    this.requestTypeFilteredOptions = formData.requestTypeControl.valueChanges
       .pipe(
         startWith(''),
         map(value => this._filter(value, this.requestType))
     );
 
-    this.responseTypeFilterOptions = this.responseCodeControl.valueChanges
+    this.responseTypeFilterOptions = formData.responseCodeControl.valueChanges
       .pipe(
         startWith(''),
         map(value => this._filter(value, this.expectedResponseCode))
     );     
-  }
-  
-  
+  } 
   
   private _filter(value: string, result: any): string[] { 
     const filterValue = value.toLowerCase(); 

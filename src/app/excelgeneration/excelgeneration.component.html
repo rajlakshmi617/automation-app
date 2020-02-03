@@ -9,47 +9,53 @@
         </mat-panel-description>
         </mat-expansion-panel-header>
         <div class="container">
+                <form [formGroup] = "AutomationForm" class="example-form" novalidate autocomplete="off">    
             <div class="row">
                 <div class="col-md-6">
-                    <form class="example-form">
+                    
                         <mat-form-field class="example-full-width">
-                            <input matInput placeholder="API Endpoint URL" value="">
+                            <input matInput placeholder="API Endpoint URL" formControlName = "endPointURL" value="">
+                            <mat-error *ngIf="!AutomationForm.controls['endPointURL'].valid && !AutomationForm.controls['endPointURL'].touched"></mat-error>
                         </mat-form-field>
                         <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Test Description" value="">
+                            <!-- <input matInput placeholder="Test Description" value=""> -->
+                            <textarea matInput rows="3" formControlName = "testDescription" placeholder="Test Description"></textarea>
+                            <mat-error *ngIf="!AutomationForm.controls['testDescription'].valid && !AutomationForm.controls['testDescription'].touched"></mat-error>
                         </mat-form-field>
-                        <mat-form-field class="example-full-width">
+                        <!-- <mat-form-field class="example-full-width">
                             <input matInput placeholder="Output JSON File Path" value="">
                                 <!-- <input type="file" id="folderpath" webkitdirectory directory style="display: none" />
                                 <span class="openfolder">
                                     <button mat-stroked-button color="primary" (click)="openFolder($event)">Primary</button>
                                 </span> -->
-                        </mat-form-field>
+                        <!-- </mat-form-field> --> 
                         
                         <mat-form-field class="example-full-width">
-                            <input type="text" placeholder="Request Type" aria-label="Number" matInput [formControl]="requestTypeControl" [matAutocomplete]="auto">
+                            <input type="text" placeholder="Request Type" aria-label="Number" matInput formControlName="requestTypeControl" [matAutocomplete]="auto">
                                 <mat-autocomplete #auto="matAutocomplete">
                                     <mat-option *ngFor="let req of requestTypeFilteredOptions | async" [value]="req">
                                     {{req}}
                                     </mat-option>
                                 </mat-autocomplete>
+                                <mat-error *ngIf="!AutomationForm.controls['requestTypeControl'].touched"></mat-error>
                         </mat-form-field>
 
                         <mat-form-field class="example-full-width">
-                            <input type="text" placeholder="Expected Response Code" aria-label="Number" matInput [formControl]="responseCodeControl" [matAutocomplete]="autofill">
+                            <input type="text" placeholder="Expected Response Code" aria-label="Number" matInput formControlName="responseCodeControl" [matAutocomplete]="autofill">
                                 <mat-autocomplete #autofill="matAutocomplete">
                                     <mat-option *ngFor="let res of responseTypeFilterOptions | async" [value]="res">
                                     {{res}}
                                     </mat-option>
                                 </mat-autocomplete>
+                                <mat-error *ngIf="!AutomationForm.controls['responseCodeControl'].touched"></mat-error>
                         </mat-form-field>
                         
-                    </form>
+                    
                 </div>
                 <div class="col-md-6">
                     <div class="uploadfile">
                         <p class="formlabel">Upload Input JSON File</p>
-                            <input type="file" name="files" accept=".json" (change)="uploadFile($event)" />
+                            <input type="file" #fileUploader name="files" accept=".json" (change)="uploadFile($event)" />
                             <div id="drop_zone" (drop)="dropHandler($event);" (dragover)="dragOverHandler($event)">
                                 <div *ngIf="!fileName">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
@@ -62,13 +68,14 @@
                             </div>
                         </div>
                     </div>
-            </div>
+            </div> 
             <div class="clearfix"></div>
             <div class="row">
                 <div class="col-md-12" class="btnwrapper">
-                    <button mat-raised-button color="primary" class="generatebtn" (click)="renderjson()">Render Input JSON</button>
+                    <button mat-raised-button color="primary" [disabled]="!(AutomationForm.valid && (fileName != null || uploadFileCheck))" class="generatebtn" (click)="renderjson()">Render Input JSON</button>
                 </div>
             </div>
+        </form>
         </div>
     </mat-expansion-panel>
     <mat-expansion-panel [expanded]="step === 1" *ngIf="!showContainer">
@@ -80,53 +87,79 @@
             Rendered Input JSON
         </mat-panel-description>
         </mat-expansion-panel-header>
-        <div class="treecontainer">
-            <mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl" class="example-tree">
-                <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-                    <li class="mat-tree-node">
-                    <button mat-icon-button disabled></button>
-                    <mat-form-field appearance="outline" class="textTree">
-                        <input matInput placeholder="Placeholder" value="{{node.filename}}">
-                    </mat-form-field> 
-                    <span style="position: absolute; margin-left: 115px;">:</span>
-                    <mat-form-field appearance="outline" class="textTree">
-                        <input matInput placeholder="Placeholder" value="{{node.type}}">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" class="textTree">
-                        <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
-                        <mat-autocomplete #auto="matAutocomplete">
-                            <mat-option *ngFor="let option of dataTypeFilterOptions | async" [value]="option">
-                            {{option}}
-                            </mat-option>
-                        </mat-autocomplete>
-                        </mat-form-field>
-                    <mat-form-field appearance="outline" class="textTree">
-                        <input matInput placeholder="{{optionType=='string'? 'String Length' : 'Max Value'}}">
-                    </mat-form-field>
-                    <button mat-stroked-button color="primary">Primary</button>
-                    <mat-icon>clear</mat-icon>
-                    </li>
-                </mat-tree-node>
-                
-                <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
-                    <li>
-                    <div class="mat-tree-node">
-                        <button mat-icon-button matTreeNodeToggle
-                                [attr.aria-label]="'toggle ' + node.filename">
-                        <mat-icon class="mat-icon-rtl-mirror">
-                            {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                        </mat-icon>
-                        </button>
-                        <mat-form-field appearance="outline" class="textTree">
-                            <input  matInput type="text" name="file" value="{{node.filename}}"/>
-                        </mat-form-field>                
-                    </div>
-                    <ul [class.example-tree-invisible]="!nestedTreeControl.isExpanded(node)">
-                        <ng-container matTreeNodeOutlet></ng-container>
-                    </ul>
-                    </li>
-                </mat-nested-tree-node>
-            </mat-tree>   
+        <div class="row">
+            <div class="col-md-7">
+                <div class="treecontainer">
+                    <mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl" class="example-tree">
+                        <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+                            <li class="mat-tree-node">
+                            <button mat-icon-button disabled></button>
+                            <mat-form-field appearance="outline" class="textTree">
+                                <input matInput placeholder="Placeholder" value="{{node.filename}}" [(ngModel)]="node.filename">
+                            </mat-form-field> <span style="left:-12px;">:</span>
+                            <mat-form-field appearance="outline" class="textTree">
+                                <input matInput placeholder="Placeholder" value="{{node.type}}" [(ngModel)]="node.type">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="textTree">
+                                <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
+                                <mat-autocomplete #auto="matAutocomplete">
+                                    <mat-option *ngFor="let option of dataTypeFilterOptions | async" [value]="option">
+                                    {{option}}
+                                    </mat-option>
+                                </mat-autocomplete>
+                                </mat-form-field>
+                            <mat-form-field appearance="outline" class="textTree">
+                                <input matInput placeholder="{{optionType=='string'? 'String Length' : 'Max Value'}}">
+                            </mat-form-field>
+                            <button mat-stroked-button color="primary">Primary</button>
+                            <button mat-icon-button aria-label="clear icon-button" (click)="deleteNode(node, nestedDataSource)">
+                                    <mat-icon>clear</mat-icon>
+                            </button>
+                            </li>
+                        </mat-tree-node>
+                        
+                        <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
+                            <li>
+                            <div class="mat-tree-node">
+                                <button mat-icon-button matTreeNodeToggle
+                                        [attr.aria-label]="'toggle ' + node.filename">
+                                <mat-icon class="mat-icon-rtl-mirror">
+                                    {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                                </mat-icon>
+                                </button>
+                                <mat-form-field appearance="outline" class="textTree">
+                                    <input  matInput type="text" name="file" value="{{node.filename}}"/>
+                                </mat-form-field>                
+                            </div>
+                            <ul [class.example-tree-invisible]="!nestedTreeControl.isExpanded(node)">
+                                <ng-container matTreeNodeOutlet></ng-container>
+                            </ul>
+                            </li>
+                        </mat-nested-tree-node>
+                    </mat-tree>   
+                </div>
+            </div>
+            <div class="col-md-1">
+                <div class="row placebtn">
+                    <button mat-raised-button color="primary" (click)="exportJsonFile()">Save</button>
+                </div>
+                <div class="row placebtn">
+                    <button mat-raised-button color="primary">Copy</button>                    
+                </div>
+                <div class="row placebtn">
+                    <button mat-raised-button color="primary">Test</button>                    
+                </div>
+                <div class="row placebtn">
+                    <button mat-raised-button color="primary" class="generateJsonBtn" (click)="generateJson(nestedDataSource.data)">Generate JSON</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row filecontainer">
+                    <p>Test.json</p>
+                    <p>Sample.json</p>
+                    <p>Duplicate.json</p>
+                </div>
+            </div>
         </div>
     </mat-expansion-panel>
 </mat-accordion>
