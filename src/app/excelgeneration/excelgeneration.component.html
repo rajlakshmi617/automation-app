@@ -9,44 +9,53 @@
         </mat-panel-description>
         </mat-expansion-panel-header>
         <div class="container">
+                <form [formGroup] = "AutomationForm" class="example-form" novalidate autocomplete="off">    
             <div class="row">
                 <div class="col-md-6">
-                    <form class="example-form">
+                    
                         <mat-form-field class="example-full-width">
-                            <input matInput placeholder="API Endpoint URL" value="">
+                            <input matInput placeholder="API Endpoint URL" formControlName = "endPointURL" value="">
+                            <mat-error *ngIf="!AutomationForm.controls['endPointURL'].valid && !AutomationForm.controls['endPointURL'].touched"></mat-error>
                         </mat-form-field>
                         <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Test Description" value="">
+                            <!-- <input matInput placeholder="Test Description" value=""> -->
+                            <textarea matInput rows="3" formControlName = "testDescription" placeholder="Test Description"></textarea>
+                            <mat-error *ngIf="!AutomationForm.controls['testDescription'].valid && !AutomationForm.controls['testDescription'].touched"></mat-error>
                         </mat-form-field>
-                        <mat-form-field class="example-full-width">
+                        <!-- <mat-form-field class="example-full-width">
                             <input matInput placeholder="Output JSON File Path" value="">
                                 <!-- <input type="file" id="folderpath" webkitdirectory directory style="display: none" />
                                 <span class="openfolder">
                                     <button mat-stroked-button color="primary" (click)="openFolder($event)">Primary</button>
                                 </span> -->
-                        </mat-form-field>
+                        <!-- </mat-form-field> --> 
+                        
                         <mat-form-field class="example-full-width">
-                            <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
+                            <input type="text" placeholder="Request Type" aria-label="Number" matInput formControlName="requestTypeControl" [matAutocomplete]="auto">
                                 <mat-autocomplete #auto="matAutocomplete">
-                                    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                                    {{option}}
+                                    <mat-option *ngFor="let req of requestTypeFilteredOptions | async" [value]="req">
+                                    {{req}}
                                     </mat-option>
                                 </mat-autocomplete>
+                                <mat-error *ngIf="!AutomationForm.controls['requestTypeControl'].touched"></mat-error>
                         </mat-form-field>
+
                         <mat-form-field class="example-full-width">
-                            <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
-                                <mat-autocomplete #auto="matAutocomplete">
-                                    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                                    {{option}}
+                            <input type="text" placeholder="Expected Response Code" aria-label="Number" matInput formControlName="responseCodeControl" [matAutocomplete]="autofill">
+                                <mat-autocomplete #autofill="matAutocomplete">
+                                    <mat-option *ngFor="let res of responseTypeFilterOptions | async" [value]="res">
+                                    {{res}}
                                     </mat-option>
                                 </mat-autocomplete>
+                                <mat-error *ngIf="!AutomationForm.controls['responseCodeControl'].touched"></mat-error>
                         </mat-form-field>
-                    </form>
+                        
+                    
                 </div>
                 <div class="col-md-6">
                     <div class="uploadfile">
                         <p class="formlabel">Upload Input JSON File</p>
-                            <input type="file" name="files" accept=".json" (change)="uploadFile($event)" />
+                            <input type="file" #fileUploader name="files" accept=".json" (change)="uploadFile($event)" />
                             <div id="drop_zone" (drop)="dropHandler($event);" (dragover)="dragOverHandler($event)">
                                 <div *ngIf="!fileName">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
@@ -59,13 +68,14 @@
                             </div>
                         </div>
                     </div>
-            </div>
+            </div> 
             <div class="clearfix"></div>
             <div class="row">
                 <div class="col-md-12" class="btnwrapper">
-                    <button mat-raised-button color="primary" class="generatebtn" (click)="renderjson()">Render Input JSON</button>
+                    <button mat-raised-button color="primary" [disabled]="!(AutomationForm.valid && (fileName != null || uploadFileCheck))" class="generatebtn" (click)="renderjson()">Render Input JSON</button>
                 </div>
             </div>
+        </form>
         </div>
     </mat-expansion-panel>
     <mat-expansion-panel [expanded]="step === 1" *ngIf="!showContainer">
@@ -102,7 +112,7 @@
                                 <input matInput placeholder="{{optionType=='string'? 'String Length' : 'Max Value'}}">
                             </mat-form-field>
                             <button mat-stroked-button color="primary">Primary</button>
-                            <button mat-icon-button aria-label="clear icon-button" (click)="deleteNode(node, nestedDataSource)">
+                            <button mat-icon-button aria-label="clear icon-button" (click)="deleteNode(node, nestedDataSource.data)">
                                     <mat-icon>clear</mat-icon>
                             </button>
                             </li>
