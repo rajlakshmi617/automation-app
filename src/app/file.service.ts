@@ -38,20 +38,30 @@ export class FileService {
     this.myMethodSubject.next(data);
     this.initialize(data);
   }
-  generateJsonFile(){
-    console.log('inside service');
-      let student = { 
-      name: 'Mike',
-      age: 23, 
-      gender: 'Male',
-      department: 'English',
-      car: 'Honda' 
-    };
-let studentdata = JSON.stringify(student);
-debugger
-    // console.log('this.http.post(this.baseURL, this.data);', this.http.get(this.baseURL));
-    // fetch(this.baseURL).then(res=> console.log('--->',res));
-     return this.http.get(this.baseURL);
+  generateJsonFile(jsondata, dirName, fileName){
+    let modifiedData = JSON.parse(JSON.parse(JSON.stringify(jsondata)));
+    let fileDTO = {
+      "jsonData": modifiedData,
+      "dirName": dirName,
+      "fileName": fileName
+    }
+    // let student = { 
+    // name: 'Mike',
+    // age: 23, 
+    // gender: 'Male',
+    // department: 'English',
+    // car: 'Honda' 
+    // };
+    // let studentdata = JSON.stringify(student);
+    return this.http.post(this.baseURL, fileDTO).subscribe(res=> {
+      console.log('response of fileservice', res);
+    });
+    // return this.http.post(this.baseURL + 'generate', student).subscribe(res=> console.log('res', res));
+  }
+  createDirectory(){
+    console.log('inside create dir');
+    const dirname = "test";
+    return this.http.post(this.baseURL + 'createdir', dirname).subscribe(res => console.log('dir res', res));
   }
   initialize(treedata){
     // Parse the string to json object.

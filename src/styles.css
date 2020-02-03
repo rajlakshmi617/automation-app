@@ -141,3 +141,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     width: 100%;
     padding: 4px;
 }
+.cdk-overlay-pane{
+    width: 400px !important;
+    height: 310px;
+}

@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Please provide below details:</h1>
+<div mat-dialog-content>
+  <p>Folder Name</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.dirname">
+  </mat-form-field>
+  <p>JSON File Name</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.filename">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div>

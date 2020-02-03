@@ -1,21 +1,56 @@
 const express = require('express');
 var router = express.Router();
-// console.log('file controller');
-router.post('/', (req, res) => {
-    // console.log('inside file controller');
-    let student = { 
-        name: 'Mike',
-        age: 23, 
-        gender: 'Male',
-        department: 'English',
-        car: 'Honda' 
-    };
-    let data = JSON.stringify(student);
-    fs.writeFile('../outputjson/student-4.json', data, (err) => {
-        if (err) throw err;
-        console.log('Data written to file');
+const fs = require('fs');
+
+function writeFile(dirname, filename, parseData){
+    fs.writeFileSync(`../outputjson/${dirname}/${filename}.json`, JSON.stringify(parseData), (err) => {
+        if (err){
+            // console.log('err', err);
+            res.send(err);
+            // console.log(throw err);            
+        }
+        // console.log('Data written to file');
+        res.send(filename);
+        res.send('file generated successfully');
     });
-    
+}
+router.post('/', (req, res) => {
+    let data = JSON.stringify(req.body.jsonData);
+    let parseData = JSON.parse(data);
+    let dirname = req.body.dirName;
+    let filename = req.body.fileName;
+    fs.exists(`../outputjson/${dirname}`, function(exists) {
+        // console.log("folder exists ? " + exists);
+        if(exists){
+            fs.exists(`../outputjson/${dirname}/${filename}.json`, function(fileexists) {
+                console.log("file exists ? " + fileexists);
+                if(fileexists){
+                    res.send('File already exists');                    
+                } else {
+                    writeFile(dirname, filename, parseData);
+                }
+            });
+        }else{
+            fs.mkdir(`../outputjson/${dirname}`, function(err){
+                if(err){
+                    // console.log('failed to create directory');
+                    return console.error(err);
+                }else{
+                    // console.log('Directory created successfully');
+                    res.send('Directory created successfully');
+                    fs.exists(`../outputjson/${dirname}/${filename}.json`, function(fileexists) {
+                        // console.log("file exists ? " + fileexists);
+                        if(fileexists){
+                            res.send('File already exists');                    
+                        } else {
+                            writeFile(dirname, filename, parseData);
+                        }
+                    });
+                }
+            });
+            
+        }
+    });
 });
 
 module.exports = router;

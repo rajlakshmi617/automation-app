@@ -1,6 +1,7 @@
-import { Component, Injectable, ViewChild } from '@angular/core';
+import { Component, Inject, Injectable, ViewChild } from '@angular/core';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {Observable} from 'rxjs';
 import {FormControl} from '@angular/forms';
 import {map, startWith} from 'rxjs/operators';
@@ -10,6 +11,11 @@ export class FileNode{
   children: FileNode[];
   filename: string;
   type: any;
+}
+
+export interface DialogData {
+  dirname: string;
+  filename: string;
 }
 
 @Component({
@@ -35,7 +41,9 @@ export class ExcelgenerationComponent{
   public TREE_DATA: any;
   public showContainer = true;
   dataTypeFilterOptions: Observable<string[]>; 
-  constructor(private service:FileService) { 
+  dirname: string;
+  filename: string;
+  constructor(private service:FileService, public dialog: MatDialog) { 
     
     this.nestedTreeControl = new NestedTreeControl<FileNode>
     (this._getChildren);
@@ -94,9 +102,13 @@ export class ExcelgenerationComponent{
     this.service.myMethod(this.data);
     this.step = 1;
   }
-  exportJsonFile(){
+  exportJsonFile(dirName, fileName){
     console.log('inside component');
-    this.service.generateJsonFile();
+    this.service.generateJsonFile(this.data, dirName, fileName);
+  }
+  createFolder(){
+    console.log('inside create folder component');
+    this.service.createDirectory();
   }
   ngOnInit() {
     this.filteredOptions = this.myControl.valueChanges
@@ -135,4 +147,33 @@ export class ExcelgenerationComponent{
   generateKey(){
     console.log('to generate keys');
   }
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
+      width: '50px',
+      data: {dirname: this.dirname, filename: this.fileName}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed', result);
+      this.dirname = result.dirname;
+      this.fileName = result.filename;
+      this.exportJsonFile(this.dirname, this.fileName);
+    });
+  }
+}
+
+@Component({
+  selector: 'dialog-overview-example-dialog',
+  templateUrl: '../shared/component/dialog-overview-example-dialog.html',
+})
+export class DialogOverviewExampleDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
 }

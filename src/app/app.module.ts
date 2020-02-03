@@ -7,15 +7,17 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from "@angular/common/http";
 import { FieldvalidationComponent } from './fieldvalidation/fieldvalidation.component';
 import {MatMenuModule,MatInputModule, MatButtonModule, MatSelectModule, MatIconModule, MatToolbarModule,
-  MatTabsModule, MatButtonToggleModule, MatTreeModule, MatAutocompleteModule, MatExpansionModule} from '@angular/material';
-import { ExcelgenerationComponent } from './excelgeneration/excelgeneration.component';
+  MatTabsModule, MatButtonToggleModule, MatTreeModule, MatAutocompleteModule, MatExpansionModule,
+  MatDialogModule } from '@angular/material';
+import { ExcelgenerationComponent, DialogOverviewExampleDialog } from './excelgeneration/excelgeneration.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     FieldvalidationComponent,
-    ExcelgenerationComponent
+    ExcelgenerationComponent,
+    DialogOverviewExampleDialog,
   ],
   imports: [
     BrowserModule,
@@ -35,7 +37,9 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     MatTreeModule,
     MatAutocompleteModule,
     MatExpansionModule,
+    MatDialogModule
   ],
+  entryComponents: [DialogOverviewExampleDialog],
   providers: [],
   bootstrap: [AppComponent]
 })
