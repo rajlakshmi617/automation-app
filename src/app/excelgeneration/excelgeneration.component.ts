@@ -135,4 +135,22 @@ export class ExcelgenerationComponent{
   generateKey(){
     console.log('to generate keys');
   }
+
+  //function to delete selected node
+  deleteNode(node, dataSource){
+    dataSource = dataSource.filter(n => n.filename != node.filename)
+    dataSource.map((n) => {
+      if(n.hasOwnProperty('children')){
+        console.log('traverse', n['children']);
+        if (n !== null && typeof(n)=="object" )
+        {
+          console.log(n)
+          this.deleteNode(node, n['children'])
+          n['children'] = n['children'].filter(n => n.filename != node.filename) 
+        }
+      }
+    });
+    console.log(dataSource)
+    this.service.dataChange.next(dataSource)
+  }
 }

@@ -102,7 +102,7 @@
                                 <input matInput placeholder="{{optionType=='string'? 'String Length' : 'Max Value'}}">
                             </mat-form-field>
                             <button mat-stroked-button color="primary">Primary</button>
-                            <button mat-icon-button aria-label="clear icon-button" (click)="deleteNode(node, nestedDataSource)">
+                            <button mat-icon-button aria-label="clear icon-button" (click)="deleteNode(node, nestedDataSource.data)">
                                     <mat-icon>clear</mat-icon>
                             </button>
                             </li>
