@@ -212,17 +212,21 @@ export class ExcelgenerationComponent{
     dataSource = dataSource.filter(n => n.filename != node.filename)
     dataSource.map((n) => {
       if(n.hasOwnProperty('children')){
-        console.log('traverse', n['children']);
         if (n !== null && typeof(n)=="object" )
         {
-          // console.log(n)
-          this.deleteNode(node, n['children'])
+          this.deleteNode(node, n['children'])    //to traverse deep in the tree
           n['children'] = n['children'].filter(n => n.filename != node.filename) 
         }
       }
     });
-    // console.log(dataSource)
     this.service.dataChange.next(dataSource)
+  }
+
+   /** Select the category so we can insert the new item. */
+   addNewItem(node: FileNode) {
+    const parentNode = this.flatNodeMap.get(node);
+    this.service.insertItem(parentNode!, '', '');
+    this.nestedTreeControl.expand(node);
   }
 }
 

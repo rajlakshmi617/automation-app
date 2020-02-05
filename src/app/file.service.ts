@@ -63,6 +63,10 @@ export class FileService {
     const dirname = "test";
     return this.http.post(this.baseURL + 'createdir', dirname).subscribe(res => console.log('dir res', res));
   }
+  /**
+   * 
+   * @param treedata 
+   */
   initialize(treedata){
     // Parse the string to json object.
     const stringyData = JSON.stringify(treedata);
@@ -94,5 +98,13 @@ export class FileService {
 
       return accumulator.concat(node);
     }, []);
+  }
+
+  /** Add an item to to-do list */
+  insertItem(parent: FileNode, name: string, value: string) {
+    if (parent.children) {
+      parent.children.push({filename: name, type: value} as FileNode);
+      this.dataChange.next(this.data);
+    }
   }
 }

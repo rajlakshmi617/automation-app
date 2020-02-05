@@ -72,7 +72,7 @@
             <div class="clearfix"></div>
             <div class="row">
                 <div class="col-md-12" class="btnwrapper">
-                    <button mat-raised-button color="primary" [disabled]="!(AutomationForm.valid && (fileName != null || uploadFileCheck))" class="generatebtn" (click)="renderjson()">Render Input JSON</button>
+                    <button mat-raised-button color="primary"  class="generatebtn" (click)="renderjson()">Render Input JSON</button>
                 </div>
             </div>
         </form>
@@ -115,6 +115,9 @@
                             <button mat-icon-button aria-label="clear icon-button" (click)="deleteNode(node, nestedDataSource.data)">
                                     <mat-icon>clear</mat-icon>
                             </button>
+                            <button mat-icon-button aria-label="clear icon-button" (click)="addNode(node, nestedDataSource.data)">
+                                <mat-icon>add</mat-icon>
+                            </button>
                             </li>
                         </mat-tree-node>
                         
@@ -129,7 +132,10 @@
                                 </button>
                                 <mat-form-field appearance="outline" class="textTree">
                                     <input  matInput type="text" name="file" value="{{node.filename}}"/>
-                                </mat-form-field>                
+                                </mat-form-field>  
+                                <button mat-icon-button aria-label="clear icon-button" (click)="addNode(node, nestedDataSource.data)">
+                                    <mat-icon>add</mat-icon>
+                                </button>              
                             </div>
                             <ul [class.example-tree-invisible]="!nestedTreeControl.isExpanded(node)">
                                 <ng-container matTreeNodeOutlet></ng-container>
