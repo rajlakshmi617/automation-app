@@ -22,13 +22,6 @@
                             <textarea matInput rows="3" formControlName = "testDescription" placeholder="Test Description"></textarea>
                             <mat-error *ngIf="!AutomationForm.controls['testDescription'].valid && !AutomationForm.controls['testDescription'].touched"></mat-error>
                         </mat-form-field>
-                        <!-- <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Output JSON File Path" value="">
-                                <!-- <input type="file" id="folderpath" webkitdirectory directory style="display: none" />
-                                <span class="openfolder">
-                                    <button mat-stroked-button color="primary" (click)="openFolder($event)">Primary</button>
-                                </span> -->
-                        <!-- </mat-form-field> --> 
                         
                         <mat-form-field class="example-full-width">
                             <input type="text" placeholder="Request Type" aria-label="Number" matInput formControlName="requestTypeControl" [matAutocomplete]="auto">
