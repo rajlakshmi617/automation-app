@@ -2,14 +2,17 @@ const express = require('express');
 var router = express.Router();
 const fs = require('fs');
 
+/**
+ * Function that write JSON to a JSON file
+ * @param {*} dirname 
+ * @param {*} filename 
+ * @param {*} parseData 
+ */
 function writeFile(dirname, filename, parseData){
     fs.writeFileSync(`../outputjson/${dirname}/${filename}.json`, JSON.stringify(parseData), (err) => {
         if (err){
-            // console.log('err', err);
             res.send(err);
-            // console.log(throw err);            
         }
-        // console.log('Data written to file');
         res.send(filename);
         res.send('file generated successfully');
     });

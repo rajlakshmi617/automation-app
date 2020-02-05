@@ -17,7 +17,9 @@ import {FileService} from '../file.service';
     type: any;
  }
 
-
+/**
+ * DialogData for modal popup
+ */
 export interface DialogData {
   dirname: string;
   filename: string;
@@ -43,13 +45,16 @@ export class ExcelgenerationComponent{
   responseTypeFilterOptions : Observable<string[]>;
   
   public panelOpenState = true;
+  /**
+   * steps for expand and collapse collasable area
+   */
   step = 0;
   setStep(index: number) {
     this.step = index;
   }
+
   public data:any;
   public fileName: string;
-
   public endPointURL : string;
   public testDescription : string;
   public requestTypeControl : any;
@@ -64,7 +69,6 @@ export class ExcelgenerationComponent{
   dropFileFlag:boolean;
   public validForm : boolean;
   public showContainer = true;
-  //optionType = "string";
   dirname: string;
   filename: string;
   constructor(private service:FileService, private fb : FormBuilder, public dialog: MatDialog) { 
@@ -82,10 +86,12 @@ export class ExcelgenerationComponent{
     this.service.dataChange.subscribe(data => this.nestedDataSource.data = data);
   }
   hasNestedChild = (_: number, nodeData: FileNode) => !nodeData.type;
-
   private _getChildren = (node: FileNode) => node.children;
 
-
+  /**
+   * Function to upload input JSON file using Browse Button
+   * @param event 
+   */
 
   uploadFile(event) {
     this.uploadFileFlag = true;
@@ -105,6 +111,11 @@ export class ExcelgenerationComponent{
     }
     this.uploadFileFlag = false;
   }
+
+  /**
+   * Function to handle ondrop event during file upload using drag and drop
+   * @param ev 
+   */
 
   dropHandler(ev) {
     this.dropFileFlag = true;
@@ -135,16 +146,22 @@ export class ExcelgenerationComponent{
     }
   }
 
+  /**
+   * Function call on drag over during file drop to prevent file being opened
+   * @param ev 
+   */
   dragOverHandler(ev) {
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
   }
 
+  /**
+   * Function call to send tree data to service that will render JSON as a tree
+   */
   renderjson(){
     this.showContainer = false;
     this.service.myMethod(this.data);
     this.step = 1;
-    
     var AutoTestFormData ={
       "endPointURL" : this.AutomationForm.value.endPointURL,
       "testDescription" : this.AutomationForm.value.testDescription,
@@ -152,15 +169,25 @@ export class ExcelgenerationComponent{
       "responseCodeControl" : this.AutomationForm.value.responseCodeControl,
       "path" : this.uploadFilePath
     };
-
     // console.log(AutoTestFormData);
   }
+
+  /**
+   * Function called to generate JSON file using updated JSON tree data
+   * @param dirName 
+   * @param fileName 
+   */
   exportJsonFile(dirName, fileName){
     this.service.generateJsonFile(this.data, dirName, fileName);
   }
+
+  /**
+   * Function called to create folder to store generated JSON file
+   */
   createFolder(){
     this.service.createDirectory();
   }
+
   ngOnInit() {
     this.uploadFileFlag =false;
     this.dropFileFlag = false;
@@ -185,15 +212,23 @@ export class ExcelgenerationComponent{
     );     
   } 
   
+  /**
+   * Filter autocomplete options
+   * @param value 
+   * @param result 
+   */
   private _filter(value: string, result: any): string[] { 
     const filterValue = value.toLowerCase(); 
     return result.filter(option => option.toLowerCase().includes(filterValue));    
   }
   
-
   generateKey(){
     console.log('to generate keys');
   }
+
+  /**
+   * To open model popup on click of save button
+   */
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
       width: '50px',
@@ -201,13 +236,17 @@ export class ExcelgenerationComponent{
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      // console.log('The dialog was closed', result);
       this.dirname = result.dirname;
       this.fileName = result.filename;
       this.exportJsonFile(this.dirname, this.fileName);
     });
   }
-  //function to delete selected node
+
+  /**
+   * function to delete selected node
+   * @param node 
+   * @param dataSource 
+   */
   deleteNode(node, dataSource){
     dataSource = dataSource.filter(n => n.filename != node.filename)
     dataSource.map((n) => {
@@ -226,6 +265,9 @@ export class ExcelgenerationComponent{
   }
 }
 
+/**
+ * Component for dialog overview that help to open model popup
+ */
 @Component({
   selector: 'dialog-overview-example-dialog',
   templateUrl: '../shared/component/dialog-overview-example-dialog.html',
