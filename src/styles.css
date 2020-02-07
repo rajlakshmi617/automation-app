@@ -1,5 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
 @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+/* Add application styles & imports to this file! */
+@import '~jsoneditor/dist/jsoneditor.min.css';
+
+
+div.jsoneditor-menu > button {
+  background-image: url('https://jsoneditoronline.org/img/jsoneditor-icons.svg');
+}
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-tab-label-container{
@@ -145,3 +153,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     width: 400px !important;
     height: 310px;
 }
+
+.toggle-section {
+    position: relative;
+    float: right;
+}
+
+.toggle-margin {
+    margin: 10px;
+  }
