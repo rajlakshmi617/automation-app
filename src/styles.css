@@ -145,3 +145,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     width: 400px !important;
     height: 310px;
 }
+.example-pizza-party {
+    color: hotpink;
+  }
+  .mat-snack-bar-container{
+    margin: 420px !important;
+    background: #ffffff !important;
+    max-height: 50px !important;
+    margin-top: -46% !important;
+    min-width: 414px !important;
+  }

@@ -2,9 +2,10 @@ import { Component, Inject, Injectable, ViewChild, ElementRef } from '@angular/c
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {BehaviorSubject, Observable, from} from 'rxjs';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
-
+import { SnackBarComponent } from '../shared/component/snack-bar-component';
 import {map, startWith} from 'rxjs/operators';
 import {FileService} from '../file.service';
 /**
@@ -178,7 +179,16 @@ export class ExcelgenerationComponent{
    * @param fileName 
    */
   exportJsonFile(dirName, fileName){
-    this.service.generateJsonFile(this.data, dirName, fileName);
+    console.log('this.data', this.data);
+    console.log('this.nestedDataSource.data', this.nestedDataSource.data);
+    const mockData = {
+        Applications: {
+          Calender: 'app1',
+          Chrome: 'app1',
+          Webstrom: 'app1'
+        },
+    }
+    this.service.generateJsonFile(mockData, dirName, fileName);
   }
 
   /**
@@ -273,13 +283,20 @@ export class ExcelgenerationComponent{
   templateUrl: '../shared/component/dialog-overview-example-dialog.html',
 })
 export class DialogOverviewExampleDialog {
-
+  durationInSeconds = 3;
   constructor(
-    public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
+    public dialogRef: MatDialogRef<DialogOverviewExampleDialog>, private _snackBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
 
   onNoClick(): void {
     this.dialogRef.close();
   }
+  openSnackBar(){
+    this._snackBar.openFromComponent(SnackBarComponent, {
+      duration: this.durationInSeconds * 1000,
+    });
+  }
 
 }
+
+

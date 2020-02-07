@@ -8,9 +8,11 @@ import { HttpClientModule } from "@angular/common/http";
 import { FieldvalidationComponent } from './fieldvalidation/fieldvalidation.component';
 import {MatMenuModule,MatInputModule, MatButtonModule, MatSelectModule, MatIconModule, MatToolbarModule,
   MatTabsModule, MatButtonToggleModule, MatTreeModule, MatAutocompleteModule, MatExpansionModule,
-  MatDialogModule } from '@angular/material';
+  MatDialogModule, MatSnackBarModule } from '@angular/material';
+import { SnackBarComponent } from '../app/shared/component/snack-bar-component';
 import { ExcelgenerationComponent, DialogOverviewExampleDialog } from './excelgeneration/excelgeneration.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { from } from 'rxjs';
 
 @NgModule({
   declarations: [
@@ -18,6 +20,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     FieldvalidationComponent,
     ExcelgenerationComponent,
     DialogOverviewExampleDialog,
+    SnackBarComponent
   ],
   imports: [
     BrowserModule,
@@ -37,9 +40,10 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     MatTreeModule,
     MatAutocompleteModule,
     MatExpansionModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSnackBarModule
   ],
-  entryComponents: [DialogOverviewExampleDialog],
+  entryComponents: [DialogOverviewExampleDialog, SnackBarComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

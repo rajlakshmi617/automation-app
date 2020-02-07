@@ -17,6 +17,14 @@ function writeFile(dirname, filename, parseData){
         res.send('file generated successfully');
     });
 }
+function readDirectory(){
+    const testFolder = '../outputjson/test/';
+    fs.readdir(testFolder, (err, files) => {
+        files.forEach(file => {
+        // console.log('filename-->', file);
+        });
+    });
+}
 router.post('/', (req, res) => {
     let data = JSON.stringify(req.body.jsonData);
     let parseData = JSON.parse(data);
@@ -31,6 +39,8 @@ router.post('/', (req, res) => {
                     res.send('File already exists');                    
                 } else {
                     writeFile(dirname, filename, parseData);
+                    res.send('File created sucessfully');                    
+                    readDirectory();
                 }
             });
         }else{
@@ -39,14 +49,14 @@ router.post('/', (req, res) => {
                     // console.log('failed to create directory');
                     return console.error(err);
                 }else{
-                    // console.log('Directory created successfully');
                     res.send('Directory created successfully');
                     fs.exists(`../outputjson/${dirname}/${filename}.json`, function(fileexists) {
-                        // console.log("file exists ? " + fileexists);
                         if(fileexists){
                             res.send('File already exists');                    
                         } else {
                             writeFile(dirname, filename, parseData);
+                            res.send('File created sucessfully');                    
+                            readDirectory();
                         }
                     });
                 }
