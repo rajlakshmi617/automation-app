@@ -74,7 +74,7 @@ export class FileService {
     // Build the tree nodes from Json object. The result is a list of `FileNode` with nested
     // file node as children.
     const data = this.buildFileTree(JSON.parse(dataObject), 0);
-
+    console.log('treedata', treedata, 'stringyData', stringyData, 'dataObject',dataObject, 'data', data);
     // Notify the change.
     this.dataChange.next(data);
   }
@@ -98,13 +98,5 @@ export class FileService {
 
       return accumulator.concat(node);
     }, []);
-  }
-
-  /** Add an item to to-do list */
-  insertItem(parent: FileNode, name: string, value: string) {
-    if (parent.children) {
-      parent.children.push({filename: name, type: value} as FileNode);
-      this.dataChange.next(this.data);
-    }
   }
 }

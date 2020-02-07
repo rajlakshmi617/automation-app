@@ -65,7 +65,7 @@
             <div class="clearfix"></div>
             <div class="row">
                 <div class="col-md-12" class="btnwrapper">
-                    <button mat-raised-button color="primary"  class="generatebtn" (click)="renderjson()">Render Input JSON</button>
+                    <button mat-raised-button color="primary" [disabled]="!(AutomationForm.valid && (fileName != null || uploadFileCheck))" class="generatebtn" (click)="renderjson()">Render Input JSON</button>
                 </div>
             </div>
         </form>
@@ -83,6 +83,9 @@
         <div class="row">
             <div class="col-md-7">
                 <div class="treecontainer">
+                    <button mat-icon-button aria-label="add icon-button" (click)="addNode('parentnode', nestedDataSource.data)">
+                        <mat-icon>add</mat-icon>
+                    </button>
                     <mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl" class="example-tree">
                         <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
                             <li class="mat-tree-node">
@@ -100,7 +103,7 @@
                                     {{option}}
                                     </mat-option>
                                 </mat-autocomplete>
-                                </mat-form-field>
+                            </mat-form-field>
                             <mat-form-field appearance="outline" class="textTree">
                                 <input matInput placeholder="{{optionType=='string'? 'String Length' : 'Max Value'}}">
                             </mat-form-field>
@@ -108,7 +111,7 @@
                             <button mat-icon-button aria-label="clear icon-button" (click)="deleteNode(node, nestedDataSource.data)">
                                     <mat-icon>clear</mat-icon>
                             </button>
-                            <button mat-icon-button aria-label="clear icon-button" (click)="addNode(node, nestedDataSource.data)">
+                            <button mat-icon-button aria-label="add icon-button" (click)="addNode(node, nestedDataSource.data)">
                                 <mat-icon>add</mat-icon>
                             </button>
                             </li>
@@ -125,10 +128,30 @@
                                 </button>
                                 <mat-form-field appearance="outline" class="textTree">
                                     <input  matInput type="text" name="file" value="{{node.filename}}"/>
-                                </mat-form-field>  
-                                <button mat-icon-button aria-label="clear icon-button" (click)="addNode(node, nestedDataSource.data)">
+                                </mat-form-field>
+                                <ng-container *ngIf="node.type">
+                                    <mat-form-field appearance="outline" class="textTree">
+                                        <input matInput placeholder="Placeholder" value="{{node.type}}" [(ngModel)]="node.type">
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" class="textTree">
+                                        <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
+                                        <mat-autocomplete #auto="matAutocomplete">
+                                            <mat-option *ngFor="let option of dataTypeFilterOptions | async" [value]="option">
+                                            {{option}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" class="textTree">
+                                        <input matInput placeholder="{{optionType=='string'? 'String Length' : 'Max Value'}}">
+                                    </mat-form-field>
+                                    <button mat-stroked-button color="primary">Primary</button>
+                                </ng-container>
+                                <button mat-icon-button aria-label="clear icon-button" (click)="deleteNode(node, nestedDataSource.data)">
+                                    <mat-icon>clear</mat-icon>
+                                </button>  
+                                <button mat-icon-button aria-label="add icon-button" (click)="addNode(node, nestedDataSource.data)">
                                     <mat-icon>add</mat-icon>
-                                </button>              
+                                </button>                                                                           
                             </div>
                             <ul [class.example-tree-invisible]="!nestedTreeControl.isExpanded(node)">
                                 <ng-container matTreeNodeOutlet></ng-container>

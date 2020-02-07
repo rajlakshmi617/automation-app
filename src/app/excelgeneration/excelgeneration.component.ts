@@ -85,7 +85,7 @@ export class ExcelgenerationComponent{
     this.nestedDataSource = new MatTreeNestedDataSource();
     this.service.dataChange.subscribe(data => this.nestedDataSource.data = data);
   }
-  hasNestedChild = (_: number, nodeData: FileNode) => !nodeData.type;
+  hasNestedChild = (_: number, nodeData: FileNode) => nodeData.children && nodeData.children.length > 0;
   private _getChildren = (node: FileNode) => node.children;
 
   /**
@@ -255,17 +255,41 @@ export class ExcelgenerationComponent{
         {
           this.deleteNode(node, n['children'])    //to traverse deep in the tree
           n['children'] = n['children'].filter(n => n.filename != node.filename) 
+          return;
         }
       }
     });
+    console.log(dataSource);
     this.service.dataChange.next(dataSource)
   }
 
-   /** Select the category so we can insert the new item. */
-   addNewItem(node: FileNode) {
-    const parentNode = this.flatNodeMap.get(node);
-    this.service.insertItem(parentNode!, '', '');
-    this.nestedTreeControl.expand(node);
+  /**
+   * function to insert the new item in the selected node
+   * @param node //selected node
+   * @param dataSource // Tree data
+   */  
+   addNode(node, dataSource) {    
+    if(node == 'parentnode'){
+      dataSource.push(new FileNode())
+    } else {
+      dataSource.map((n) => {              
+        if (n !== null && typeof(n)=="object" )
+        {           
+          if(n.filename == node.filename){
+            if(!n.hasOwnProperty('children')){
+              n.children = [];
+            }                      
+            n['children'].push(new FileNode());   
+            return;         
+          } else if(Array.isArray(n['children'])){
+            this.addNode(node, n['children'])     //to traverse deep in the tree
+          }           
+        }        
+      });
+    }
+    
+    this.service.dataChange.next(dataSource)    //updating tree dada
+    this.nestedTreeControl.expand(node);        //expanding tree node where new node is added
   }
 }
 
