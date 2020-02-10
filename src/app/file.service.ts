@@ -10,6 +10,7 @@ export class FileNode{
   children: FileNode[];
   filename: string;
   type: any;
+  level:any;
 }
 
  /**
@@ -74,7 +75,6 @@ export class FileService {
     // Build the tree nodes from Json object. The result is a list of `FileNode` with nested
     // file node as children.
     const data = this.buildFileTree(JSON.parse(dataObject), 0);
-    console.log('treedata', treedata, 'stringyData', stringyData, 'dataObject',dataObject, 'data', data);
     // Notify the change.
     this.dataChange.next(data);
   }
@@ -87,6 +87,7 @@ export class FileService {
       const value = obj[key];
       const node = new FileNode();
       node.filename = key;
+      node.level = level;
 
       if (value != null) {
         if (typeof value === 'object') {
@@ -95,7 +96,6 @@ export class FileService {
           node.type = value;
         }
       }
-
       return accumulator.concat(node);
     }, []);
   }
