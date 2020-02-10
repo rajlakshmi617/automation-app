@@ -85,7 +85,7 @@ export class ExcelgenerationComponent{
   public showContainer = true;
   dirname: string;
   filename: string;
-  durationInSeconds = 5;
+  durationInSeconds = 3;
 
   options = new JsonEditorOptions();
   
