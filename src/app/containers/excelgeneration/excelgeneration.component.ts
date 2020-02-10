@@ -5,12 +5,12 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {BehaviorSubject, Observable, from} from 'rxjs';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
-import { SnackBarComponent } from '../shared/component/snack-bar.component';
+import { SnackBarComponent } from '../../shared/component/snack-bar/snack-bar.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import {map, startWith} from 'rxjs/operators';
-import {FileService} from '../file.service';
-import { DialogOverviewExampleDialog } from '../shared/component/dialoge-overview-example-dialoge.component';
+import {FileService} from '../../shared/services/file-service/file.service';
+import { DialogOverviewExampleDialog } from '../../shared/component/mat-dialoge/dialoge-overview-example-dialoge.component';
 import { stringify } from 'querystring';
 /**
  * Json node data with nested structure. Each node has a filename and a value or a list of children

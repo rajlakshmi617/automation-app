@@ -1,8 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {FileService} from '../../file.service';
+import {FileService} from '../../services/file-service/file.service';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import { SnackBarComponent } from '../component/snack-bar.component';
+import { SnackBarComponent } from '../snack-bar/snack-bar.component';
 
 
 /**
@@ -18,7 +18,7 @@ export interface DialogData {
  */
 @Component({
     selector: 'dialog-overview-example-dialog',
-    templateUrl: '../component/dialog-overview-example-dialog.html',
+    templateUrl: 'dialog-overview-example-dialog.html',
     providers: [FileService]
   })
   export class DialogOverviewExampleDialog implements OnInit {

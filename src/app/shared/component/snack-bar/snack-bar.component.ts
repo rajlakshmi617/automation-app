@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FileService } from '../../file.service';
+import { FileService } from '../../services/file-service/file.service';
 import { MatSnackBarRef, MAT_SNACK_BAR_DATA } from '@angular/material';
 
 

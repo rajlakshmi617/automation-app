@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { FieldvalidationComponent } from '../app/fieldvalidation/fieldvalidation.component';
-import { ExcelgenerationComponent } from '../app/excelgeneration/excelgeneration.component';
+import { FieldvalidationComponent } from './containers/fieldvalidation/fieldvalidation.component';
+import { ExcelgenerationComponent } from './containers/excelgeneration/excelgeneration.component';
 
 
 const routes: Routes = [
