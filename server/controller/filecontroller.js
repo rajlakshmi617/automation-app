@@ -36,10 +36,12 @@ router.post('/', (req, res) => {
             fs.exists(`../outputjson/${dirname}/${filename}.json`, function(fileexists) {
                 console.log("file exists ? " + fileexists);
                 if(fileexists){
-                    res.send('File already exists');                    
+                    res.send('File already exists'); 
+                    // res.status(403).send('Forbidden');               
                 } else {
                     writeFile(dirname, filename, parseData);
-                    res.send('File created sucessfully');                    
+                    res.send('File created sucessfully');    
+                    res.sendStatus(200);                   
                     readDirectory();
                 }
             });
@@ -52,10 +54,12 @@ router.post('/', (req, res) => {
                     res.send('Directory created successfully');
                     fs.exists(`../outputjson/${dirname}/${filename}.json`, function(fileexists) {
                         if(fileexists){
-                            res.send('File already exists');                    
+                            res.send('File already exists');         
+                            // res.sendStatus(409);                   
                         } else {
                             writeFile(dirname, filename, parseData);
-                            res.send('File created sucessfully');                    
+                            res.send('File created sucessfully');     
+                            res.sendStatus(200);                   
                             readDirectory();
                         }
                     });

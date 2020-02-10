@@ -36,14 +36,15 @@ export class FileService {
   constructor(private http: HttpClient) { 
     this.myMethod$ = this.myMethodSubject.asObservable();
   }
-  myMethod(data) {
+  myMethod(data, mode) {
     // I have data! Let's return it so subscribers can use it!
     // we can do stuff with data if we want
     this.myMethodSubject.next(data);
-    this.initialize(data);
+    this.initialize(data, mode);
   }
   changeMessage(message: string) {
-    this.messageSource.next(message)
+    console.log('inside change message', message);
+    this.messageSource.next(message);
   }
   generateJsonFile(jsondata, dirName, fileName){
     // let modifiedData = JSON.parse(JSON.parse(JSON.stringify(jsondata)));
@@ -54,17 +55,18 @@ export class FileService {
       "dirName": dirName,
       "fileName": fileName
     }
+    return this.http.post(this.baseURL, fileDTO, {responseType: 'text'});
 
-    return this.http.post(this.baseURL, fileDTO, {responseType: 'text'}).subscribe({
-      next(res) {
-        console.log('Current Position: ', res);
-        this.message = res;
-      },
-      error(msg) {
-        console.log('Error Getting Location: ', msg);
-        this.message = msg;
-      }
-    });
+    // return this.http.post(this.baseURL, fileDTO, {responseType: 'text'}).subscribe({
+    //   next(res) {
+    //     console.log('Current Position: ', res);
+    //     this.message = res;
+    //   },
+    //   error(msg) {
+    //     console.log('Error Getting Location: ', msg);
+    //     this.message = msg;
+    //   }
+    // });
     // return this.http.post(this.baseURL + 'generate', student).subscribe(res=> console.log('res', res));
   }
   createDirectory(){
@@ -72,13 +74,19 @@ export class FileService {
     const dirname = "test";
     return this.http.post(this.baseURL + 'createdir', dirname).subscribe(res => console.log('dir res', res));
   }
-  initialize(treedata){
+  initialize(treedata, mode){
     // Parse the string to json object.
     const stringyData = JSON.stringify(treedata);
     const dataObject = JSON.parse(stringyData);
     // Build the tree nodes from Json object. The result is a list of `FileNode` with nested
     // file node as children.
-    const data = this.buildFileTree(JSON.parse(dataObject), 0);
+    var data;
+    if(mode == 'tree'){
+       data = this.buildFileTree(JSON.parse(dataObject), 0);
+    }else if(mode == 'editor'){
+       data = this.buildFileTree(treedata, 0);
+    }
+    
 
     // Notify the change.
     this.dataChange.next(data);

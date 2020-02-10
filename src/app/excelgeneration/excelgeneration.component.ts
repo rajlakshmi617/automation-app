@@ -1,13 +1,16 @@
-import { Component, Inject, Injectable, ViewChild, ElementRef } from '@angular/core';
+import { Component, Inject, Injectable, ViewChild, ElementRef, OnInit } from '@angular/core';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {BehaviorSubject, Observable, from} from 'rxjs';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
-import { SnackBarComponent } from '../shared/component/snack-bar-component';
+import { SnackBarComponent } from '../shared/component/snack-bar.component';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import {map, startWith} from 'rxjs/operators';
 import {FileService} from '../file.service';
+import { DialogOverviewExampleDialog } from '../shared/component/dialoge-overview-example-dialoge.component';
 /**
  * Json node data with nested structure. Each node has a filename and a value or a list of children
  */
@@ -34,17 +37,18 @@ export interface DialogData {
 })
 export class ExcelgenerationComponent{
   @ViewChild('fileUploader', null) fileUploader:ElementRef;
+  @ViewChild(JsonEditorComponent, null) editor: JsonEditorComponent;
   AutomationForm :  FormGroup;
   myControl = new FormControl();
   
-  options : string[] =['one', 'two', 'three'];
+  option : string[] =['one', 'two', 'three'];
   requestType: string[] = ['GET', 'POST', 'PUT', 'DELETE'];
   expectedResponseCode: string[] = ['200', '204', '404', '500'];
   dataTypeOptions : string[] = ['String', 'Numeric'];
   dataTypeFilterOptions: Observable<string[]>;
   requestTypeFilteredOptions: Observable<string[]>;   
   responseTypeFilterOptions : Observable<string[]>;
-  
+  message:string;
   public panelOpenState = true;
   /**
    * steps for expand and collapse collasable area
@@ -54,12 +58,18 @@ export class ExcelgenerationComponent{
     this.step = index;
   }
 
-  public data:any;
+  public dataa:any;
+  public data : any;
   public fileName: string;
   public endPointURL : string;
   public testDescription : string;
   public requestTypeControl : any;
   public responseCodeControl : any;
+  public color = 'accent';
+  public checked = false;
+  public disabled = false;
+  public jsonData :any;
+  public changedData : any = [];
 
   uploadFilePath : string;
   nestedTreeControl: NestedTreeControl<FileNode>;
@@ -72,7 +82,12 @@ export class ExcelgenerationComponent{
   public showContainer = true;
   dirname: string;
   filename: string;
-  constructor(private service:FileService, private fb : FormBuilder, public dialog: MatDialog) { 
+  durationInSeconds = 3000;
+
+  options = new JsonEditorOptions();
+  
+
+  constructor(private service:FileService, private fb : FormBuilder, public dialog: MatDialog, private _snackBar: MatSnackBar) { 
 
     this.AutomationForm = this.fb.group({
       endPointURL : ["", Validators.required],
@@ -81,12 +96,20 @@ export class ExcelgenerationComponent{
       responseCodeControl : ["", Validators.required]
     });
 
+    //json editor code
+    this.options.mode = 'code';
+    this.options.modes = ['code', 'text', 'tree', 'view'];
+    this.options.statusBar = false;
+    this.options.onChange = () => {
+      this.changedData = this.editor.get();
+    }
+
     this.nestedTreeControl = new NestedTreeControl<FileNode>
     (this._getChildren);
     this.nestedDataSource = new MatTreeNestedDataSource();
     this.service.dataChange.subscribe(data => this.nestedDataSource.data = data);
   }
-  hasNestedChild = (_: number, nodeData: FileNode) => !nodeData.type;
+  hasNestedChild = (_: number, nodeData: FileNode) => nodeData.children && nodeData.children.length > 0;
   private _getChildren = (node: FileNode) => node.children;
 
   /**
@@ -103,7 +126,8 @@ export class ExcelgenerationComponent{
     } else {
       const reader = new FileReader();
       reader.onloadend = (e) => {
-        this.data = reader.result.toString();
+        this.jsonData = reader.result;
+        this.dataa = reader.result.toString();      
       };
       reader.readAsText(event.target.files[0]);
     }
@@ -134,7 +158,8 @@ export class ExcelgenerationComponent{
           this.fileName = file.name;
           const reader = new FileReader();
           reader.onloadend = (e) => {
-            this.data = reader.result.toString();
+            this.jsonData = reader.result;
+            this.dataa = reader.result.toString();
           };
           reader.readAsText(ev.dataTransfer.files[0]);
         }
@@ -161,7 +186,7 @@ export class ExcelgenerationComponent{
    */
   renderjson(){
     this.showContainer = false;
-    this.service.myMethod(this.data);
+    this.service.myMethod(this.dataa, 'tree');
     this.step = 1;
     var AutoTestFormData ={
       "endPointURL" : this.AutomationForm.value.endPointURL,
@@ -170,7 +195,6 @@ export class ExcelgenerationComponent{
       "responseCodeControl" : this.AutomationForm.value.responseCodeControl,
       "path" : this.uploadFilePath
     };
-    // console.log(AutoTestFormData);
   }
 
   /**
@@ -179,16 +203,10 @@ export class ExcelgenerationComponent{
    * @param fileName 
    */
   exportJsonFile(dirName, fileName){
-    console.log('this.data', this.data);
-    console.log('this.nestedDataSource.data', this.nestedDataSource.data);
-    const mockData = {
-        Applications: {
-          Calender: 'app1',
-          Chrome: 'app1',
-          Webstrom: 'app1'
-        },
-    }
-    this.service.generateJsonFile(mockData, dirName, fileName);
+    this.service.generateJsonFile(this.nestedDataSource.data, dirName, fileName).subscribe(res=> {
+      this.openSnackBar(res);
+    })
+    this.service.changeMessage("Hello from Sibling")
   }
 
   /**
@@ -196,6 +214,23 @@ export class ExcelgenerationComponent{
    */
   createFolder(){
     this.service.createDirectory();
+  }
+
+  /**
+   * Change the div edit to editor
+   */
+  changed(){
+    this.data = JSON.parse(this.dataa);
+    if(this.changedData.length != 0){
+      this.service.myMethod(this.changedData, 'editor');
+    }    
+  }
+  
+  openSnackBar(message){
+    this._snackBar.openFromComponent(SnackBarComponent, {
+      duration: this.durationInSeconds * 1000,
+      data: message,
+    });
   }
 
   ngOnInit() {
@@ -261,42 +296,48 @@ export class ExcelgenerationComponent{
     dataSource = dataSource.filter(n => n.filename != node.filename)
     dataSource.map((n) => {
       if(n.hasOwnProperty('children')){
-        console.log('traverse', n['children']);
         if (n !== null && typeof(n)=="object" )
         {
-          // console.log(n)
-          this.deleteNode(node, n['children'])
+          this.deleteNode(node, n['children'])    //to traverse deep in the tree
           n['children'] = n['children'].filter(n => n.filename != node.filename) 
+          return;
         }
       }
     });
-    // console.log(dataSource)
+    // console.log(dataSource);
     this.service.dataChange.next(dataSource)
   }
+
+  /**
+   * function to insert the new item in the selected node
+   * @param node //selected node
+   * @param dataSource // Tree data
+   */  
+   addNode(node, dataSource) {    
+    if(node == 'parentnode'){
+      dataSource.push(new FileNode())
+    } else {
+      dataSource.map((n) => {              
+        if (n !== null && typeof(n)=="object" )
+        {           
+          if(n.filename == node.filename){
+            if(!n.hasOwnProperty('children')){
+              n.children = [];
+            }                      
+            n['children'].push(new FileNode());   
+            return;         
+          } else if(Array.isArray(n['children'])){
+            this.addNode(node, n['children'])     //to traverse deep in the tree
+          }           
+        }        
+      });
+    }
+    
+    this.service.dataChange.next(dataSource)    //updating tree dada
+    this.nestedTreeControl.expand(node);        //expanding tree node where new node is added
+  }
 }
 
-/**
- * Component for dialog overview that help to open model popup
- */
-@Component({
-  selector: 'dialog-overview-example-dialog',
-  templateUrl: '../shared/component/dialog-overview-example-dialog.html',
-})
-export class DialogOverviewExampleDialog {
-  durationInSeconds = 3;
-  constructor(
-    public dialogRef: MatDialogRef<DialogOverviewExampleDialog>, private _snackBar: MatSnackBar,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
 
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-  openSnackBar(){
-    this._snackBar.openFromComponent(SnackBarComponent, {
-      duration: this.durationInSeconds * 1000,
-    });
-  }
-
-}
 
 
