@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -8,7 +8,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { FieldvalidationComponent } from './fieldvalidation/fieldvalidation.component';
 import {MatMenuModule,MatInputModule, MatButtonModule, MatSelectModule, MatIconModule, MatToolbarModule,
   MatTabsModule, MatButtonToggleModule, MatTreeModule, MatAutocompleteModule, MatExpansionModule,
-  MatDialogModule } from '@angular/material';
+  MatDialogModule, MatSlideToggleModule } from '@angular/material';
 import { ExcelgenerationComponent, DialogOverviewExampleDialog } from './excelgeneration/excelgeneration.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
@@ -26,6 +26,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
+    NgJsonEditorModule,
     MatMenuModule,
     MatInputModule,
     MatButtonModule,
@@ -37,7 +38,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     MatTreeModule,
     MatAutocompleteModule,
     MatExpansionModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSlideToggleModule
   ],
   entryComponents: [DialogOverviewExampleDialog],
   providers: [],

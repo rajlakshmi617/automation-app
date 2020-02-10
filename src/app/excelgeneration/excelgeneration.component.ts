@@ -4,7 +4,8 @@ import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
-
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import {map, startWith} from 'rxjs/operators';
 import {FileService} from '../file.service';
 import { stringify } from 'querystring';
@@ -35,10 +36,11 @@ export interface DialogData {
 })
 export class ExcelgenerationComponent{
   @ViewChild('fileUploader', null) fileUploader:ElementRef;
+  @ViewChild(JsonEditorComponent, null) editor: JsonEditorComponent;
   AutomationForm :  FormGroup;
   myControl = new FormControl();
   
-  options : string[] =['one', 'two', 'three'];
+  option : string[] =['one', 'two', 'three'];
   requestType: string[] = ['GET', 'POST', 'PUT', 'DELETE'];
   expectedResponseCode: string[] = ['200', '204', '404', '500'];
   dataTypeOptions : string[] = ['String', 'Numeric'];
@@ -51,17 +53,23 @@ export class ExcelgenerationComponent{
    * steps for expand and collapse collasable area
    */
   step = 0;
+  convertedData: any;
   setStep(index: number) {
     this.step = index;
   }
 
-  public data:any;
-  public convertedData: any;
+  public dataa:any;
+  public data : any;
   public fileName: string;
   public endPointURL : string;
   public testDescription : string;
   public requestTypeControl : any;
   public responseCodeControl : any;
+  public color = 'accent';
+  public checked = false;
+  public disabled = false;
+  public jsonData :any;
+  public changedData : any = [];
 
   uploadFilePath : string;
   nestedTreeControl: NestedTreeControl<FileNode>;
@@ -74,6 +82,10 @@ export class ExcelgenerationComponent{
   public showContainer = true;
   dirname: string;
   filename: string;
+
+  options = new JsonEditorOptions();
+  
+
   constructor(private service:FileService, private fb : FormBuilder, public dialog: MatDialog) { 
 
     this.AutomationForm = this.fb.group({
@@ -82,6 +94,14 @@ export class ExcelgenerationComponent{
       requestTypeControl : ["", Validators.required],
       responseCodeControl : ["", Validators.required]
     });
+
+    //json editor code
+    this.options.mode = 'code';
+    this.options.modes = ['code', 'text', 'tree', 'view'];
+    this.options.statusBar = false;
+    this.options.onChange = () => {
+      this.changedData = this.editor.get();
+    }
 
     this.nestedTreeControl = new NestedTreeControl<FileNode>
     (this._getChildren);
@@ -105,7 +125,8 @@ export class ExcelgenerationComponent{
     } else {
       const reader = new FileReader();
       reader.onloadend = (e) => {
-        this.data = reader.result.toString();
+        this.jsonData = reader.result;
+        this.dataa = reader.result.toString();      
       };
       reader.readAsText(event.target.files[0]);
     }
@@ -136,7 +157,8 @@ export class ExcelgenerationComponent{
           this.fileName = file.name;
           const reader = new FileReader();
           reader.onloadend = (e) => {
-            this.data = reader.result.toString();
+            this.jsonData = reader.result;
+            this.dataa = reader.result.toString();
           };
           reader.readAsText(ev.dataTransfer.files[0]);
         }
@@ -163,7 +185,7 @@ export class ExcelgenerationComponent{
    */
   renderjson(){
     this.showContainer = false;
-    this.service.myMethod(this.data);
+    this.service.myMethod(this.dataa, 'tree');
     this.step = 1;
     var AutoTestFormData ={
       "endPointURL" : this.AutomationForm.value.endPointURL,
@@ -172,7 +194,6 @@ export class ExcelgenerationComponent{
       "responseCodeControl" : this.AutomationForm.value.responseCodeControl,
       "path" : this.uploadFilePath
     };
-    // console.log(AutoTestFormData);
   }
 
   /**
@@ -190,6 +211,17 @@ export class ExcelgenerationComponent{
   createFolder(){
     this.service.createDirectory();
   }
+
+  /**
+   * Change the div edit to editor
+   */
+  changed(){
+    this.data = JSON.parse(this.dataa);
+    if(this.changedData.length != 0){
+      this.service.myMethod(this.changedData, 'editor');
+    }    
+  }
+  
 
   ngOnInit() {
     this.uploadFileFlag =false;
@@ -229,10 +261,8 @@ export class ExcelgenerationComponent{
     console.log('to generate keys');
   }
 
-  generateJson(data){
-    console.log(data);     
-    let tree = this.arrayToJson(data);
-    console.log("{"+tree+"}");  
+  generateJson(data){ 
+    let tree = this.arrayToJson(data);  
     this.convertedData =  "{"+tree+"}";
   }
 
@@ -249,7 +279,7 @@ export class ExcelgenerationComponent{
           n = '"'+e.filename+'"'+" : "+'"'+e.type+'"';
         }
       }
-      console.log(n)
+      //console.log(n)
       return n;
     });
     return tree;

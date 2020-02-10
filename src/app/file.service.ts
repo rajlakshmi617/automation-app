@@ -33,48 +33,43 @@ export class FileService {
   constructor(private http: HttpClient) { 
     this.myMethod$ = this.myMethodSubject.asObservable();
   }
-  myMethod(data) {
+  myMethod(data, mode) {
     // I have data! Let's return it so subscribers can use it!
     // we can do stuff with data if we want
     this.myMethodSubject.next(data);
-    this.initialize(data);
+    this.initialize(data, mode);
   }
   generateJsonFile(jsondata, dirName, fileName){
-    let modifiedData = JSON.parse(JSON.parse(JSON.stringify(jsondata)));
+    let modifiedData = jsondata;
+    //console.log(modifiedData)
     let fileDTO = {
       "jsonData": modifiedData,
       "dirName": dirName,
       "fileName": fileName
     }
-    // let student = { 
-    // name: 'Mike',
-    // age: 23, 
-    // gender: 'Male',
-    // department: 'English',
-    // car: 'Honda' 
-    // };
-    // let studentdata = JSON.stringify(student);
+    
     return this.http.post(this.baseURL, fileDTO).subscribe(res=> {
       console.log('response of fileservice', res);
     });
     // return this.http.post(this.baseURL + 'generate', student).subscribe(res=> console.log('res', res));
   }
   createDirectory(){
-    console.log('inside create dir');
     const dirname = "test";
     return this.http.post(this.baseURL + 'createdir', dirname).subscribe(res => console.log('dir res', res));
   }
-  /**
-   * 
-   * @param treedata 
-   */
-  initialize(treedata){
+  initialize(treedata, mode){
     // Parse the string to json object.
     const stringyData = JSON.stringify(treedata);
     const dataObject = JSON.parse(stringyData);
     // Build the tree nodes from Json object. The result is a list of `FileNode` with nested
     // file node as children.
-    const data = this.buildFileTree(JSON.parse(dataObject), 0);
+    var data;
+    if(mode == 'tree'){
+       data = this.buildFileTree(JSON.parse(dataObject), 0);
+    }else if(mode == 'editor'){
+       data = this.buildFileTree(treedata, 0);
+    }    
+
     // Notify the change.
     this.dataChange.next(data);
   }

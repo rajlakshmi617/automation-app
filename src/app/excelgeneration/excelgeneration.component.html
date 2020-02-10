@@ -83,7 +83,19 @@
         </mat-expansion-panel-header>
         <div class="row">
             <div class="col-md-7">
+                    <section class="toggle-section">
+                            <mat-slide-toggle
+                                class="toggle-margin"
+                                [color]="color"
+                                [(ngModel)]="checked"
+                                (change)="changed()">
+
+                              <span *ngIf="!checked">Tree View</span>
+                              <span *ngIf="checked">Editor View</span>
+                            </mat-slide-toggle>
+                          </section>
                 <div class="treecontainer">
+                        <ng-container *ngIf="!checked">
                     <button mat-icon-button aria-label="add icon-button" (click)="addNode('parentnode', nestedDataSource.data)">
                         <mat-icon>add</mat-icon>
                     </button>
@@ -128,7 +140,7 @@
                                 </mat-icon>
                                 </button>
                                 <mat-form-field appearance="outline" class="textTree">
-                                    <input  matInput type="text" name="file" value="{{node.filename}}"/>
+                                    <input  matInput type="text" name="file" value="{{node.filename}}" [(ngModel)]="node.filename"/>
                                 </mat-form-field>
                                 <ng-container *ngIf="node.type">
                                     <mat-form-field appearance="outline" class="textTree">
@@ -160,17 +172,18 @@
                             </li>
                         </mat-nested-tree-node>
                     </mat-tree>   
+                    </ng-container>
+                    <ng-container *ngIf = "checked">
+                            <json-editor [options]="options" [data]="data" ></json-editor>
+                    </ng-container>
                 </div>
             </div>
             <div class="col-md-1">
                 <div class="row placebtn">
-                    <button mat-raised-button color="primary" (click)="openDialog()">Save</button>
+                    <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data);openDialog()">Save</button>
                 </div>
                 <div class="row placebtn">
                     <button mat-raised-button color="primary">Test</button>                    
-                </div>
-                <div class="row placebtn">
-                    <button mat-raised-button color="primary" class="generateJsonBtn" (click)="generateJson(nestedDataSource.data)">Generate JSON</button>
                 </div>
             </div>
             <div class="col-md-4">
