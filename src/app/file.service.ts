@@ -10,6 +10,7 @@ export class FileNode{
   children: FileNode[];
   filename: string;
   type: any;
+  level:any;
 }
 
  /**
@@ -40,26 +41,19 @@ export class FileService {
   }
   generateJsonFile(jsondata, dirName, fileName){
     let modifiedData = jsondata;
+    //console.log(modifiedData)
     let fileDTO = {
       "jsonData": modifiedData,
       "dirName": dirName,
       "fileName": fileName
     }
-    // let student = { 
-    // name: 'Mike',
-    // age: 23, 
-    // gender: 'Male',
-    // department: 'English',
-    // car: 'Honda' 
-    // };
-    // let studentdata = JSON.stringify(student);
+    
     return this.http.post(this.baseURL, fileDTO).subscribe(res=> {
       console.log('response of fileservice', res);
     });
     // return this.http.post(this.baseURL + 'generate', student).subscribe(res=> console.log('res', res));
   }
   createDirectory(){
-    console.log('inside create dir');
     const dirname = "test";
     return this.http.post(this.baseURL + 'createdir', dirname).subscribe(res => console.log('dir res', res));
   }
@@ -74,8 +68,7 @@ export class FileService {
        data = this.buildFileTree(JSON.parse(dataObject), 0);
     }else if(mode == 'editor'){
        data = this.buildFileTree(treedata, 0);
-    }
-    
+    }    
 
     // Notify the change.
     this.dataChange.next(data);
@@ -89,6 +82,7 @@ export class FileService {
       const value = obj[key];
       const node = new FileNode();
       node.filename = key;
+      node.level = level;
 
       if (value != null) {
         if (typeof value === 'object') {
@@ -97,7 +91,6 @@ export class FileService {
           node.type = value;
         }
       }
-
       return accumulator.concat(node);
     }, []);
   }

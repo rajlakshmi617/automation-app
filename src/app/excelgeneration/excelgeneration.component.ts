@@ -8,6 +8,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import {map, startWith} from 'rxjs/operators';
 import {FileService} from '../file.service';
+import { stringify } from 'querystring';
 /**
  * Json node data with nested structure. Each node has a filename and a value or a list of children
  */
@@ -16,6 +17,7 @@ import {FileService} from '../file.service';
     children: FileNode[];
     filename: string;
     type: any;
+    level:any
  }
 
 /**
@@ -51,6 +53,7 @@ export class ExcelgenerationComponent{
    * steps for expand and collapse collasable area
    */
   step = 0;
+  convertedData: any;
   setStep(index: number) {
     this.step = index;
   }
@@ -199,7 +202,7 @@ export class ExcelgenerationComponent{
    * @param fileName 
    */
   exportJsonFile(dirName, fileName){
-    this.service.generateJsonFile(this.nestedDataSource.data, dirName, fileName);
+    this.service.generateJsonFile(this.convertedData, dirName, fileName);
   }
 
   /**
@@ -259,6 +262,30 @@ export class ExcelgenerationComponent{
   
   generateKey(){
     console.log('to generate keys');
+  }
+
+  generateJson(data){ 
+    let tree = this.arrayToJson(data);  
+    this.convertedData =  "{"+tree+"}";
+  }
+
+  public arrayToJson(array) {
+    let tree="";
+    tree += array.map(e => {
+      let n;
+      if(e.children && e.children.length > 0){
+        n = '"'+e.filename+'"'+" : {";
+        n+=this.arrayToJson(e['children'])
+        n+="}";
+      }else{
+        if(e.type){
+          n = '"'+e.filename+'"'+" : "+'"'+e.type+'"';
+        }
+      }
+      //console.log(n)
+      return n;
+    });
+    return tree;
   }
 
   /**
