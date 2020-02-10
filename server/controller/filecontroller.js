@@ -9,7 +9,7 @@ const fs = require('fs');
  * @param {*} parseData 
  */
 function writeFile(dirname, filename, parseData){
-    fs.writeFileSync(`../outputjson/${dirname}/${filename}.json`, JSON.stringify(parseData), (err) => {
+    fs.writeFileSync(`../outputjson/${dirname}/${filename}.json`, parseData, (err) => {
         if (err){
             res.send(err);
         }
@@ -41,7 +41,7 @@ router.post('/', (req, res) => {
                 } else {
                     writeFile(dirname, filename, parseData);
                     res.send('File created sucessfully');    
-                    res.sendStatus(200);                   
+                    // res.sendStatus(200);                   
                     readDirectory();
                 }
             });
@@ -59,7 +59,7 @@ router.post('/', (req, res) => {
                         } else {
                             writeFile(dirname, filename, parseData);
                             res.send('File created sucessfully');     
-                            res.sendStatus(200);                   
+                            // res.sendStatus(200);                   
                             readDirectory();
                         }
                     });
