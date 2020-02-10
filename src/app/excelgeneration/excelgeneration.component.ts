@@ -206,11 +206,11 @@ export class ExcelgenerationComponent{
    * @param fileName 
    */
   exportJsonFile(dirName, fileName){
-    this.service.generateJsonFile(this.nestedDataSource.data, dirName, fileName).subscribe(res=> {
+    this.service.generateJsonFile(this.convertedData, dirName, fileName).subscribe(res=> {
       this.openSnackBar(res);
     })
-    this.service.changeMessage("Hello from Sibling")
-    this.service.generateJsonFile(this.convertedData, dirName, fileName);
+    // this.service.changeMessage("Hello from Sibling")
+    // this.service.generateJsonFile(this.convertedData, dirName, fileName);
   }
 
   /**
