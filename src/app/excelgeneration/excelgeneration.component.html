@@ -173,7 +173,7 @@
                     </mat-tree>   
                     </ng-container>
                     <ng-container *ngIf = "checked">
-                            <json-editor [options]="options" [data]="data" ></json-editor>
+                            <json-editor [options]="options" [data]="data" (paste)="onPaste($event)"></json-editor>
                     </ng-container>
                 </div>
             </div>
