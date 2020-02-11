@@ -1,13 +1,16 @@
-import { Component, Inject, Injectable, ViewChild, ElementRef } from '@angular/core';
+import { Component, Inject, Injectable, ViewChild, ElementRef, OnInit } from '@angular/core';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {BehaviorSubject, Observable, from} from 'rxjs';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
+import { SnackBarComponent } from '../../shared/component/snack-bar/snack-bar.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import {map, startWith} from 'rxjs/operators';
-import {FileService} from '../file.service';
+import {FileService} from '../../shared/services/file-service/file.service';
+import { DialogOverviewExampleDialog } from '../../shared/component/mat-dialoge/dialoge-overview-example-dialoge.component';
 import { stringify } from 'querystring';
 /**
  * Json node data with nested structure. Each node has a filename and a value or a list of children
@@ -47,7 +50,7 @@ export class ExcelgenerationComponent{
   dataTypeFilterOptions: Observable<string[]>;
   requestTypeFilteredOptions: Observable<string[]>;   
   responseTypeFilterOptions : Observable<string[]>;
-  
+  message:string;
   public panelOpenState = true;
   /**
    * steps for expand and collapse collasable area
@@ -82,11 +85,12 @@ export class ExcelgenerationComponent{
   public showContainer = true;
   dirname: string;
   filename: string;
+  durationInSeconds = 3;
 
   options = new JsonEditorOptions();
   
 
-  constructor(private service:FileService, private fb : FormBuilder, public dialog: MatDialog) { 
+  constructor(private service:FileService, private fb : FormBuilder, public dialog: MatDialog, private _snackBar: MatSnackBar) { 
 
     this.AutomationForm = this.fb.group({
       endPointURL : ["", Validators.required],
@@ -202,7 +206,11 @@ export class ExcelgenerationComponent{
    * @param fileName 
    */
   exportJsonFile(dirName, fileName){
-    this.service.generateJsonFile(this.convertedData, dirName, fileName);
+    this.service.generateJsonFile(this.convertedData, dirName, fileName).subscribe(res=> {
+      this.openSnackBar(res);
+    })
+    // this.service.changeMessage("Hello from Sibling")
+    // this.service.generateJsonFile(this.convertedData, dirName, fileName);
   }
 
   /**
@@ -225,6 +233,12 @@ export class ExcelgenerationComponent{
     }    
   }
   
+  openSnackBar(message){
+    this._snackBar.openFromComponent(SnackBarComponent, {
+      duration: this.durationInSeconds * 1000,
+      data: message,
+    });
+  }
 
   ngOnInit() {
     this.uploadFileFlag =false;
@@ -321,7 +335,7 @@ export class ExcelgenerationComponent{
         }
       }
     });
-    console.log(dataSource);
+    // console.log(dataSource);
     this.service.dataChange.next(dataSource)
   }
 
@@ -355,21 +369,6 @@ export class ExcelgenerationComponent{
   }
 }
 
-/**
- * Component for dialog overview that help to open model popup
- */
-@Component({
-  selector: 'dialog-overview-example-dialog',
-  templateUrl: '../shared/component/dialog-overview-example-dialog.html',
-})
-export class DialogOverviewExampleDialog {
 
-  constructor(
-    public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
 
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
 
-}

@@ -28,7 +28,11 @@ export class FileService {
   dataChange = new BehaviorSubject<FileNode[]>([]);
   get data(): FileNode[] { return this.dataChange.value; }
   myMethod$: Observable<any>;
+  private messageSource = new BehaviorSubject('default message');
+  currentMessage = this.messageSource.asObservable();
   private myMethodSubject = new Subject<any>();
+  private messageSubject = new Subject<any>();
+
   readonly baseURL = "http://localhost:3000/generate";
   constructor(private http: HttpClient) { 
     this.myMethod$ = this.myMethodSubject.asObservable();
@@ -39,18 +43,30 @@ export class FileService {
     this.myMethodSubject.next(data);
     this.initialize(data, mode);
   }
+  changeMessage(message: string) {
+    console.log('inside change message', message);
+    this.messageSource.next(message);
+  }
   generateJsonFile(jsondata, dirName, fileName){
+    // let modifiedData = JSON.parse(JSON.parse(JSON.stringify(jsondata)));
     let modifiedData = jsondata;
-    //console.log(modifiedData)
     let fileDTO = {
       "jsonData": modifiedData,
       "dirName": dirName,
       "fileName": fileName
     }
-    
-    return this.http.post(this.baseURL, fileDTO).subscribe(res=> {
-      console.log('response of fileservice', res);
-    });
+    return this.http.post(this.baseURL, fileDTO, {responseType: 'text'});
+
+    // return this.http.post(this.baseURL, fileDTO, {responseType: 'text'}).subscribe({
+    //   next(res) {
+    //     console.log('Current Position: ', res);
+    //     this.message = res;
+    //   },
+    //   error(msg) {
+    //     console.log('Error Getting Location: ', msg);
+    //     this.message = msg;
+    //   }
+    // });
     // return this.http.post(this.baseURL + 'generate', student).subscribe(res=> console.log('res', res));
   }
   createDirectory(){

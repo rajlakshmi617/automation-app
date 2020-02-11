@@ -17,6 +17,14 @@ function writeFile(dirname, filename, parseData){
         res.send('file generated successfully');
     });
 }
+function readDirectory(){
+    const testFolder = '../outputjson/test/';
+    fs.readdir(testFolder, (err, files) => {
+        files.forEach(file => {
+        // console.log('filename-->', file);
+        });
+    });
+}
 router.post('/', (req, res) => {
     let data = JSON.stringify(req.body.jsonData);
     let parseData = JSON.parse(data);
@@ -28,9 +36,13 @@ router.post('/', (req, res) => {
             fs.exists(`../outputjson/${dirname}/${filename}.json`, function(fileexists) {
                 console.log("file exists ? " + fileexists);
                 if(fileexists){
-                    res.send('File already exists');                    
+                    res.send('File already exists'); 
+                    // res.status(403).send('Forbidden');               
                 } else {
                     writeFile(dirname, filename, parseData);
+                    res.send('File created sucessfully');    
+                    // res.sendStatus(200);                   
+                    readDirectory();
                 }
             });
         }else{
@@ -39,14 +51,16 @@ router.post('/', (req, res) => {
                     // console.log('failed to create directory');
                     return console.error(err);
                 }else{
-                    // console.log('Directory created successfully');
                     res.send('Directory created successfully');
                     fs.exists(`../outputjson/${dirname}/${filename}.json`, function(fileexists) {
-                        // console.log("file exists ? " + fileexists);
                         if(fileexists){
-                            res.send('File already exists');                    
+                            res.send('File already exists');         
+                            // res.sendStatus(409);                   
                         } else {
                             writeFile(dirname, filename, parseData);
+                            res.send('File created sucessfully');     
+                            // res.sendStatus(200);                   
+                            readDirectory();
                         }
                     });
                 }
