@@ -86,8 +86,11 @@ export class ExcelgenerationComponent{
   filename: string;
   durationInSeconds = 3;
   fileResponse: any;
+  dirResponse: any;
   options = new JsonEditorOptions();
-  
+  toppings = new FormControl();
+  toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
+  fileArrayList: any;
 
   constructor(private service:FileService, private fb : FormBuilder, public dialog: MatDialog, private _snackBar: MatSnackBar) { 
 
@@ -189,6 +192,11 @@ export class ExcelgenerationComponent{
   renderjson(){
     this.showContainer = false;
     this.service.myMethod(this.dataa, 'tree');
+    this.service.readDirectory().subscribe(res => {
+      this.dirResponse = res;
+      // console.log('this.dirResponse', this.dirResponse);
+      this.fileArrayList = this.dirResponse.fileObject;
+    });
     this.step = 1;
     var AutoTestFormData ={
       "endPointURL" : this.AutomationForm.value.endPointURL,
@@ -208,6 +216,10 @@ export class ExcelgenerationComponent{
     this.service.generateJsonFile(this.convertedData, dirName, fileName).subscribe((res)=> {
       this.fileResponse = JSON.parse(res);
       this.openSnackBar(this.fileResponse);
+      this.service.readDirectory().subscribe(res => {
+        this.dirResponse = res;
+        this.fileArrayList = this.dirResponse.fileObject;
+      });
     });
     
   }
@@ -220,7 +232,7 @@ export class ExcelgenerationComponent{
   }
 
   /**
-   * Change the div edit to editor
+   * Method to change tree view to editor view
    */
   changed(){
     this.data = JSON.parse(this.dataa);
@@ -229,6 +241,10 @@ export class ExcelgenerationComponent{
     }    
   }
   
+  /**
+   * Method to open snack bar
+   * @param message 
+   */
   openSnackBar(message){
     this._snackBar.openFromComponent(SnackBarComponent, {
       duration: this.durationInSeconds * 1000,
@@ -270,17 +286,25 @@ export class ExcelgenerationComponent{
     return result.filter(option => option.toLowerCase().includes(filterValue));    
   }
   
+  /**
+   * Method to generate keys
+   */
   generateKey(){
     console.log('to generate keys');
   }
 
+  /**
+   * Method to generate JSON data
+   * @param data 
+   */
   generateJson(data){ 
-    console.log(data)
-    //let tree = this.arrayToJson(data);  
     this.convertedData = "{" + this.arrayToJson(data) + "}";
-    console.log(this.convertedData);
   }
 
+  /**
+   * Method to convert array to JSON
+   * @param array 
+   */
   public arrayToJson(array) {
     let tree="";
     tree += array.map(e => {
@@ -343,7 +367,7 @@ export class ExcelgenerationComponent{
         }
       }
     });
-    console.log(dataSource);
+    // console.log(dataSource);
     this.service.dataChange.next(dataSource)
   }
 

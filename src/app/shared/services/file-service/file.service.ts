@@ -34,6 +34,7 @@ export class FileService {
   private messageSubject = new Subject<any>();
 
   readonly baseURL = "http://localhost:3000/generate";
+  readonly baseURLRead = "http://localhost:3000/read";
   constructor(private http: HttpClient) { 
     this.myMethod$ = this.myMethodSubject.asObservable();
   }
@@ -56,22 +57,14 @@ export class FileService {
       "fileName": fileName
     }
     return this.http.post(this.baseURL, fileDTO, {responseType: 'text'});
-
-    // return this.http.post(this.baseURL, fileDTO, {responseType: 'text'}).subscribe({
-    //   next(res) {
-    //     console.log('Current Position: ', res);
-    //     this.message = res;
-    //   },
-    //   error(msg) {
-    //     console.log('Error Getting Location: ', msg);
-    //     this.message = msg;
-    //   }
-    // });
-    // return this.http.post(this.baseURL + 'generate', student).subscribe(res=> console.log('res', res));
   }
   createDirectory(){
     const dirname = "test";
     return this.http.post(this.baseURL + 'createdir', dirname).subscribe(res => console.log('dir res', res));
+  }
+  readDirectory(){
+    console.log('inside read dir');
+    return this.http.get(this.baseURLRead);
   }
   initialize(treedata, mode){
     // Parse the string to json object.
