@@ -10,16 +10,13 @@
         </mat-expansion-panel-header>
         <div class="container">
                 <form [formGroup] = "AutomationForm" class="example-form" novalidate autocomplete="off">    
-            <div class="row">
-                <div class="col-md-6">
-                    
                         <mat-form-field class="example-full-width">
                             <input matInput placeholder="API Endpoint URL" formControlName = "endPointURL" value="">
                             <mat-error *ngIf="!AutomationForm.controls['endPointURL'].valid && !AutomationForm.controls['endPointURL'].touched"></mat-error>
                         </mat-form-field>
                         <mat-form-field class="example-full-width">
-                            <!-- <input matInput placeholder="Test Description" value=""> -->
-                            <textarea matInput rows="3" formControlName = "testDescription" placeholder="Test Description"></textarea>
+                            <input matInput placeholder="Test Description" formControlName = "testDescription">
+                            <!-- <textarea matInput rows="3" formControlName = "testDescription" placeholder="Test Description"></textarea> -->
                             <mat-error *ngIf="!AutomationForm.controls['testDescription'].valid && !AutomationForm.controls['testDescription'].touched"></mat-error>
                         </mat-form-field>
                         
@@ -42,10 +39,6 @@
                                 </mat-autocomplete>
                                 <mat-error *ngIf="!AutomationForm.controls['responseCodeControl'].touched"></mat-error>
                         </mat-form-field>
-                        
-                    
-                </div>
-                <div class="col-md-6">
                     <div class="uploadfile">
                         <p class="formlabel">Upload Input JSON File</p>
                             <input type="file" #fileUploader name="files" accept=".json" (change)="uploadFile($event)" />
@@ -59,16 +52,13 @@
                                     <p class="formlabel">{{fileName}}</p>
                                 </div>
                             </div>
-                        </div>
                     </div>
-            </div> 
-            <div class="clearfix"></div>
-            <div class="row">
-                <div class="col-md-12" class="btnwrapper">
+            <!-- <div class="row"> -->
+                <div class="btnwrapper">
                     <button mat-raised-button color="primary" [disabled]="!(AutomationForm.valid && (fileName != null || uploadFileCheck))" class="generatebtn" (click)="renderjson()">Render Input JSON</button>
                     <!-- <button mat-raised-button color="primary" class="generatebtn" (click)="renderjson()">Render Input JSON</button> -->
                 </div>
-            </div>
+            <!-- </div> -->
         </form>
         </div>
     </mat-expansion-panel>
@@ -178,15 +168,15 @@
                     </ng-container>
                 </div>
             </div>
-            <div class="col-md-1">
-                <div class="row placebtn"> 
+            <div class="col-md-1 btnholder">
+                <div class="row placebtn">
                     <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data);openDialog()">Save</button>
                 </div>
                 <div class="row placebtn">
                     <button mat-raised-button color="primary">Test</button>                    
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 fileholder">
                 <div class="row filecontainer">
                     <p>Test.json</p>
                     <p>Sample.json</p>

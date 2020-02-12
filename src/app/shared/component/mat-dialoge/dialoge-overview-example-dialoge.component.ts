@@ -22,7 +22,6 @@ export interface DialogData {
     providers: [FileService]
   })
   export class DialogOverviewExampleDialog implements OnInit {
-    durationInSeconds = 3000;
     message:string;
     constructor(
       public dialogRef: MatDialogRef<DialogOverviewExampleDialog>, private _snackBar: MatSnackBar, private service:FileService,

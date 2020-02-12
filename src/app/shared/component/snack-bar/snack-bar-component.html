@@ -1,3 +1,13 @@
-<span class="example-pizza-party">
-        {{data}}
+<ng-container *ngIf="data && data.type === 'Warning'">
+    <span class="snack-bar-container-warning">
+        <ng-container *ngIf="data && data.message2">{{data.message2}}! <br/></ng-container>
+              {{data.message}}!
       </span>
+</ng-container>
+<ng-container *ngIf="data && data.type === 'Sucess'">
+    <span class="snack-bar-container">
+        
+        <ng-container *ngIf="data && data.message2">{{data.message2}}! <br/></ng-container>
+              {{data.message}}!
+      </span>
+</ng-container>
