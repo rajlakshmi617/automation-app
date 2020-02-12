@@ -72,6 +72,7 @@ export class ExcelgenerationComponent{
   public disabled = false;
   public jsonData :any;
   public changedData : any = [];
+  public changeFlag : boolean;
 
   uploadFilePath : string;
   nestedTreeControl: NestedTreeControl<FileNode>;
@@ -106,6 +107,7 @@ export class ExcelgenerationComponent{
     this.options.modes = ['code', 'text', 'tree', 'view'];
     this.options.statusBar = false;
     this.options.onChange = () => {
+      this.changeFlag = true;
       this.changedData = this.editor.get();
     }
 
@@ -213,7 +215,8 @@ export class ExcelgenerationComponent{
    * @param fileName 
    */
   exportJsonFile(dirName, fileName){
-    this.service.generateJsonFile(this.convertedData, dirName, fileName).subscribe((res)=> {
+
+    this.service.generateJsonFile(this.convertedData, this.changedData, dirName, fileName).subscribe((res)=> {
       this.fileResponse = JSON.parse(res);
       this.openSnackBar(this.fileResponse);
       this.service.readDirectory().subscribe(res => {
@@ -221,7 +224,6 @@ export class ExcelgenerationComponent{
         this.fileArrayList = this.dirResponse.fileObject;
       });
     });
-    
   }
 
   /**
@@ -231,14 +233,21 @@ export class ExcelgenerationComponent{
     this.service.createDirectory();
   }
 
+ 
+
+
   /**
    * Method to change tree view to editor view
    */
   changed(){
-    this.data = JSON.parse(this.dataa);
-    if(this.changedData.length != 0){
+    var convertedData = this.arrayToJson(this.nestedDataSource.data); 
+    this.data = JSON.parse("{"+convertedData+"}");
+    if(this.changeFlag){
       this.service.myMethod(this.changedData, 'editor');
-    }    
+      this.changeFlag = false;
+    }else{
+      this.service.myMethod(JSON.stringify(this.data), 'tree');
+    } 
   }
   
   /**
@@ -256,6 +265,7 @@ export class ExcelgenerationComponent{
     this.uploadFileFlag =false;
     this.dropFileFlag = false;
     this.uploadFileCheck = false;
+    this.changeFlag = false;
     var formData = this.AutomationForm.controls;
     this.dataTypeFilterOptions = this.myControl.valueChanges
       .pipe(

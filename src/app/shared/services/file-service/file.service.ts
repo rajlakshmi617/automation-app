@@ -48,9 +48,15 @@ export class FileService {
     console.log('inside change message', message);
     this.messageSource.next(message);
   }
-  generateJsonFile(jsondata, dirName, fileName){
+  generateJsonFile(jsondata, editorData, dirName, fileName){
+    let modifiedData;
+    if(editorData.length !== 0){
+       modifiedData = JSON.stringify(editorData);
+    }else{
+       modifiedData = jsondata;
+    }
     // let modifiedData = JSON.parse(JSON.parse(JSON.stringify(jsondata)));
-    let modifiedData = jsondata;
+    
     let fileDTO = {
       "jsonData": modifiedData,
       "dirName": dirName,
