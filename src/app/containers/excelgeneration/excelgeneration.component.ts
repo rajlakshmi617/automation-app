@@ -230,7 +230,7 @@ export class ExcelgenerationComponent{
    */
   changed(){
     var convertedData = this.arrayToJson(this.nestedDataSource.data); 
-    this.data = JSON.parse("{"+convertedData+"}"); debugger;
+    this.data = JSON.parse(convertedData);
     if(this.changeFlag){
       this.service.myMethod(this.changedData, 'editor');
       this.changeFlag = false;
