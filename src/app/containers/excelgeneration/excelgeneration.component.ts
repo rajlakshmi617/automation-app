@@ -277,9 +277,7 @@ export class ExcelgenerationComponent{
 
   generateJson(data){ 
     console.log(data)
-    let tree = this.arrayToJson(data);  
-    this.convertedData =  "{"+tree+"}";
-    //console.log(this.convertedData);
+    this.convertedData = this.arrayToJson(data);  
     console.log(this.convertedData);
   }
 
@@ -309,7 +307,7 @@ export class ExcelgenerationComponent{
       isArr = false;
       return n;
     });
-    return tree;
+    return "{" + tree + "}";
     } 
   
   /**
