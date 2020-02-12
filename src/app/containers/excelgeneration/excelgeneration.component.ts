@@ -1,9 +1,9 @@
 import { Component, Inject, Injectable, ViewChild, ElementRef, OnInit } from '@angular/core';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {BehaviorSubject, Observable, from} from 'rxjs';
+import {Observable} from 'rxjs';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import { SnackBarComponent } from '../../shared/component/snack-bar/snack-bar.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
@@ -11,7 +11,6 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import {map, startWith} from 'rxjs/operators';
 import {FileService} from '../../shared/services/file-service/file.service';
 import { DialogOverviewExampleDialog } from '../../shared/component/mat-dialoge/dialoge-overview-example-dialoge.component';
-import { stringify } from 'querystring';
 /**
  * Json node data with nested structure. Each node has a filename and a value or a list of children
  */
@@ -86,7 +85,7 @@ export class ExcelgenerationComponent{
   dirname: string;
   filename: string;
   durationInSeconds = 3;
-
+  fileResponse: any;
   options = new JsonEditorOptions();
   
 
@@ -206,11 +205,11 @@ export class ExcelgenerationComponent{
    * @param fileName 
    */
   exportJsonFile(dirName, fileName){
-    this.service.generateJsonFile(this.convertedData, dirName, fileName).subscribe(res=> {
-      this.openSnackBar(res);
-    })
-    // this.service.changeMessage("Hello from Sibling")
-    // this.service.generateJsonFile(this.convertedData, dirName, fileName);
+    this.service.generateJsonFile(this.convertedData, dirName, fileName).subscribe((res)=> {
+      this.fileResponse = JSON.parse(res);
+      this.openSnackBar(this.fileResponse);
+    });
+    
   }
 
   /**

@@ -35,7 +35,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 #drop_zone {
     font-weight: bold;
     text-align: center;
-    padding: 3em 0;
+    padding: 0.5em 0;
     margin: 1em 0;
     color: #555;
     border: 2px dashed #555;
@@ -44,6 +44,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 .openfolder{
     margin-left: 83%;
+}
+.container{
+    width: 50%;
+    float: inherit;
 }
 .treecontainer{
     border-style:solid;
@@ -61,14 +65,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     font-size: 16px;
 }
 .example-form {
-    min-width: 150px;
+    min-width: 530px;
     max-width: 500px;
     width: 100%;
     margin-top: 5%;
+    margin-left: 7.5%;
 }
   
 .example-full-width {
-    width: 100%;
+    width: 50%;
+    padding: 5px;
 }
 .uploadfile{
     margin-top: 5%;
@@ -153,20 +159,44 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     width: 400px !important;
     height: 310px;
 }
-.example-pizza-party {
+.snack-bar-container {
     color: #ffffff;
+    font-size: 15px;
   }
-  .mat-snack-bar-container{
+.mat-snack-bar-container{
     margin: 420px !important;
-    background: #000;
+    background: #5ab56a;
     max-height: 50px !important;
     margin-top: -46% !important;
     min-width: 414px !important;
-  }
+    padding: 8px 16px !important; 
+}
+.snack-bar-container-warning{
+    background-color: #e22b2b !important;
+    font-size: 15px;
+    color: #ffffff;
+    border-radius: 4px !important;
+    box-sizing: border-box !important;
+    display: block !important;
+    margin: -8px !important;
+    margin-left: -4% !important;
+    max-width: 33vw !important;
+    min-width: 344px !important;
+    width: 413px !important;
+    padding: 14px 16px !important;
+    min-height: 50px !important;
+    transform-origin: center !important;
+}
 .toggle-section {
     position: relative;
     float: right;
 }
 .toggle-margin {
     margin: 10px;
+}
+.btnholder{
+    margin-top: 6%;
+}
+.fileholder{
+    margin-top: 4%;
 }
