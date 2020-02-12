@@ -277,7 +277,8 @@ export class ExcelgenerationComponent{
 
   generateJson(data){ 
     console.log(data)
-    this.convertedData = this.arrayToJson(data);  
+    //let tree = this.arrayToJson(data);  
+    this.convertedData = "{" + this.arrayToJson(data) + "}";
     console.log(this.convertedData);
   }
 
@@ -307,7 +308,7 @@ export class ExcelgenerationComponent{
       isArr = false;
       return n;
     });
-    return "{" + tree + "}";
+    return tree;
     } 
   
   /**
@@ -343,7 +344,7 @@ export class ExcelgenerationComponent{
         }
       }
     });
-    // console.log(dataSource);
+    console.log(dataSource);
     this.service.dataChange.next(dataSource)
   }
 
