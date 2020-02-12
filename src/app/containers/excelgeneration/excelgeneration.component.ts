@@ -275,29 +275,41 @@ export class ExcelgenerationComponent{
   }
 
   generateJson(data){ 
-    let tree = this.arrayToJson(data);  
-    this.convertedData =  "{"+tree+"}";
+    console.log(data)
+    //let tree = this.arrayToJson(data);  
+    this.convertedData = "{" + this.arrayToJson(data) + "}";
+    console.log(this.convertedData);
   }
 
-  public arrayToJson(array) {
-    let tree="";
-    tree += array.map(e => {
-      let n;
-      if(e.children && e.children.length > 0){
-        n = '"'+e.filename+'"'+" : {";
+  public arrayToJson(array) {
+    let tree="";
+    tree += array.map(e => {
+      let n, isArr=false;
+      if(e.children && e.children.length > 0){
+        if(isNaN(parseInt(e.filename))){
+          n = '"'+e.filename+'":';
+        }else{
+          n = "";         
+        }
+        if(!isNaN(parseInt(e.children[0].filename))){ isArr = true; }
+         
+         n += (isArr) ? "[" : "{";
         n+=this.arrayToJson(e['children'])
-        n+="}";
+        n += (isArr) ? "]" : "}";                
       }else{
-        if(e.type){
-          n = '"'+e.filename+'"'+" : "+'"'+e.type+'"';
+        if(e.type && isNaN(parseInt(e.filename))){
+          n = '"'+e.filename+'"'+":"+'"'+e.type+'"';
+        } else {
+          n = e.type;
         }
       }
       //console.log(n)
-      return n;
+      isArr = false;
+      return n;
     });
-    return tree;
-  }
-
+    return tree;
+    } 
+  
   /**
    * To open model popup on click of save button
    */
@@ -331,7 +343,7 @@ export class ExcelgenerationComponent{
         }
       }
     });
-    // console.log(dataSource);
+    console.log(dataSource);
     this.service.dataChange.next(dataSource)
   }
 
