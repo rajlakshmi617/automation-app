@@ -154,6 +154,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     border-width: 2px;
     width: 100%;
     padding: 4px;
+    margin-left: 0px !important;
+    margin-top: 5%;
 }
 .cdk-overlay-pane{
     width: 400px !important;
@@ -197,6 +199,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .btnholder{
     margin-top: 6%;
 }
-.fileholder{
+.mat-select-panel{
     /* margin-top: 4%; */
+    margin-left: 10% !important; 
+    margin-top: 10% !important;
 }

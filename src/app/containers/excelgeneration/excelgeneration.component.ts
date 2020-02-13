@@ -229,9 +229,9 @@ export class ExcelgenerationComponent{
   /**
    * Function called to create folder to store generated JSON file
    */
-  createFolder(){
-    this.service.createDirectory();
-  }
+  // createFolder(){
+  //   this.service.createDirectory();
+  // }
 
  
 

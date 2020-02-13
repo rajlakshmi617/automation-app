@@ -176,17 +176,16 @@
                     <button mat-raised-button color="primary">Test</button>                    
                 </div>
             </div>
-            <div class="col-md-4 fileholder">
+            <div class="col-md-4 fileholder" *ngIf="fileArrayList">
                 <mat-form-field>
-                    <mat-label>Toppings</mat-label>
+                    <mat-label>Filter By Folder Name</mat-label>
                     <mat-select [formControl]="toppings" multiple>
-                        <mat-option *ngFor="let topping of toppingList" [value]="topping">{{topping}}</mat-option>
+                        <mat-option *ngFor="let file of fileArrayList" [value]="file.foldername">{{file.foldername}}</mat-option>
                     </mat-select>
                 </mat-form-field>
                 <div class="row filecontainer">
-                    <p>Test.json</p>
-                    <p>Sample.json</p>
-                    <p>Duplicate.json</p>
+                    <div *ngFor="let file of fileArrayList">
+                        <span>{{file.filename}}</span></div>
                 </div>
             </div>
         </div>

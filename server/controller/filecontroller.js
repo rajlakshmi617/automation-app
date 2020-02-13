@@ -34,7 +34,6 @@ router.post('/', (req, res) => {
                 } else {
                     writeFile(dirname, filename, parseData);
                     res.type('json').status(200).send({message: 'File created sucessfully', type: 'Sucess'})
-
                     // const testFolder = '../outputjson/';
                     // fs.readdir(testFolder, (err, folders) => {
                     //     folders.map(folder => {
@@ -60,10 +59,8 @@ router.post('/', (req, res) => {
                     // console.log('failed to create directory');
                     return console.error(err);
                 }else{
-                    // res.send('Directory created successfully');
                     fs.exists(`../outputjson/${dirname}/${filename}.json`, function(fileexists) {
                         if(fileexists){
-                            // res.send('File already exists');      
                             res.status(200).send({message: 'File already exists', type: 'Warning'});               
                         } else {
                             writeFile(dirname, filename, parseData);
