@@ -14,15 +14,15 @@ router.get('/', (req, res) => {
                 // console.log('folder', folder);
                 files.map((file) => {
                     fileList.push(file);
-                    // const relativePath = path.dirname(`../outputjson/${dirname}/${file}`);
-                    fileObj[file] = {filename: file, foldername: folder};
+                    const relativePath = path.dirname(`../outputjson/${folder}/${file}`);
+                    fileObj[file] = {filename: file, foldername: folder, filePath: relativePath};
                     dataObject.push(fileObj[file]);                        
                 })
                 // console.log('fileObj', fileObj);
             } )
         });
-        res.setTimeout(3000, function(){
-            res.type('json').status(200).send({message: 'File read sucessfully', fileObject: dataObject, type: 'Sucess'})
+        res.setTimeout(1000, function(){
+            res.type('json').status(200).send({message: 'File read sucessfully', fileObject: dataObject, folder: folders, type: 'Sucess'})
             return;
         });
     });
