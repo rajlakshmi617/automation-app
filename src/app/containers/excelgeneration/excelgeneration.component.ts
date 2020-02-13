@@ -3,13 +3,19 @@ import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
+import {tap} from "rxjs/operators"
+import { AppState } from '../../store/models/app-state.model';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import { SnackBarComponent } from '../../shared/component/snack-bar/snack-bar.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import {map, startWith} from 'rxjs/operators';
 import {FileService} from '../../shared/services/file-service/file.service';
+import {FileSystem} from '../../store/models/fileSystem.model';
+import {ReadFileAction} from '../../store/actions/fileSystem.action';
+import {FileSystemState} from '../../store/reducers/fileSystem.reducers'
 import { DialogOverviewExampleDialog } from '../../shared/component/mat-dialoge/dialoge-overview-example-dialoge.component';
 /**
  * Json node data with nested structure. Each node has a filename and a value or a list of children
@@ -72,7 +78,12 @@ export class ExcelgenerationComponent{
   public jsonData :any;
   public changedData : any = [];
   public changeFlag : boolean;
+  public FileSystemArrayList : any;
+  public FolderArrayList: any;
 
+  loading$ : Observable<boolean>;
+  error$ : Observable<Error>;
+  // FileSystemsss : FileSystem = {fileName : '', folderName : ''};
   uploadFilePath : string;
   nestedTreeControl: NestedTreeControl<FileNode>;
   nestedDataSource: MatTreeNestedDataSource<FileNode>;
@@ -86,10 +97,13 @@ export class ExcelgenerationComponent{
   filename: string;
   durationInSeconds = 3;
   fileResponse: any;
+  dirResponse: any;
   options = new JsonEditorOptions();
-  
+  toppings = new FormControl();
+  toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
+  fileArrayList: any;
 
-  constructor(private service:FileService, private fb : FormBuilder, public dialog: MatDialog, private _snackBar: MatSnackBar) { 
+  constructor(private service:FileService, private store : Store<AppState>, private fb : FormBuilder, public dialog: MatDialog, private _snackBar: MatSnackBar) { 
 
     this.AutomationForm = this.fb.group({
       endPointURL : ["", Validators.required],
@@ -190,6 +204,22 @@ export class ExcelgenerationComponent{
   renderjson(){
     this.showContainer = false;
     this.service.myMethod(this.dataa, 'tree');
+    this.service.readDirectory().subscribe(res => {
+      this.dirResponse = res;
+      // console.log('this.dirResponse', this.dirResponse);
+      this.fileArrayList = this.dirResponse.fileObject;
+      let storeData = this.store.select(res => res).pipe(
+        tap(dirRes => dirRes)
+       )
+       .subscribe(response=> {
+         let fileData = response.fileSystem.list;
+         this.FolderArrayList = fileData['folder'];
+         this.FileSystemArrayList = fileData['fileObject']
+       });
+      this.loading$ = this.store.select(store => store.fileSystem.loading);
+      this.error$ = this.store.select(store => store.fileSystem.error);
+      this.store.dispatch(new ReadFileAction());
+    });
     this.step = 1;
     var AutoTestFormData ={
       "endPointURL" : this.AutomationForm.value.endPointURL,
@@ -210,6 +240,21 @@ export class ExcelgenerationComponent{
     this.service.generateJsonFile(this.convertedData, this.changedData, dirName, fileName).subscribe((res)=> {
       this.fileResponse = JSON.parse(res);
       this.openSnackBar(this.fileResponse);
+      this.service.readDirectory().subscribe(res => {
+        this.dirResponse = res;
+        this.fileArrayList = this.dirResponse.fileObject;
+        let storeData = this.store.select(res => res).pipe(
+          tap(dirRes => dirRes)
+         )
+         .subscribe(response=> {
+           let fileData = response.fileSystem.list;
+           this.FolderArrayList = fileData['folder'];
+           this.FileSystemArrayList = fileData['fileObject']
+         });
+        this.loading$ = this.store.select(store => store.fileSystem.loading);
+        this.error$ = this.store.select(store => store.fileSystem.error);
+        this.store.dispatch(new ReadFileAction());
+      });
     });
   }
 
@@ -224,7 +269,7 @@ export class ExcelgenerationComponent{
 
 
   /**
-   * Change the div edit to editor
+   * Method to change tree view to editor view
    */
   changed(){
     var convertedData = this.arrayToJson(this.nestedDataSource.data); 
@@ -237,6 +282,10 @@ export class ExcelgenerationComponent{
     } 
   }
   
+  /**
+   * Method to open snack bar
+   * @param message 
+   */
   openSnackBar(message){
     this._snackBar.openFromComponent(SnackBarComponent, {
       duration: this.durationInSeconds * 1000,
@@ -279,21 +328,32 @@ export class ExcelgenerationComponent{
     return result.filter(option => option.toLowerCase().includes(filterValue));    
   }
   
+
   indexValidation(filename){
     return !isNaN(parseInt(filename));
   }
+
+
+  /**
+   * Method to generate keys
+   */
 
   generateKey(){
     console.log('to generate keys');
   }
 
+  /**
+   * Method to generate JSON data
+   * @param data 
+   */
   generateJson(data){ 
-    //console.log(JSON.parse(data))
-    console.log(data);
     this.convertedData = "{" + this.arrayToJson(data) + "}";
-    console.log(this.convertedData);
   }
 
+  /**
+   * Method to convert array to JSON
+   * @param array 
+   */
   public arrayToJson(array) {
      array = array.filter(a => (a.filename!=undefined || a.type!=undefined) || a!={})
     let tree="";
@@ -373,7 +433,7 @@ export class ExcelgenerationComponent{
         }
       }
     });
-    console.log(dataSource);
+    // console.log(dataSource);
     this.service.dataChange.next(dataSource)
   }
 
