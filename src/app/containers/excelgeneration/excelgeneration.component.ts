@@ -19,7 +19,6 @@ import { DialogOverviewExampleDialog } from '../../shared/component/mat-dialoge/
     children: FileNode[];
     filename: string;
     type: any;
-    level:any
  }
 
 /**
@@ -280,37 +279,54 @@ export class ExcelgenerationComponent{
     return result.filter(option => option.toLowerCase().includes(filterValue));    
   }
   
+  indexValidation(filename){
+    return !isNaN(parseInt(filename));
+  }
+
   generateKey(){
     console.log('to generate keys');
   }
 
   generateJson(data){ 
-    console.log(data)
-    //let tree = this.arrayToJson(data);  
+    //console.log(JSON.parse(data))
+    console.log(data);
     this.convertedData = "{" + this.arrayToJson(data) + "}";
     console.log(this.convertedData);
   }
 
   public arrayToJson(array) {
+     array = array.filter(a => (a.filename!=undefined || a.type!=undefined) || a!={})
     let tree="";
     tree += array.map(e => {
-      let n, isArr=false;
+      let n, isArr=false, inArr=false;
       if(e.children && e.children.length > 0){
         if(isNaN(parseInt(e.filename))){
           n = '"'+e.filename+'":';
-        }else{
+        } else {
           n = "";         
         }
-        if(!isNaN(parseInt(e.children[0].filename))){ isArr = true; }
+        if(!isNaN(parseInt(e.children[0].filename))){ isArr = true, inArr=true; }
          
-         n += (isArr) ? "[" : "{";
+        n += (isArr) ? "[" : "{";
         n+=this.arrayToJson(e['children'])
         n += (isArr) ? "]" : "}";                
       }else{
+        if(e.type == undefined){
+          e.type="NA"
+        }
         if(e.type && isNaN(parseInt(e.filename))){
+          if(e.filename==undefined){
+            e.filename="NA";
+          }
           n = '"'+e.filename+'"'+":"+'"'+e.type+'"';
-        } else {
-          n = e.type;
+        } else if(isNaN(parseInt(e.type))){
+          if(e.type==""){
+            n = '"NA" : "NA"';
+          }else{
+            n='"'+e.type+'"';
+          }
+        }else{
+          n = e.type; 
         }
       }
       //console.log(n)
@@ -342,13 +358,17 @@ export class ExcelgenerationComponent{
    * @param dataSource 
    */
   deleteNode(node, dataSource){
-    dataSource = dataSource.filter(n => n.filename != node.filename)
+    
+    if(Array.isArray(dataSource)){
+      dataSource = dataSource.filter(n => !((n.filename == node.filename) && (n.type == node.type)));
+    }   
     dataSource.map((n) => {
       if(n.hasOwnProperty('children')){
         if (n !== null && typeof(n)=="object" )
         {
           this.deleteNode(node, n['children'])    //to traverse deep in the tree
-          n['children'] = n['children'].filter(n => n.filename != node.filename) 
+          //console.log('n.filename', n.filename, node.filename, 'n.type', n.type, node.type)  
+          n['children'] = n['children'].filter(n => !((n.filename == node.filename) && (n.type == node.type))) 
           return;
         }
       }
@@ -362,27 +382,38 @@ export class ExcelgenerationComponent{
    * @param node //selected node
    * @param dataSource // Tree data
    */  
-   addNode(node, dataSource) {    
+   addNode(node, dataSource) {  
+       
     if(node == 'parentnode'){
       dataSource.push(new FileNode())
     } else {
       dataSource.map((n) => {              
         if (n !== null && typeof(n)=="object" )
-        {           
-          if(n.filename == node.filename){
-            if(!n.hasOwnProperty('children')){
+        {     
+          //console.log('n.filename', n.filename, node.filename, 'n.type', n.type, node.type)      
+          if(n.filename == node.filename && (n.type == node.type)){
+            let newNode = new FileNode();
+            
+            if(n.children && n.children.length>0 && !isNaN(parseInt(n.children[0].filename))){
+              newNode.filename = n.children.length;
+              newNode.children = [];                       
+              newNode.children.push(new FileNode());
+              n['children'].push(newNode);
+              //console.log(n['children'])
+            } else if(!n.hasOwnProperty('children')){
               n.children = [];
-            }                      
-            n['children'].push(new FileNode());   
-            return;         
+              n['children'].push(newNode);
+            } else {
+              n['children'].push(newNode);
+            }                               
           } else if(Array.isArray(n['children'])){
             this.addNode(node, n['children'])     //to traverse deep in the tree
           }           
         }        
       });
-    }
-    
-    this.service.dataChange.next(dataSource)    //updating tree dada
+    } 
+    //console.log(dataSource);
+    this.service.dataChange.next(dataSource)    //updating tree data
     this.nestedTreeControl.expand(node);        //expanding tree node where new node is added
   }
 }
