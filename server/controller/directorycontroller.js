@@ -21,8 +21,8 @@ router.get('/', (req, res) => {
                 // console.log('fileObj', fileObj);
             } )
         });
-        res.setTimeout(2000, function(){
-            res.type('json').status(200).send({message: 'File read sucessfully', fileObject: dataObject, type: 'Sucess'})
+        res.setTimeout(1000, function(){
+            res.type('json').status(200).send({message: 'File read sucessfully', fileObject: dataObject, folder: folders, type: 'Sucess'})
             return;
         });
     });

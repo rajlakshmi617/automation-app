@@ -94,7 +94,7 @@
                             <li class="mat-tree-node">
                             <button mat-icon-button disabled></button>
                             <mat-form-field appearance="outline" class="textTree">
-                                <input matInput placeholder="Placeholder" value="{{node.filename}}" [(ngModel)]="node.filename">
+                                <input matInput placeholder="Placeholder" value="{{node.filename}}" [(ngModel)]="node.filename" readonly="{{indexValidation(node.filename)}}" />
                             </mat-form-field> <span style="left:-12px;">:</span>
                             <mat-form-field appearance="outline" class="textTree">
                                 <input matInput placeholder="Placeholder" value="{{node.type}}" [(ngModel)]="node.type">
@@ -130,7 +130,7 @@
                                 </mat-icon>
                                 </button>
                                 <mat-form-field appearance="outline" class="textTree">
-                                    <input  matInput type="text" name="file" value="{{node.filename}}" [(ngModel)]="node.filename"/>
+                                    <input  matInput type="text" name="file" value="{{node.filename}}" [(ngModel)]="node.filename" readonly="{{indexValidation(node.filename)}}"/>
                                 </mat-form-field>
                                 <ng-container *ngIf="node.type">
                                     <mat-form-field appearance="outline" class="textTree">
@@ -154,7 +154,8 @@
                                 </button>  
                                 <button mat-icon-button aria-label="add icon-button" (click)="addNode(node, nestedDataSource.data)">
                                     <mat-icon>add</mat-icon>
-                                </button>                                                                           
+                                </button>  
+                                <!-- [ngClass]="{'hidden': indexValidation(node.filename) }"                                                                          -->
                             </div>
                             <ul [class.example-tree-invisible]="!nestedTreeControl.isExpanded(node)">
                                 <ng-container matTreeNodeOutlet></ng-container>
@@ -169,23 +170,28 @@
                 </div>
             </div>
             <div class="col-md-1 btnholder">
-                <div class="row placebtn">
+                <!-- <div class="row placebtn">
                     <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data);openDialog()">Save</button>
+                </div> -->
+                <div class="row placebtn">
+                    <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data)">Save</button>
                 </div>
                 <div class="row placebtn">
                     <button mat-raised-button color="primary">Test</button>                    
                 </div>
             </div>
-            <div class="col-md-4 fileholder" *ngIf="fileArrayList">
+            <div class="col-md-4 fileholder" *ngIf="FolderArrayList">
                 <mat-form-field>
                     <mat-label>Filter By Folder Name</mat-label>
                     <mat-select [formControl]="toppings" multiple>
-                        <mat-option *ngFor="let file of fileArrayList" [value]="file.foldername">{{file.foldername}}</mat-option>
+                        <mat-option *ngFor="let folder of FolderArrayList" [value]="folder">{{folder}}</mat-option>
                     </mat-select>
                 </mat-form-field>
-                <div class="row filecontainer">
-                    <div *ngFor="let file of fileArrayList">
-                        <span>{{file.filename}}</span></div>
+                <div class="row filecontainer" *ngIf="FileSystemArrayList">
+                    <div *ngFor = "let file of FileSystemArrayList">
+                        <span>{{file.filename}}</span>
+                    </div>
+                    
                 </div>
             </div>
         </div>
