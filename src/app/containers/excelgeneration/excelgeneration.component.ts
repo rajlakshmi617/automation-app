@@ -4,6 +4,7 @@ import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Store} from '@ngrx/store';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {Observable} from 'rxjs';
 import {tap} from "rxjs/operators"
 import { AppState } from '../../store/models/app-state.model';
@@ -17,6 +18,7 @@ import {FileSystem} from '../../store/models/fileSystem.model';
 import {ReadFileAction} from '../../store/actions/fileSystem.action';
 import {FileSystemState} from '../../store/reducers/fileSystem.reducers'
 import { DialogOverviewExampleDialog } from '../../shared/component/mat-dialoge/dialoge-overview-example-dialoge.component';
+import { ArrayType } from '@angular/compiler/src/output/output_ast';
 /**
  * Json node data with nested structure. Each node has a filename and a value or a list of children
  */
@@ -81,6 +83,8 @@ export class ExcelgenerationComponent{
   public changeFlag : boolean;
   public FileSystemArrayList : any;
   public FolderArrayList: any;
+  public intialFileSystemArrayList: any;
+  public spinnerSuccess : boolean;
 
   loading$ : Observable<boolean>;
   error$ : Observable<Error>;
@@ -100,19 +104,19 @@ export class ExcelgenerationComponent{
   fileResponse: any;
   dirResponse: any;
   options = new JsonEditorOptions();
-  toppings = new FormControl();
-  toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
+  FilterData = new FormControl();
+  
   fileArrayList: any;
+  selectedFolder:any = [];
+  
 
   constructor(private service:FileService, private store : Store<AppState>, private fb : FormBuilder, public dialog: MatDialog, private _snackBar: MatSnackBar) { 
-
     this.AutomationForm = this.fb.group({
       endPointURL : ["", Validators.required],
       testDescription : [""],
       requestTypeControl : ["", Validators.required],
       responseCodeControl : ["", Validators.required]
     });
-
     //json editor code
     this.options.mode = 'code';
     this.options.modes = ['code', 'text', 'tree', 'view'];
@@ -190,6 +194,40 @@ export class ExcelgenerationComponent{
     }
   }
 
+  filterFileByFolder(event){ 
+    
+    var filterSelection = event.source.value; 
+    if(event.source.selected == true){
+      this.selectedFolder.push(filterSelection);
+    }else{
+      if(this.selectedFolder.indexOf(event.source.value) !== -1 ){
+        var ax = this.selectedFolder.indexOf(filterSelection);
+        this.selectedFolder.splice(ax,1);
+      }
+    }
+    
+    console.log('selectedFolder', this.selectedFolder.length);
+
+    var folderArr = this.selectedFolder;
+
+    if(!folderArr.length){
+      this.FileSystemArrayList = [...this.intialFileSystemArrayList]
+      return;
+    }
+
+
+
+    this.FileSystemArrayList = this.intialFileSystemArrayList.filter(function(folder) { 
+      
+      
+      
+      if(folderArr.indexOf(folder.foldername)>-1){
+        return folder
+      }
+    });
+    console.log(this.FileSystemArrayList);
+  }
+
   /**
    * Function call on drag over during file drop to prevent file being opened
    * @param ev 
@@ -203,6 +241,7 @@ export class ExcelgenerationComponent{
    * Function call to send tree data to service that will render JSON as a tree
    */
   renderjson(){
+    this.spinnerSuccess = true;
     this.showContainer = false;
     this.service.myMethod(this.dataa, 'tree');
     this.service.readDirectory().subscribe(res => {
@@ -215,7 +254,9 @@ export class ExcelgenerationComponent{
        .subscribe(response=> {
          let fileData = response.fileSystem.list;
          this.FolderArrayList = fileData['folder'];
-         this.FileSystemArrayList = fileData['fileObject']
+         this.FileSystemArrayList = fileData['fileObject'];
+         this.intialFileSystemArrayList =  fileData['fileObject'];
+          this.spinnerSuccess = false;      
        });
       this.loading$ = this.store.select(store => store.fileSystem.loading);
       this.error$ = this.store.select(store => store.fileSystem.error);
@@ -250,7 +291,8 @@ export class ExcelgenerationComponent{
          .subscribe(response=> {
            let fileData = response.fileSystem.list;
            this.FolderArrayList = fileData['folder'];
-           this.FileSystemArrayList = fileData['fileObject']
+           this.FileSystemArrayList = fileData['fileObject'];
+           this.intialFileSystemArrayList =  fileData['fileObject'];
          });
         this.loading$ = this.store.select(store => store.fileSystem.loading);
         this.error$ = this.store.select(store => store.fileSystem.error);
@@ -295,6 +337,7 @@ export class ExcelgenerationComponent{
   }
 
   ngOnInit() {
+    this.spinnerSuccess = false;
     this.uploadFileFlag =false;
     this.dropFileFlag = false;
     this.uploadFileCheck = false;

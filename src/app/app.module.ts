@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from "@angular/common/http";
 import { FieldvalidationComponent } from './containers/fieldvalidation/fieldvalidation.component';
@@ -37,6 +38,7 @@ import {FileSystemEffects} from '../app/store/effects/fileSystem.effects';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     NgJsonEditorModule,
+    MatProgressSpinnerModule,
     MatMenuModule,
     MatInputModule,
     MatButtonModule,

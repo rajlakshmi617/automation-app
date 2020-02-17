@@ -1,4 +1,5 @@
 <mat-accordion>
+    
     <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)">
         <mat-expansion-panel-header>
         <mat-panel-title>
@@ -55,14 +56,14 @@
                     </div>
             <!-- <div class="row"> -->
                 <div class="btnwrapper">
-                    <button mat-raised-button color="primary" [disabled]="!(AutomationForm.valid && (fileName != null || uploadFileCheck))" class="generatebtn" (click)="renderjson()">Render Input JSON</button>
-                    <!-- <button mat-raised-button color="primary" class="generatebtn" (click)="renderjson()">Render Input JSON</button> -->
+                    <!-- <button mat-raised-button color="primary" [disabled]="!(AutomationForm.valid && (fileName != null || uploadFileCheck))" class="generatebtn" (click)="renderjson()">Render Input JSON</button> -->
+                    <button mat-raised-button color="primary" class="generatebtn" (click)="renderjson()">Render Input JSON</button>
                 </div>
             <!-- </div> -->
         </form>
         </div>
     </mat-expansion-panel>
-    <mat-expansion-panel [expanded]="step === 1" *ngIf="!showContainer">
+    <mat-expansion-panel class="main-container" [expanded]="step === 1" *ngIf="!showContainer">
         <mat-expansion-panel-header>
         <mat-panel-title>
             JSON Panel
@@ -71,6 +72,9 @@
             Rendered Input JSON
         </mat-panel-description>
         </mat-expansion-panel-header>
+        <ng-container *ngIf = "spinnerSuccess">
+                <mat-spinner class="spinner-style"></mat-spinner>
+        </ng-container>
         <div class="row">
             <div class="col-md-7">
                     <section class="toggle-section">
@@ -176,11 +180,11 @@
                     <button mat-raised-button color="primary">Test</button>                    
                 </div>
             </div>
-            <div class="col-md-4 fileholder" *ngIf="FolderArrayList">
+            <div class="col-md-4 fileholder" *ngIf="FolderArrayList">                   
                 <mat-form-field>
                     <mat-label>Filter By Folder Name</mat-label>
-                    <mat-select [formControl]="toppings" multiple>
-                        <mat-option *ngFor="let folder of FolderArrayList" [value]="folder">{{folder}}</mat-option>
+                    <mat-select [formControl]="FilterData"  multiple>
+                        <mat-option *ngFor="let folder of FolderArrayList" (onSelectionChange)="filterFileByFolder($event)" [value]="folder">{{folder}}</mat-option>
                     </mat-select>
                 </mat-form-field>
                 <div class="row filecontainer" *ngIf="FileSystemArrayList">
