@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
                 files.map((file) => {
                     fileList.push(file);
                     const relativePath = path.dirname(`../outputjson/${folder}/${file}`);
-                    fileObj[file] = {filename: file, foldername: folder, filePath: relativePath};
+                    fileObj[file] = {filename: file, foldername: folder, filepath: `${relativePath}/${file}`};
                     dataObject.push(fileObj[file]);                        
                 })
                 // console.log('fileObj', fileObj);

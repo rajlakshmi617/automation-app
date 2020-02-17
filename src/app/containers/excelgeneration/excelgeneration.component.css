@@ -10,3 +10,6 @@
     pointer-events: none;
     opacity: 0.1;   
 } */
+.hidden{
+    display: none !important;
+}

@@ -8,7 +8,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {Observable} from 'rxjs';
 import {tap} from "rxjs/operators"
 import { AppState } from '../../store/models/app-state.model';
-import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators, FormControl, FormArray} from '@angular/forms';
 import { SnackBarComponent } from '../../shared/component/snack-bar/snack-bar.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
@@ -27,7 +27,6 @@ import { ArrayType } from '@angular/compiler/src/output/output_ast';
     children: FileNode[];
     filename: string;
     type: any;
-    level:any
  }
 
 /**
@@ -48,6 +47,7 @@ export class ExcelgenerationComponent{
   @ViewChild('fileUploader', null) fileUploader:ElementRef;
   @ViewChild(JsonEditorComponent, null) editor: JsonEditorComponent;
   AutomationForm :  FormGroup;
+  fileSelectionForm : FormGroup;
   myControl = new FormControl();
   
   option : string[] =['one', 'two', 'three'];
@@ -117,6 +117,7 @@ export class ExcelgenerationComponent{
       requestTypeControl : ["", Validators.required],
       responseCodeControl : ["", Validators.required]
     });
+
     //json editor code
     this.options.mode = 'code';
     this.options.modes = ['code', 'text', 'tree', 'view'];
@@ -130,7 +131,12 @@ export class ExcelgenerationComponent{
     (this._getChildren);
     this.nestedDataSource = new MatTreeNestedDataSource();
     this.service.dataChange.subscribe(data => this.nestedDataSource.data = data);
-  }
+
+   
+    this.fileSelectionForm = this.fb.group({
+      files: this.fb.array([])
+    });
+  } 
   hasNestedChild = (_: number, nodeData: FileNode) => nodeData.children && nodeData.children.length > 0;
   private _getChildren = (node: FileNode) => node.children;
 
@@ -246,7 +252,6 @@ export class ExcelgenerationComponent{
     this.service.myMethod(this.dataa, 'tree');
     this.service.readDirectory().subscribe(res => {
       this.dirResponse = res;
-      // console.log('this.dirResponse', this.dirResponse);
       this.fileArrayList = this.dirResponse.fileObject;
       let storeData = this.store.select(res => res).pipe(
         tap(dirRes => dirRes)
@@ -307,8 +312,6 @@ export class ExcelgenerationComponent{
   createFolder(){
     this.service.createDirectory();
   }
-
- 
 
 
   /**
@@ -372,9 +375,16 @@ export class ExcelgenerationComponent{
     return result.filter(option => option.toLowerCase().includes(filterValue));    
   }
   
+
+  indexValidation(filename){
+    return !isNaN(parseInt(filename));
+  }
+
+
   /**
    * Method to generate keys
    */
+
   generateKey(){
     console.log('to generate keys');
   }
@@ -392,30 +402,38 @@ export class ExcelgenerationComponent{
    * @param array 
    */
   public arrayToJson(array) {
+     array = array.filter(a => (a.filename!=undefined || a.type!=undefined) || a!={})
     let tree="";
     tree += array.map(e => {
-      let n, isArr=false;
+      let n, isArr=false, inArr=false;
       if(e.children && e.children.length > 0){
         if(isNaN(parseInt(e.filename))){
           n = '"'+e.filename+'":';
-        }else{
+        } else {
           n = "";         
         }
-        if(!isNaN(parseInt(e.children[0].filename))){ isArr = true; }
+        if(!isNaN(parseInt(e.children[0].filename))){ isArr = true, inArr=true; }
          
-         n += (isArr) ? "[" : "{";
+        n += (isArr) ? "[" : "{";
         n+=this.arrayToJson(e['children'])
         n += (isArr) ? "]" : "}";                
       }else{
+        if(e.type == undefined){
+          e.type="NA"
+        }
         if(e.type && isNaN(parseInt(e.filename))){
-          n = '"'+e.filename+'"'+":"+'"'+e.type+'"';
-        } else {
-          if(isNaN(parseInt(e.type))){
-            n = '"'+e.type+'"';
-          }else{
-            n = e.type;
+          if(e.filename==undefined){
+            e.filename="NA";
           }
-          
+          n = '"'+e.filename+'"'+":"+'"'+e.type+'"';
+        } else if(isNaN(parseInt(e.type))){
+          if(e.type==""){
+            n = '"NA" : "NA"';
+          }else{
+            n='"'+e.type+'"';
+          }
+        }else{
+          n = e.type; 
         }
       }
       //console.log(n)
@@ -447,13 +465,17 @@ export class ExcelgenerationComponent{
    * @param dataSource 
    */
   deleteNode(node, dataSource){
-    dataSource = dataSource.filter(n => n.filename != node.filename)
+    
+    if(Array.isArray(dataSource)){
+      dataSource = dataSource.filter(n => !((n.filename == node.filename) && (n.type == node.type)));
+    }   
     dataSource.map((n) => {
       if(n.hasOwnProperty('children')){
         if (n !== null && typeof(n)=="object" )
         {
           this.deleteNode(node, n['children'])    //to traverse deep in the tree
-          n['children'] = n['children'].filter(n => n.filename != node.filename) 
+          //console.log('n.filename', n.filename, node.filename, 'n.type', n.type, node.type)  
+          n['children'] = n['children'].filter(n => !((n.filename == node.filename) && (n.type == node.type))) 
           return;
         }
       }
@@ -467,30 +489,58 @@ export class ExcelgenerationComponent{
    * @param node //selected node
    * @param dataSource // Tree data
    */  
-   addNode(node, dataSource) {    
+   addNode(node, dataSource) {  
+       
     if(node == 'parentnode'){
       dataSource.push(new FileNode())
     } else {
       dataSource.map((n) => {              
         if (n !== null && typeof(n)=="object" )
-        {           
-          if(n.filename == node.filename){
-            if(!n.hasOwnProperty('children')){
+        {     
+          //console.log('n.filename', n.filename, node.filename, 'n.type', n.type, node.type)      
+          if(n.filename == node.filename && (n.type == node.type)){
+            let newNode = new FileNode();
+            
+            if(n.children && n.children.length>0 && !isNaN(parseInt(n.children[0].filename))){
+              newNode.filename = n.children.length;
+              newNode.children = [];                       
+              newNode.children.push(new FileNode());
+              n['children'].push(newNode);
+              //console.log(n['children'])
+            } else if(!n.hasOwnProperty('children')){
               n.children = [];
-            }                      
-            n['children'].push(new FileNode());   
-            return;         
+              n['children'].push(newNode);
+            } else {
+              n['children'].push(newNode);
+            }                               
           } else if(Array.isArray(n['children'])){
             this.addNode(node, n['children'])     //to traverse deep in the tree
           }           
         }        
       });
-    }
-    
-    this.service.dataChange.next(dataSource)    //updating tree dada
+    } 
+    //console.log(dataSource);
+    this.service.dataChange.next(dataSource)    //updating tree data
     this.nestedTreeControl.expand(node);        //expanding tree node where new node is added
   }
+
+  onFileSubmit() {
+    //console.log(this.files.value)
+  }
+
+  onChange(file: string, isChecked: boolean) {
+    const fileFormArray = <FormArray>this.fileSelectionForm.controls.files;
+
+    if (isChecked) {
+      fileFormArray.push(new FormControl(file));
+    } else {
+      let index = fileFormArray.controls.findIndex(x => x.value == file)
+      fileFormArray.removeAt(index);
+    }
+    console.log(fileFormArray.value)
+  }
 }
+
 
 
 

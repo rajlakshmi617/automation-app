@@ -9,7 +9,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { FieldvalidationComponent } from './containers/fieldvalidation/fieldvalidation.component';
 import {MatMenuModule,MatInputModule, MatButtonModule, MatSelectModule, MatIconModule, MatToolbarModule,
   MatTabsModule, MatButtonToggleModule, MatTreeModule, MatAutocompleteModule, MatExpansionModule,
-  MatDialogModule, MatSnackBarModule, MatSlideToggleModule } from '@angular/material';
+  MatDialogModule, MatSnackBarModule, MatSlideToggleModule, MatCheckboxModule } from '@angular/material';
 import { SnackBarComponent } from './shared/component/snack-bar/snack-bar.component';
 import { DialogOverviewExampleDialog } from './shared/component/mat-dialoge/dialoge-overview-example-dialoge.component';
 import { ExcelgenerationComponent } from './containers/excelgeneration/excelgeneration.component';
@@ -53,6 +53,7 @@ import {FileSystemEffects} from '../app/store/effects/fileSystem.effects';
     MatDialogModule,
     MatSnackBarModule,
     MatSlideToggleModule,
+    MatCheckboxModule,
     EffectsModule.forRoot([FileSystemEffects]),
     StoreModule.forRoot({
       fileSystem : fileSystemReducer
