@@ -33,8 +33,7 @@ export class FileService {
   private myMethodSubject = new Subject<any>();
   private messageSubject = new Subject<any>();
 
-  readonly baseURL = "http://localhost:3000/generate";
-  readonly baseURLRead = "http://localhost:3000/read";
+  readonly baseURL = "http://localhost:3000";
   constructor(private http: HttpClient) { 
     this.myMethod$ = this.myMethodSubject.asObservable();
   }
@@ -56,21 +55,22 @@ export class FileService {
        modifiedData = jsondata;
     }
     // let modifiedData = JSON.parse(JSON.parse(JSON.stringify(jsondata)));
-    
     let fileDTO = {
       "jsonData": modifiedData,
       "dirName": dirName,
       "fileName": fileName
     }
-    return this.http.post(this.baseURL, fileDTO, {responseType: 'text'});
+    return this.http.post(`${this.baseURL}/generate`, fileDTO, {responseType: 'text'});
   }
+  
   createDirectory(){
     const dirname = "test";
     return this.http.post(this.baseURL + 'createdir', dirname).subscribe(res => console.log('dir res', res));
   }
+  
   readDirectory(){
     console.log('inside read dir');
-    return this.http.get(this.baseURLRead);
+    return this.http.get(`${this.baseURL}/read`);
   }
   initialize(treedata, mode){
     // Parse the string to json object.

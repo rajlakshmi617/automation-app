@@ -212,7 +212,6 @@ export class ExcelgenerationComponent{
     this.service.myMethod(this.dataa, 'tree');
     this.service.readDirectory().subscribe(res => {
       this.dirResponse = res;
-      // console.log('this.dirResponse', this.dirResponse);
       this.fileArrayList = this.dirResponse.fileObject;
       let storeData = this.store.select(res => res).pipe(
         tap(dirRes => dirRes)
