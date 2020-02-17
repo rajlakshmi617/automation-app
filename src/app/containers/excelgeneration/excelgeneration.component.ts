@@ -102,6 +102,7 @@ export class ExcelgenerationComponent{
   toppings = new FormControl();
   toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
   fileArrayList: any;
+  selectedIndex: number = null;
 
   constructor(private service:FileService, private store : Store<AppState>, private fb : FormBuilder, public dialog: MatDialog, private _snackBar: MatSnackBar) { 
 
@@ -426,6 +427,12 @@ export class ExcelgenerationComponent{
     this.service.dataChange.next(dataSource)
   }
 
+  activateClass(index: number, file){
+    this.selectedIndex = index;   
+    console.log('this.selectedIndex', this.selectedIndex);
+    console.log('file', file);
+
+  }
   /**
    * function to insert the new item in the selected node
    * @param node //selected node

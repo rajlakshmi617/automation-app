@@ -170,14 +170,17 @@
                 </div>
             </div>
             <div class="col-md-1 btnholder">
-                <!-- <div class="row placebtn">
+                <div class="row placebtn">
                     <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data);openDialog()">Save</button>
+                </div>
+                <!-- <div class="row placebtn">
+                    <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data)">Save</button>
                 </div> -->
                 <div class="row placebtn">
-                    <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data)">Save</button>
+                    <button mat-raised-button color="primary">Test</button>                    
                 </div>
                 <div class="row placebtn">
-                    <button mat-raised-button color="primary">Test</button>                    
+                    <button mat-raised-button color="primary">Duplicate</button>                    
                 </div>
             </div>
             <div class="col-md-4 fileholder" *ngIf="FolderArrayList">
@@ -188,8 +191,10 @@
                     </mat-select>
                 </mat-form-field>
                 <div class="row filecontainer" *ngIf="FileSystemArrayList">
-                    <div *ngFor = "let file of FileSystemArrayList">
-                        <span>{{file.filename}}</span>
+                    <div>
+                        <ul class="sub_modules">
+                            <li (click)="activateClass(i, file)" *ngFor = "let file of FileSystemArrayList; let i = index" [class.active]="selectedIndex === i" style="cursor: pointer">{{file.filename}}</li>
+                        </ul>
                     </div>
                     
                 </div>

@@ -56,6 +56,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     width: 100%;
     overflow: auto !important;
     max-height: 500px;
+    min-height: 290px;
+}
+.active{
+    color:blue;
+    border-left:4px solid blue;
 }
 .mat-tree-node{
     min-height: 40px !important;  
