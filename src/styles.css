@@ -156,8 +156,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     padding: 4px;
 }
 .cdk-overlay-pane{
-    width: 400px !important;
-    height: 310px;
+    /* width: 400px !important;
+    height: 310px; */
+    width: fit-content;
+    height: fit-content;
 }
 .snack-bar-container {
     color: #ffffff;

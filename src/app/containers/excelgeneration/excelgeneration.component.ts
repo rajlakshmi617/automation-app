@@ -7,7 +7,7 @@ import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {tap} from "rxjs/operators"
 import { AppState } from '../../store/models/app-state.model';
-import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators, FormControl, FormArray} from '@angular/forms';
 import { SnackBarComponent } from '../../shared/component/snack-bar/snack-bar.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
@@ -45,6 +45,7 @@ export class ExcelgenerationComponent{
   @ViewChild('fileUploader', null) fileUploader:ElementRef;
   @ViewChild(JsonEditorComponent, null) editor: JsonEditorComponent;
   AutomationForm :  FormGroup;
+  fileSelectionForm : FormGroup;
   myControl = new FormControl();
   
   option : string[] =['one', 'two', 'three'];
@@ -111,7 +112,7 @@ export class ExcelgenerationComponent{
       requestTypeControl : ["", Validators.required],
       responseCodeControl : ["", Validators.required]
     });
-
+    
     //json editor code
     this.options.mode = 'code';
     this.options.modes = ['code', 'text', 'tree', 'view'];
@@ -125,7 +126,12 @@ export class ExcelgenerationComponent{
     (this._getChildren);
     this.nestedDataSource = new MatTreeNestedDataSource();
     this.service.dataChange.subscribe(data => this.nestedDataSource.data = data);
-  }
+
+   
+    this.fileSelectionForm = this.fb.group({
+      files: this.fb.array([])
+    });
+  } 
   hasNestedChild = (_: number, nodeData: FileNode) => nodeData.children && nodeData.children.length > 0;
   private _getChildren = (node: FileNode) => node.children;
 
@@ -264,8 +270,6 @@ export class ExcelgenerationComponent{
   createFolder(){
     this.service.createDirectory();
   }
-
- 
 
 
   /**
@@ -476,7 +480,24 @@ export class ExcelgenerationComponent{
     this.service.dataChange.next(dataSource)    //updating tree data
     this.nestedTreeControl.expand(node);        //expanding tree node where new node is added
   }
+
+  onFileSubmit() {
+    //console.log(this.files.value)
+  }
+
+  onChange(file: string, isChecked: boolean) {
+    const fileFormArray = <FormArray>this.fileSelectionForm.controls.files;
+
+    if (isChecked) {
+      fileFormArray.push(new FormControl(file));
+    } else {
+      let index = fileFormArray.controls.findIndex(x => x.value == file)
+      fileFormArray.removeAt(index);
+    }
+    console.log(fileFormArray.value)
+  }
 }
+
 
 
 

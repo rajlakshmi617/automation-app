@@ -110,7 +110,7 @@
                             <mat-form-field appearance="outline" class="textTree">
                                 <input matInput placeholder="{{optionType=='string'? 'String Length' : 'Max Value'}}">
                             </mat-form-field>
-                            <button mat-stroked-button color="primary">Primary</button>
+                            <button mat-stroked-button color="primary">Generate Key</button>
                             <button mat-icon-button aria-label="clear icon-button" (click)="deleteNode(node, nestedDataSource.data)">
                                     <mat-icon>clear</mat-icon>
                             </button>
@@ -147,7 +147,7 @@
                                     <mat-form-field appearance="outline" class="textTree">
                                         <input matInput placeholder="{{optionType=='string'? 'String Length' : 'Max Value'}}">
                                     </mat-form-field>
-                                    <button mat-stroked-button color="primary">Primary</button>
+                                    <button mat-stroked-button color="primary">Generate Key</button>
                                 </ng-container>
                                 <button mat-icon-button aria-label="clear icon-button" (click)="deleteNode(node, nestedDataSource.data)">
                                     <mat-icon>clear</mat-icon>
@@ -170,12 +170,12 @@
                 </div>
             </div>
             <div class="col-md-1 btnholder">
-                <!-- <div class="row placebtn">
-                    <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data);openDialog()">Save</button>
-                </div> -->
                 <div class="row placebtn">
-                    <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data)">Save</button>
+                    <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data);openDialog()">Save</button>
                 </div>
+                <!-- <div class="row placebtn">
+                    <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data)">Save</button>
+                </div> -->
                 <div class="row placebtn">
                     <button mat-raised-button color="primary">Test</button>                    
                 </div>
@@ -192,6 +192,32 @@
                         <span>{{file.filename}}</span>
                     </div>
                     
+                </div>
+            </div>
+        </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="step === 2" *ngIf="!showContainer">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Select Directory
+            </mat-panel-title>
+            <mat-panel-description>
+                Validate output JSON
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div class="row">
+            <div class="col-md-5"> 
+                <div class="row filecontainer" *ngIf="FileSystemArrayList">
+                      <form [formGroup]="fileSelectionForm">
+                            <h4>Files to be generated</h4>
+                            <div *ngFor="let file of fileArrayList; let i=index">
+                              <label>                                
+                                <input type="checkbox" (change)="onChange(file, $event.target.checked)">
+                                {{file.filename}}
+                              </label>
+                            </div>
+                            <button (click)="onFileSubmit()">submit</button>
+                        </form>                     
                 </div>
             </div>
         </div>
