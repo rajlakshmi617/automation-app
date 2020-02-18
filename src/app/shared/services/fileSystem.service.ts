@@ -7,7 +7,7 @@ import { FileSystem } from '../../store/models/fileSystem.model';
     providedIn: 'root'
   })
 export class FileSystemService {
-    private FILESYSTEM_URL = "http://localhost:3000/read";
+    private FILESYSTEM_URL = "http://localhost:3000/readdir";
     
       constructor(public http : HttpClient) { }
     

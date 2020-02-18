@@ -1,4 +1,5 @@
 <mat-accordion>
+    
     <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)">
         <mat-expansion-panel-header>
         <mat-panel-title>
@@ -62,7 +63,7 @@
         </form>
         </div>
     </mat-expansion-panel>
-    <mat-expansion-panel [expanded]="step === 1" *ngIf="!showContainer">
+    <mat-expansion-panel class="main-container" [expanded]="step === 1" *ngIf="!showContainer">
         <mat-expansion-panel-header>
         <mat-panel-title>
             JSON Panel
@@ -71,6 +72,9 @@
             Rendered Input JSON
         </mat-panel-description>
         </mat-expansion-panel-header>
+        <ng-container *ngIf = "spinnerSuccess">
+                <mat-spinner class="spinner-style"></mat-spinner>
+        </ng-container>
         <div class="row">
             <div class="col-md-7">
                     <section class="toggle-section">
@@ -110,7 +114,7 @@
                             <mat-form-field appearance="outline" class="textTree">
                                 <input matInput placeholder="{{optionType=='string'? 'String Length' : 'Max Value'}}">
                             </mat-form-field>
-                            <button mat-stroked-button color="primary">Primary</button>
+                            <button mat-stroked-button color="primary">Generate Key</button>
                             <button mat-icon-button aria-label="clear icon-button" (click)="deleteNode(node, nestedDataSource.data)">
                                     <mat-icon>clear</mat-icon>
                             </button>
@@ -147,7 +151,7 @@
                                     <mat-form-field appearance="outline" class="textTree">
                                         <input matInput placeholder="{{optionType=='string'? 'String Length' : 'Max Value'}}">
                                     </mat-form-field>
-                                    <button mat-stroked-button color="primary">Primary</button>
+                                    <button mat-stroked-button color="primary">Generate Key</button>
                                 </ng-container>
                                 <button mat-icon-button aria-label="clear icon-button" (click)="deleteNode(node, nestedDataSource.data)">
                                     <mat-icon>clear</mat-icon>
@@ -177,26 +181,54 @@
                     <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data)">Save</button>
                 </div> -->
                 <div class="row placebtn">
-                    <button mat-raised-button color="primary">Test</button>                    
-                </div>
-                <div class="row placebtn">
                     <button mat-raised-button color="primary">Duplicate</button>                    
                 </div>
             </div>
-            <div class="col-md-4 fileholder" *ngIf="FolderArrayList">
+            <div class="col-md-4 fileholder" *ngIf="FolderArrayList">                   
                 <mat-form-field>
                     <mat-label>Filter By Folder Name</mat-label>
-                    <mat-select [formControl]="toppings" multiple>
-                        <mat-option *ngFor="let folder of FolderArrayList" [value]="folder">{{folder}}</mat-option>
+                    <mat-select [formControl]="FilterData"  multiple>
+                        <mat-option *ngFor="let folder of FolderArrayList" (onSelectionChange)="filterFileByFolder($event)" [value]="folder">{{folder}}</mat-option>
                     </mat-select>
                 </mat-form-field>
                 <div class="row filecontainer" *ngIf="FileSystemArrayList">
                     <div>
                         <ul class="sub_modules">
-                            <li (click)="activateClass(i, file)" *ngFor = "let file of FileSystemArrayList; let i = index" [class.active]="selectedIndex === i" style="cursor: pointer">{{file.filename}}</li>
+                            <li (click)="activateClass(i, file)" *ngFor = "let file of FileSystemArrayList; let i = index" [class.active]="selectedIndex === i" class="filelength">{{file.filename}}
+                                <div class="iconholder">
+                                    <mat-icon svgIcon="copy" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon>
+                                    <mat-icon svgIcon="delete" aria-hidden="false" aria-label="Example thumbs up SVG icon" style="margin-left: 14px;"></mat-icon>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                     
+                </div>
+            </div>
+        </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="step === 2" *ngIf="!showContainer">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Select Directory
+            </mat-panel-title>
+            <mat-panel-description>
+                Validate output JSON
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div class="row">
+            <div class="col-md-5"> 
+                <div class="row filecontainer" *ngIf="FileSystemArrayList">
+                      <form [formGroup]="fileSelectionForm">
+                            <h4>Files to be generated</h4>
+                            <div *ngFor="let file of fileArrayList; let i=index">
+                              <label>                                
+                                <input type="checkbox" (change)="onChange(file, $event.target.checked)">
+                                {{file.filename}}
+                              </label>
+                            </div>
+                            <button (click)="onFileSubmit()">submit</button>
+                        </form>                     
                 </div>
             </div>
         </div>
