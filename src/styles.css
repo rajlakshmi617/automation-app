@@ -157,12 +157,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     margin-left: 0px !important;
     margin-top: 5%;
 }
-.cdk-overlay-pane{
-    /* width: 400px !important;
-    height: 310px; */
-    width: fit-content;
-    height: fit-content;
-}
+
+#cdk-overlay-2 {
+    width: 400px !important;
+    height: 310px; 
+} 
+
 .snack-bar-container {
     color: #ffffff;
     font-size: 15px;
@@ -205,4 +205,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     /* margin-top: 4%; */
     margin-left: 10% !important; 
     margin-top: 10% !important;
+}
+.cdk-overlay-pane .mat-autocomplete-panel{
+    /* width: fit-content; */
+    height: fit-content;
 }

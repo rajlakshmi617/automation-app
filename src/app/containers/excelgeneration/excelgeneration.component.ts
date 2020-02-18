@@ -17,23 +17,18 @@ import {FileSystem} from '../../store/models/fileSystem.model';
 import {ReadFileAction} from '../../store/actions/fileSystem.action';
 import {FileSystemState} from '../../store/reducers/fileSystem.reducers'
 import { DialogOverviewExampleDialog } from '../../shared/component/mat-dialoge/dialoge-overview-example-dialoge.component';
+import { FileNode } from '../../shared/modals/Filenode';
 /**
  * Json node data with nested structure. Each node has a filename and a value or a list of children
  */
 
- export class FileNode{
-    children: FileNode[];
-    filename: string;
-    type: any;
- }
+//  export class FileNode{
+//     children: FileNode[];
+//     filename: string;
+//     type: any;
+//  }
 
-/**
- * DialogData for modal popup
- */
-export interface DialogData {
-  dirname: string;
-  filename: string;
-}
+
 
 @Component({
   selector: 'app-excelgeneration',
@@ -270,7 +265,6 @@ export class ExcelgenerationComponent{
     this.service.createDirectory();
   }
 
-
   /**
    * Method to change tree view to editor view
    */
@@ -351,6 +345,7 @@ export class ExcelgenerationComponent{
    */
   generateJson(data){ 
     this.convertedData = "{" + this.arrayToJson(data) + "}";
+    console.log(this.convertedData)
   }
 
   /**

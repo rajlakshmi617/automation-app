@@ -19,6 +19,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import {EffectsModule} from '@ngrx/effects';
 import {FileSystemEffects} from '../app/store/effects/fileSystem.effects';
+import { TreeEditorComponent } from './containers/tree-editor/tree-editor.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import {FileSystemEffects} from '../app/store/effects/fileSystem.effects';
     FieldvalidationComponent,
     ExcelgenerationComponent,
     DialogOverviewExampleDialog,
-    SnackBarComponent
+    SnackBarComponent,
+    TreeEditorComponent
   ],
   imports: [
     BrowserModule,
