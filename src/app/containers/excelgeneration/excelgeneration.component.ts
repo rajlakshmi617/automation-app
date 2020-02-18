@@ -19,10 +19,16 @@ import {ReadFileAction} from '../../store/actions/fileSystem.action';
 import {FileSystemState} from '../../store/reducers/fileSystem.reducers'
 import { DialogOverviewExampleDialog } from '../../shared/component/mat-dialoge/dialoge-overview-example-dialoge.component';
 import { ArrayType } from '@angular/compiler/src/output/output_ast';
+
 import * as fromSpinner from '../../store/reducers/loading-spinner';
 
 import {isLoadingSpinnerActive , State as AppStates} from '../../reducers/index';
 import { select } from '@ngrx/store';
+
+import {DomSanitizer} from '@angular/platform-browser';
+import {MatIconRegistry} from '@angular/material/icon';
+
+
 /**
  * Json node data with nested structure. Each node has a filename and a value or a list of children
  */
@@ -112,17 +118,26 @@ export class ExcelgenerationComponent{
   FilterData = new FormControl();
   
   fileArrayList: any;
+  selectedIndex: number = null;
   selectedFolder:any = [];
+  fileActive: boolean = false;
   
 
-  constructor(private service:FileService, private storee: Store<AppStates>, private store : Store<AppState>, private fb : FormBuilder, public dialog: MatDialog, private _snackBar: MatSnackBar) { 
+  constructor(private service:FileService, private store : Store<AppState>, private stores: Store<AppStates>, private fb : FormBuilder, 
+    public dialog: MatDialog, private _snackBar: MatSnackBar, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) { 
     this.AutomationForm = this.fb.group({
       endPointURL : ["", Validators.required],
       testDescription : [""],
       requestTypeControl : ["", Validators.required],
       responseCodeControl : ["", Validators.required]
     });
-
+    // Icon register icon
+    iconRegistry.addSvgIcon(
+      'delete',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/delete-24px.svg'));
+    iconRegistry.addSvgIcon(
+      'copy',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/file_copy-24px.svg'));
     //json editor code
     this.options.mode = 'code';
     this.options.modes = ['code', 'text', 'tree', 'view'];
@@ -272,7 +287,7 @@ export class ExcelgenerationComponent{
       this.error$ = this.store.select(store => store.fileSystem.error);
       this.store.dispatch(new ReadFileAction());
 
-      this.isLoading = this.storee.pipe(
+      this.isLoading = this.stores.pipe(
         select((states: AppStates) => this.spinnerSuccess = false)
         )
   
@@ -459,16 +474,20 @@ export class ExcelgenerationComponent{
    * To open model popup on click of save button
    */
   openDialog(): void {
-    const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
-      width: '50px',
-      data: {dirname: this.dirname, filename: this.fileName}
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      this.dirname = result.dirname;
-      this.fileName = result.filename;
-      this.exportJsonFile(this.dirname, this.fileName);
-    });
+    if(this.fileActive === true){
+      console.log('file already created');
+    }else{
+      const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
+        width: '50px',
+        data: {dirname: this.dirname, filename: this.fileName}
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        this.dirname = result.dirname;
+        this.fileName = result.filename;
+        this.exportJsonFile(this.dirname, this.fileName);
+      });
+    }
   }
 
   /**
@@ -496,6 +515,20 @@ export class ExcelgenerationComponent{
     this.service.dataChange.next(dataSource)
   }
 
+  activateClass(index: number, file){
+    this.fileActive = true;
+    this.selectedIndex = index;   
+    // console.log('this.selectedIndex', this.selectedIndex);
+    this.service.readFile(file).subscribe(res=>{
+      // console.log('read res', res);
+      if(this.changeFlag){
+        this.service.myMethod(res, 'editor');
+        this.changeFlag = false;
+      }else{
+        this.service.myMethod(res, 'tree');
+      }
+    });
+  }
   /**
    * function to insert the new item in the selected node
    * @param node //selected node

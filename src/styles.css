@@ -3,11 +3,6 @@
 /* Add application styles & imports to this file! */
 @import '~jsoneditor/dist/jsoneditor.min.css';
 
-
-div.jsoneditor-menu > button {
-  background-image: url('https://jsoneditoronline.org/img/jsoneditor-icons.svg');
-}
-
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-tab-label-container{
@@ -56,6 +51,28 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     width: 100%;
     overflow: auto !important;
     max-height: 500px;
+    min-height: 290px;
+}
+.jsoneditor{
+    min-height: 290px !important;
+}
+.filelength{
+    cursor: pointer;
+    font-weight: 500;
+}
+.iconholder{
+    text-align: center;
+    margin-top: -18px;
+}
+div.jsoneditor-menu > button {
+    background-image: url('https://jsoneditoronline.org/img/jsoneditor-icons.svg');
+  }
+.ace-jsoneditor, textarea.jsoneditor-text{
+      min-height: 254px !important;
+  }
+.active{
+    color:blue;
+    border-left:4px solid blue;
 }
 .mat-tree-node{
     min-height: 40px !important;  
@@ -158,10 +175,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     margin-top: 5%;
 }
 .cdk-overlay-pane{
-    /* width: 400px !important;
-    height: 310px; */
-    width: fit-content;
-    height: fit-content;
+    width: 400px !important;
+    height: 310px;
+    /* width: fit-content; */
+    /* height: fit-content; */
 }
 .snack-bar-container {
     color: #ffffff;

@@ -34,23 +34,6 @@ router.post('/', (req, res) => {
                 } else {
                     writeFile(dirname, filename, parseData);
                     res.type('json').status(200).send({message: 'File created sucessfully', type: 'Sucess'})
-                    // const testFolder = '../outputjson/';
-                    // fs.readdir(testFolder, (err, folders) => {
-                    //     folders.map(folder => {
-                    //         fs.readdir('../outputjson/'+folder,(err, files)=>{
-                    //             files.map((file) => {
-                    //                 fileList.push(file);
-                    //                 const relativePath = path.dirname(`../outputjson/${dirname}/${file}`);
-                    //                 fileObj[file] = {filename: file, path: relativePath};
-                    //                 dataObject.push(fileObj[file]);                        
-                    //             })
-                    //         } )
-                    //     });
-                    //     res.setTimeout(3000, function(){
-                    //         res.type('json').status(200).send({message: 'File created sucessfully', fileObject: dataObject, type: 'Sucess'})
-                    //         return;
-                    //     });
-                    // });
                 }
             });
         }else{
@@ -65,28 +48,6 @@ router.post('/', (req, res) => {
                         } else {
                             writeFile(dirname, filename, parseData);
                             res.type('json').status(200).send({message: 'File created sucessfully', message2: 'Directory created successfully', type: 'Sucess'})
-
-                            // res.send('File created sucessfully');     
-                            // const testFolder = '../outputjson/';
-                            // fs.readdir(testFolder, (err, folders) => {
-                            //     folders.map(folder => {
-                            //         fs.readdir('../outputjson/'+folder,(err, files)=>{
-                            //             files.map((file) => {
-                            //                 fileList.push(file);
-                            //                 const relativePath = path.dirname(`../outputjson/${dirname}/${file}`);
-                            //                 fileObj[file] = {filename: file, path: relativePath};
-                            //                 dataObject.push(fileObj[file]);                        
-                            //             })
-                            //             // console.log('fileObj', fileObj);
-
-                            //         } )
-                            //     });
-                            //     res.setTimeout(3000, function(){
-                            //         // console.log('Request has timed out.');
-                            //         res.type('json').status(200).send({message: 'File created sucessfully', message2: 'Directory created successfully', fileObject: dataObject, type: 'Sucess'})
-                            //         return;
-                            //     });
-                            // });
                         }
                     });
                 }
@@ -95,5 +56,6 @@ router.post('/', (req, res) => {
         }
     });
 });
+
 
 module.exports = router;

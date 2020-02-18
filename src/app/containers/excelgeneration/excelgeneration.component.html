@@ -181,7 +181,7 @@
                     <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data)">Save</button>
                 </div> -->
                 <div class="row placebtn">
-                    <button mat-raised-button color="primary">Test</button>                    
+                    <button mat-raised-button color="primary">Duplicate</button>                    
                 </div>
             </div>
             <div class="col-md-4 fileholder" *ngIf="FolderArrayList">                   
@@ -192,8 +192,15 @@
                     </mat-select>
                 </mat-form-field>
                 <div class="row filecontainer" *ngIf="FileSystemArrayList">
-                    <div *ngFor = "let file of FileSystemArrayList">
-                        <span>{{file.filename}}</span>
+                    <div>
+                        <ul class="sub_modules">
+                            <li (click)="activateClass(i, file)" *ngFor = "let file of FileSystemArrayList; let i = index" [class.active]="selectedIndex === i" class="filelength">{{file.filename}}
+                                <div class="iconholder">
+                                    <mat-icon svgIcon="copy" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon>
+                                    <mat-icon svgIcon="delete" aria-hidden="false" aria-label="Example thumbs up SVG icon" style="margin-left: 14px;"></mat-icon>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                     
                 </div>
