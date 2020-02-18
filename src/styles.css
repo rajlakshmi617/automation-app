@@ -174,12 +174,12 @@ div.jsoneditor-menu > button {
     margin-left: 0px !important;
     margin-top: 5%;
 }
-.cdk-overlay-pane{
+
+#cdk-overlay-2 {
     width: 400px !important;
-    height: 310px;
-    /* width: fit-content; */
-    /* height: fit-content; */
-}
+    height: 310px; 
+} 
+
 .snack-bar-container {
     color: #ffffff;
     font-size: 15px;
@@ -222,4 +222,8 @@ div.jsoneditor-menu > button {
     /* margin-top: 4%; */
     margin-left: 10% !important; 
     margin-top: 10% !important;
+}
+.cdk-overlay-pane .mat-autocomplete-panel{
+    /* width: fit-content; */
+    height: fit-content;
 }

@@ -20,6 +20,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import {EffectsModule} from '@ngrx/effects';
 import {FileSystemEffects} from '../app/store/effects/fileSystem.effects';
+import { TreeEditorComponent } from './containers/tree-editor/tree-editor.component';
 import { LoadingIndicatorEffects } from "./store/effects/loading-spinner.effects";
 
 @NgModule({
@@ -28,7 +29,8 @@ import { LoadingIndicatorEffects } from "./store/effects/loading-spinner.effects
     FieldvalidationComponent,
     ExcelgenerationComponent,
     DialogOverviewExampleDialog,
-    SnackBarComponent
+    SnackBarComponent,
+    TreeEditorComponent
   ],
   imports: [
     BrowserModule,

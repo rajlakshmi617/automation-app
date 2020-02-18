@@ -18,34 +18,16 @@ import {FileSystem} from '../../store/models/fileSystem.model';
 import {ReadFileAction} from '../../store/actions/fileSystem.action';
 import {FileSystemState} from '../../store/reducers/fileSystem.reducers'
 import { DialogOverviewExampleDialog } from '../../shared/component/mat-dialoge/dialoge-overview-example-dialoge.component';
+import { FileNode } from '../../shared/modals/Filenode';
 import { ArrayType } from '@angular/compiler/src/output/output_ast';
 
 import * as fromSpinner from '../../store/reducers/loading-spinner';
 
-import {isLoadingSpinnerActive , State as AppStates} from '../../reducers/index';
+import { State as AppStates} from '../../reducers/index';
 import { select } from '@ngrx/store';
 
 import {DomSanitizer} from '@angular/platform-browser';
 import {MatIconRegistry} from '@angular/material/icon';
-
-
-/**
- * Json node data with nested structure. Each node has a filename and a value or a list of children
- */
-
- export class FileNode{
-    children: FileNode[];
-    filename: string;
-    type: any;
- }
-
-/**
- * DialogData for modal popup
- */
-export interface DialogData {
-  dirname: string;
-  filename: string;
-}
 
 @Component({
   selector: 'app-excelgeneration',
@@ -164,7 +146,6 @@ export class ExcelgenerationComponent{
    * Function to upload input JSON file using Browse Button
    * @param event 
    */
-
   uploadFile(event) {
     this.uploadFileFlag = true;
     this.uploadFileCheck = true;
@@ -241,12 +222,7 @@ export class ExcelgenerationComponent{
       return;
     }
 
-
-
-    this.FileSystemArrayList = this.intialFileSystemArrayList.filter(function(folder) { 
-      
-      
-      
+    this.FileSystemArrayList = this.intialFileSystemArrayList.filter(function(folder) {           
       if(folderArr.indexOf(folder.foldername)>-1){
         return folder
       }
@@ -340,7 +316,6 @@ export class ExcelgenerationComponent{
     this.service.createDirectory();
   }
 
-
   /**
    * Method to change tree view to editor view
    */
@@ -402,12 +377,6 @@ export class ExcelgenerationComponent{
     return result.filter(option => option.toLowerCase().includes(filterValue));    
   }
   
-
-  indexValidation(filename){
-    return !isNaN(parseInt(filename));
-  }
-
-
   /**
    * Method to generate keys
    */
@@ -422,6 +391,7 @@ export class ExcelgenerationComponent{
    */
   generateJson(data){ 
     this.convertedData = "{" + this.arrayToJson(data) + "}";
+    console.log(this.convertedData)
   }
 
   /**
@@ -490,31 +460,6 @@ export class ExcelgenerationComponent{
     }
   }
 
-  /**
-   * function to delete selected node
-   * @param node 
-   * @param dataSource 
-   */
-  deleteNode(node, dataSource){
-    
-    if(Array.isArray(dataSource)){
-      dataSource = dataSource.filter(n => !((n.filename == node.filename) && (n.type == node.type)));
-    }   
-    dataSource.map((n) => {
-      if(n.hasOwnProperty('children')){
-        if (n !== null && typeof(n)=="object" )
-        {
-          this.deleteNode(node, n['children'])    //to traverse deep in the tree
-          //console.log('n.filename', n.filename, node.filename, 'n.type', n.type, node.type)  
-          n['children'] = n['children'].filter(n => !((n.filename == node.filename) && (n.type == node.type))) 
-          return;
-        }
-      }
-    });
-    // console.log(dataSource);
-    this.service.dataChange.next(dataSource)
-  }
-
   activateClass(index: number, file){
     this.fileActive = true;
     this.selectedIndex = index;
@@ -528,45 +473,6 @@ export class ExcelgenerationComponent{
         this.service.myMethod(res, 'tree');
       }
     });
-  }
-  /**
-   * function to insert the new item in the selected node
-   * @param node //selected node
-   * @param dataSource // Tree data
-   */  
-   addNode(node, dataSource) {  
-       
-    if(node == 'parentnode'){
-      dataSource.push(new FileNode())
-    } else {
-      dataSource.map((n) => {              
-        if (n !== null && typeof(n)=="object" )
-        {     
-          //console.log('n.filename', n.filename, node.filename, 'n.type', n.type, node.type)      
-          if(n.filename == node.filename && (n.type == node.type)){
-            let newNode = new FileNode();
-            
-            if(n.children && n.children.length>0 && !isNaN(parseInt(n.children[0].filename))){
-              newNode.filename = n.children.length;
-              newNode.children = [];                       
-              newNode.children.push(new FileNode());
-              n['children'].push(newNode);
-              //console.log(n['children'])
-            } else if(!n.hasOwnProperty('children')){
-              n.children = [];
-              n['children'].push(newNode);
-            } else {
-              n['children'].push(newNode);
-            }                               
-          } else if(Array.isArray(n['children'])){
-            this.addNode(node, n['children'])     //to traverse deep in the tree
-          }           
-        }        
-      });
-    } 
-    //console.log(dataSource);
-    this.service.dataChange.next(dataSource)    //updating tree data
-    this.nestedTreeControl.expand(node);        //expanding tree node where new node is added
   }
 
   onFileSubmit() {
