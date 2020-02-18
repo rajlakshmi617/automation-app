@@ -1,4 +1,15 @@
+.spinner-style{
+    z-index: 2;
+    position: absolute;
+    margin-top: 10%;
+    margin-left: 44%;
+    opacity: 1 !important;
+}
 
+/* .main-container {
+    pointer-events: none;
+    opacity: 0.1;   
+} */
 .hidden{
     display: none !important;
 }

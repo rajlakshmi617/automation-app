@@ -44,7 +44,6 @@ export class FileService {
     this.initialize(data, mode);
   }
   changeMessage(message: string) {
-    console.log('inside change message', message);
     this.messageSource.next(message);
   }
   generateJsonFile(jsondata, editorData, dirName, fileName){
@@ -62,15 +61,16 @@ export class FileService {
     }
     return this.http.post(`${this.baseURL}/generate`, fileDTO, {responseType: 'text'});
   }
-  
+  readFile(fileData){
+    return this.http.post(`${this.baseURL}/read`, fileData, {responseType: 'text'});
+  }
   createDirectory(){
     const dirname = "test";
     return this.http.post(this.baseURL + 'createdir', dirname).subscribe(res => console.log('dir res', res));
   }
   
   readDirectory(){
-    console.log('inside read dir');
-    return this.http.get(`${this.baseURL}/read`);
+    return this.http.get(`${this.baseURL}/readdir`);
   }
   initialize(treedata, mode){
     // Parse the string to json object.

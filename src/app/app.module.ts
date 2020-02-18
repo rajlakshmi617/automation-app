@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from "@angular/common/http";
 import { FieldvalidationComponent } from './containers/fieldvalidation/fieldvalidation.component';
@@ -20,6 +21,7 @@ import { environment } from '../environments/environment';
 import {EffectsModule} from '@ngrx/effects';
 import {FileSystemEffects} from '../app/store/effects/fileSystem.effects';
 import { TreeEditorComponent } from './containers/tree-editor/tree-editor.component';
+import { LoadingIndicatorEffects } from "./store/effects/loading-spinner.effects";
 
 @NgModule({
   declarations: [
@@ -39,6 +41,7 @@ import { TreeEditorComponent } from './containers/tree-editor/tree-editor.compon
     ReactiveFormsModule,
     BrowserAnimationsModule,
     NgJsonEditorModule,
+    MatProgressSpinnerModule,
     MatMenuModule,
     MatInputModule,
     MatButtonModule,
@@ -54,7 +57,7 @@ import { TreeEditorComponent } from './containers/tree-editor/tree-editor.compon
     MatSnackBarModule,
     MatSlideToggleModule,
     MatCheckboxModule,
-    EffectsModule.forRoot([FileSystemEffects]),
+    EffectsModule.forRoot([FileSystemEffects,LoadingIndicatorEffects]),
     StoreModule.forRoot({
       fileSystem : fileSystemReducer
     }),
