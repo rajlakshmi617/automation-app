@@ -19,6 +19,10 @@ import {ReadFileAction} from '../../store/actions/fileSystem.action';
 import {FileSystemState} from '../../store/reducers/fileSystem.reducers'
 import { DialogOverviewExampleDialog } from '../../shared/component/mat-dialoge/dialoge-overview-example-dialoge.component';
 import { ArrayType } from '@angular/compiler/src/output/output_ast';
+import * as fromSpinner from '../../store/reducers/loading-spinner';
+
+import {isLoadingSpinnerActive , State as AppStates} from '../../reducers/index';
+import { select } from '@ngrx/store';
 /**
  * Json node data with nested structure. Each node has a filename and a value or a list of children
  */
@@ -86,6 +90,7 @@ export class ExcelgenerationComponent{
   public intialFileSystemArrayList: any;
   public spinnerSuccess : boolean;
 
+  isLoading: Observable<any>;
   loading$ : Observable<boolean>;
   error$ : Observable<Error>;
   // FileSystemsss : FileSystem = {fileName : '', folderName : ''};
@@ -110,7 +115,7 @@ export class ExcelgenerationComponent{
   selectedFolder:any = [];
   
 
-  constructor(private service:FileService, private store : Store<AppState>, private fb : FormBuilder, public dialog: MatDialog, private _snackBar: MatSnackBar) { 
+  constructor(private service:FileService, private storee: Store<AppStates>, private store : Store<AppState>, private fb : FormBuilder, public dialog: MatDialog, private _snackBar: MatSnackBar) { 
     this.AutomationForm = this.fb.group({
       endPointURL : ["", Validators.required],
       testDescription : [""],
@@ -261,11 +266,18 @@ export class ExcelgenerationComponent{
          this.FolderArrayList = fileData['folder'];
          this.FileSystemArrayList = fileData['fileObject'];
          this.intialFileSystemArrayList =  fileData['fileObject'];
-          this.spinnerSuccess = false;      
+          //this.spinnerSuccess = false;      
        });
       this.loading$ = this.store.select(store => store.fileSystem.loading);
       this.error$ = this.store.select(store => store.fileSystem.error);
       this.store.dispatch(new ReadFileAction());
+
+      this.isLoading = this.storee.pipe(
+        select((states: AppStates) => this.spinnerSuccess = false)
+        )
+  
+      this.isLoading.subscribe(loadingres => this.spinnerSuccess = false);
+     
     });
     this.step = 1;
     var AutoTestFormData ={

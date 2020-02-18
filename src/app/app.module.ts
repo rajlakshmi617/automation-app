@@ -20,6 +20,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import {EffectsModule} from '@ngrx/effects';
 import {FileSystemEffects} from '../app/store/effects/fileSystem.effects';
+import { LoadingIndicatorEffects } from "./store/effects/loading-spinner.effects";
 
 @NgModule({
   declarations: [
@@ -54,7 +55,7 @@ import {FileSystemEffects} from '../app/store/effects/fileSystem.effects';
     MatSnackBarModule,
     MatSlideToggleModule,
     MatCheckboxModule,
-    EffectsModule.forRoot([FileSystemEffects]),
+    EffectsModule.forRoot([FileSystemEffects,LoadingIndicatorEffects]),
     StoreModule.forRoot({
       fileSystem : fileSystemReducer
     }),
