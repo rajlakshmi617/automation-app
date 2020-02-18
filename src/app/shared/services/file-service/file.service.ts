@@ -72,7 +72,7 @@ export class FileService {
   readDirectory(){
     return this.http.get(`${this.baseURL}/readdir`);
   }
-  initialize(treedata, mode){
+  initialize(treedata, mode){ 
     // Parse the string to json object.
     const stringyData = JSON.stringify(treedata);
     const dataObject = JSON.parse(stringyData);

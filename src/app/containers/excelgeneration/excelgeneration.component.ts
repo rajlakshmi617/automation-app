@@ -345,7 +345,7 @@ export class ExcelgenerationComponent{
    * Method to change tree view to editor view
    */
   changed(){
-    var convertedData = this.arrayToJson(this.nestedDataSource.data); 
+    var convertedData = this.arrayToJson(this.nestedDataSource.data);
     this.data = JSON.parse("{"+convertedData+"}");
     if(this.changeFlag){
       this.service.myMethod(this.changedData, 'editor');
@@ -517,13 +517,13 @@ export class ExcelgenerationComponent{
 
   activateClass(index: number, file){
     this.fileActive = true;
-    this.selectedIndex = index;   
+    this.selectedIndex = index;
+    event.preventDefault(); 
     // console.log('this.selectedIndex', this.selectedIndex);
     this.service.readFile(file).subscribe(res=>{
-      // console.log('read res', res);
-      if(this.changeFlag){
-        this.service.myMethod(res, 'editor');
-        this.changeFlag = false;
+      if(this.checked){
+        this.service.myMethod(JSON.parse(res), 'editor');
+        this.data = JSON.parse(res);        
       }else{
         this.service.myMethod(res, 'tree');
       }
