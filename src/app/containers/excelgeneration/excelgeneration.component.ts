@@ -156,6 +156,7 @@ export class ExcelgenerationComponent{
       const reader = new FileReader();
       reader.onloadend = (e) => {
         this.jsonData = reader.result;
+        this.service.isArrayFlag = Array.isArray(JSON.parse(this.jsonData));
         this.dataa = reader.result.toString();      
       };
       reader.readAsText(event.target.files[0]);
@@ -188,6 +189,8 @@ export class ExcelgenerationComponent{
           const reader = new FileReader();
           reader.onloadend = (e) => {
             this.jsonData = reader.result;
+            this.service.isArrayFlag = Array.isArray(this.jsonData);
+            console.log(this.jsonData)
             this.dataa = reader.result.toString();
           };
           reader.readAsText(ev.dataTransfer.files[0]);
@@ -390,7 +393,11 @@ export class ExcelgenerationComponent{
    * @param data 
    */
   generateJson(data){ 
-    this.convertedData = "{" + this.arrayToJson(data) + "}";
+    if(this.service.isArrayFlag){
+      this.convertedData = "[" + this.arrayToJson(data) + "]";
+    }else{
+      this.convertedData = "{" + this.arrayToJson(data) + "}";
+    }      
     console.log(this.convertedData)
   }
 
@@ -402,14 +409,14 @@ export class ExcelgenerationComponent{
      array = array.filter(a => (a.filename!=undefined || a.type!=undefined) || a!={})
     let tree="";
     tree += array.map(e => {
-      let n, isArr=false, inArr=false;
+      let n, isArr=false;
       if(e.children && e.children.length > 0){
         if(isNaN(parseInt(e.filename))){
           n = '"'+e.filename+'":';
         } else {
           n = "";         
         }
-        if(!isNaN(parseInt(e.children[0].filename))){ isArr = true, inArr=true; }
+        if(!isNaN(parseInt(e.children[0].filename))){ isArr = true }
          
         n += (isArr) ? "[" : "{";
         n+=this.arrayToJson(e['children'])
@@ -430,7 +437,7 @@ export class ExcelgenerationComponent{
             n='"'+e.type+'"';
           }
         }else{
-          n = e.type; 
+          n = e.type;
         }
       }
       //console.log(n)

@@ -1,17 +1,7 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-
-/**
- * Json node data with nested structure. Each node has a filename and a value or a list of children
- */
-
-export class FileNode{
-  children: FileNode[];
-  filename: string;
-  type: any;
-  level:any;
-}
+import { FileNode } from '../../modals/Filenode'
 
  /**
  * File database, it can build a tree structured Json object from string.
@@ -32,6 +22,7 @@ export class FileService {
   currentMessage = this.messageSource.asObservable();
   private myMethodSubject = new Subject<any>();
   private messageSubject = new Subject<any>();
+  isArrayFlag:boolean = false;
 
   readonly baseURL = "http://localhost:3000";
   constructor(private http: HttpClient) { 
@@ -80,6 +71,7 @@ export class FileService {
     // file node as children.
     var data;
     if(mode == 'tree'){
+      console.log(this.isArrayFlag)
        data = this.buildFileTree(JSON.parse(dataObject), 0);
     }else if(mode == 'editor'){
        data = this.buildFileTree(treedata, 0);
