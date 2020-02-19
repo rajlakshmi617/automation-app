@@ -1,15 +1,6 @@
-<mat-accordion>
-    
-    <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)">
-        <mat-expansion-panel-header>
-        <mat-panel-title>
-            Excel generation
-        </mat-panel-title>
-        <mat-panel-description>
-            Provide input details for excel generation
-        </mat-panel-description>
-        </mat-expansion-panel-header>
-        <div class="container">
+<mat-tab-group [selectedIndex]="selected.value">
+    <mat-tab label="Step 1">
+            <div class="container">
                 <form [formGroup] = "AutomationForm" class="example-form" novalidate autocomplete="off">    
                         <mat-form-field class="example-full-width">
                             <input matInput placeholder="API Endpoint URL" formControlName = "endPointURL" value="">
@@ -62,94 +53,81 @@
             <!-- </div> -->
         </form>
         </div>
-    </mat-expansion-panel>
-    <mat-expansion-panel class="main-container" [expanded]="step === 1" *ngIf="!showContainer">
-        <mat-expansion-panel-header>
-        <mat-panel-title>
-            JSON Panel
-        </mat-panel-title>
-        <mat-panel-description>
-            Rendered Input JSON
-        </mat-panel-description>
-        </mat-expansion-panel-header>
-        <ng-container *ngIf = "spinnerSuccess">
-                <mat-spinner class="spinner-style"></mat-spinner>
-        </ng-container>
-        <div class="row">
-            <div class="col-md-7">
-                    <section class="toggle-section">
-                            <mat-slide-toggle
-                                class="toggle-margin"
-                                [color]="color"
-                                [(ngModel)]="checked"
-                                (change)="changed()">
-
-                              <span *ngIf="!checked">Tree View</span>
-                              <span *ngIf="checked">Editor View</span>
-                            </mat-slide-toggle>
-                          </section>
-                <div class="treecontainer">
-                        <ng-container *ngIf="!checked">
-                            <tree-editor [nestedDataSource]="nestedDataSource" [nestedTreeControl]="nestedTreeControl"></tree-editor>  
-                    </ng-container>
-                    <ng-container *ngIf = "checked">
-                            <json-editor [options]="options" [data]="data" (paste)="onPaste($event)"></json-editor>
-                    </ng-container>
-                </div>
-            </div>
-            <div class="col-md-1 btnholder">
-                <div class="row placebtn">
-                    <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data);openDialog()">Save</button>
-                </div>
-                <!-- <div class="row placebtn">
-                    <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data)">Save</button>
-                </div> -->
-                <div class="row placebtn">
-                    <button mat-raised-button color="primary">Duplicate</button>                    
-                </div>
-            </div>
-            <div class="col-md-4 fileholder" *ngIf="FolderArrayList">                   
-                <mat-form-field>
-                    <mat-label>Filter By Folder Name</mat-label>
-                    <mat-select [formControl]="FilterData"  multiple>
-                        <mat-option *ngFor="let folder of FolderArrayList" (onSelectionChange)="filterFileByFolder($event)" [value]="folder">{{folder}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <div class="row filecontainer" *ngIf="FileSystemArrayList">
-                    <div>
-                        <ul class="sub_modules">
-                            <li (click)="activateClass(i, file)" *ngFor = "let file of FileSystemArrayList; let i = index" [class.active]="selectedIndex === i" class="filelength">{{file.filename}}
-                                <div class="iconholder">
-                                    <mat-icon svgIcon="copy" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon>
-                                    <mat-icon svgIcon="delete" aria-hidden="false" aria-label="Example thumbs up SVG icon" style="margin-left: 14px;"></mat-icon>
-                                </div>
-                            </li>
-                        </ul>
+    </mat-tab>
+    <mat-tab label="Step 2" [disabled]='step === 0'>
+            <div class="row">
+                <div class="col-md-7">
+                        <section class="toggle-section">
+                                <mat-slide-toggle
+                                    class="toggle-margin"
+                                    [color]="color"
+                                    [(ngModel)]="checked"
+                                    (change)="changed()">
+    
+                                    <span *ngIf="!checked">Tree View</span>
+                                    <span *ngIf="checked">Editor View</span>
+                                </mat-slide-toggle>
+                                </section>
+                    <div class="treecontainer">
+                            <ng-container *ngIf="!checked">
+                                <tree-editor [nestedDataSource]="nestedDataSource" [nestedTreeControl]="nestedTreeControl"></tree-editor>  
+                        </ng-container>
+                        <ng-container *ngIf = "checked">
+                                <json-editor [options]="options" [data]="data" (paste)="onPaste($event)"></json-editor>
+                        </ng-container>
                     </div>
-                    
+                </div>
+                <div class="col-md-1 btnholder">
+                    <div class="row placebtn">
+                        <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data);openDialog()">Save</button>
+                    </div>
+                    <!-- <div class="row placebtn">
+                        <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data)">Save</button>
+                    </div> -->
+                    <!-- <div class="row placebtn">
+                        <button mat-raised-button color="primary">Duplicate</button>                    
+                    </div> -->
+                </div>
+                <ng-container *ngIf = "spinnerSuccess">
+                        <mat-spinner class="spinner-style"></mat-spinner>
+                </ng-container>
+                <div class="col-md-4 fileholder" *ngIf="FolderArrayList">                   
+                    <mat-form-field>
+                        <mat-label>Filter By Folder Name</mat-label>
+                        <mat-select [formControl]="FilterData"  multiple>
+                            <mat-option *ngFor="let folder of FolderArrayList" (onSelectionChange)="filterFileByFolder($event)" [value]="folder">{{folder}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div class="row filecontainer" *ngIf="FileSystemArrayList">
+                        <div>
+                            <ul class="sub_modules">
+                                <li (click)="activateClass(i, file)" *ngFor = "let file of FileSystemArrayList; let i = index" [class.active]="selectedIndex === i" class="filelength">{{file.filename}}
+                                    <div class="iconholder">
+                                        <mat-icon svgIcon="copy" aria-hidden="false" aria-label="Example thumbs up SVG icon" (click)="generateJson(nestedDataSource.data);openDialog()"></mat-icon>
+                                        <mat-icon svgIcon="delete" aria-hidden="false" aria-label="Example thumbs up SVG icon" style="margin-left: 14px;" (click)="deleteFileDialog(file)"></mat-icon>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                    </div>
                 </div>
             </div>
-        </div>
-    </mat-expansion-panel>
-    <mat-expansion-panel [expanded]="step === 2" *ngIf="!showContainer">
-        <mat-expansion-panel-header>
-            <mat-panel-title>
-                Select Directory
-            </mat-panel-title>
-            <mat-panel-description>
-                Validate output JSON
-            </mat-panel-description>
-        </mat-expansion-panel-header>
+            <div class="processinput">
+                <button mat-raised-button color="primary" (click)="goToTabThree()">Process Input Files</button>                    
+            </div>
+    </mat-tab>
+    <mat-tab label="Step 3" [disabled]='step === 0 || step === 1'>
         <div class="row">
             <div class="col-md-5"> 
                 <div class="row filecontainer" *ngIf="FileSystemArrayList">
-                      <form [formGroup]="fileSelectionForm">
+                        <form [formGroup]="fileSelectionForm">
                             <h4>Select files to be generated</h4>
                             <div *ngFor="let file of fileArrayList; let i=index">
-                              <label>                                
+                                <label>                                
                                 <input type="checkbox" (change)="onChange(file, $event.target.checked)">
                                 {{file.filename}}
-                              </label>
+                                </label>
                             </div>
                             <button (click)="onFileSubmit()">submit</button>
                         </form>                     
@@ -187,8 +165,48 @@
               </div>
             </div>
         </div>
-    </mat-expansion-panel>
-</mat-accordion>
+    </mat-tab>
+</mat-tab-group>
+
+<!-- <mat-accordion> -->
+    
+    <!-- <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)"> -->
+        <!-- <mat-expansion-panel-header>
+        <mat-panel-title>
+            Excel generation
+        </mat-panel-title>
+        <mat-panel-description>
+            Provide input details for excel generation
+        </mat-panel-description>
+        </mat-expansion-panel-header> -->
+        
+    <!-- </mat-expansion-panel> -->
+    <!-- <mat-expansion-panel class="main-container" [expanded]="step === 1" *ngIf="!showContainer"> -->
+        <!-- <mat-expansion-panel-header>
+        <mat-panel-title>
+            JSON Panel
+        </mat-panel-title>
+        <mat-panel-description>
+            Rendered Input JSON
+        </mat-panel-description>
+        </mat-expansion-panel-header> -->
+        <!-- <ng-container *ngIf = "spinnerSuccess">
+                <mat-spinner class="spinner-style"></mat-spinner>
+        </ng-container> -->
+        
+    <!-- </mat-expansion-panel> -->
+    <!-- <mat-expansion-panel [expanded]="step === 2" *ngIf="!showContainer"> -->
+        <!-- <mat-expansion-panel-header>
+            <mat-panel-title>
+                Select Directory
+            </mat-panel-title>
+            <mat-panel-description>
+                Validate output JSON
+            </mat-panel-description>
+        </mat-expansion-panel-header> -->
+        
+    <!-- </mat-expansion-panel> -->
+<!-- </mat-accordion> -->
 
 
     

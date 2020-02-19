@@ -6,7 +6,7 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-tab-label-container{
-  background-color: #4735b9;
+  background-color:#442c6f;
 }
 .mat-tab-label-content{
   color: #ffffff;
@@ -169,11 +169,12 @@ div.jsoneditor-menu > button {
     border: #9c9c9c;
     border-style: solid;
     border-width: 2px;
-    width: 100%;
+    width: 95%;
     padding: 4px;
     margin-left: 0px !important;
     margin-top: 5%;
 }
+<<<<<<< HEAD
 
 .formDatacontainer{
     border: #9c9c9c;
@@ -185,6 +186,15 @@ div.jsoneditor-menu > button {
     width: 137%;
 }
 
+=======
+.mat-tab-body-content{
+    overflow: hidden !important;
+}
+.processinput{
+    text-align: center;
+    margin-top: 2%;
+}
+>>>>>>> 942feca670024ae89d62a2e3fc2a8dfc3d442c38
 #cdk-overlay-2 {
     width: 400px !important;
     height: 310px; 

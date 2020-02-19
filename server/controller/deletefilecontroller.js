@@ -4,7 +4,7 @@ const fs = require('fs');
 var path = require('path');
 
 /**
- * Function that read JSON file
+ * Function that delete JSON file
  * @param {*} dirname 
  * @param {*} filename 
  * @param {*} parseData 
@@ -13,14 +13,13 @@ var path = require('path');
 router.post('/', (req, res) => {
     let fileName = req.body.filename;
     let folderName = req.body.foldername;
-    fs.readFile(`../outputjson/${folderName}/${fileName}`, function(err, data) {
-        if(err){
-            throw err;
+    fs.unlink(`../outputjson/${folderName}/${fileName}`, (err) => {
+        if (err) {
+          throw err;
         }
-        res.writeHead(200, {'Content-Type': 'application/JSON'});
-        res.write(data);
-        res.end();
-    });
+        res.type('json').status(200).send({message3: 'File has been deleted sucessfully.', type: 'Sucess'});
+        //file removed
+      })
 });
 
 module.exports = router;

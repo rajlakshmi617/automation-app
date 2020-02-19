@@ -5,7 +5,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Store} from '@ngrx/store';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {Observable} from 'rxjs';
+import {Observable, from} from 'rxjs';
 import {tap} from "rxjs/operators"
 import { AppState } from '../../store/models/app-state.model';
 import {FormBuilder, FormGroup, Validators, FormControl, FormArray} from '@angular/forms';
@@ -17,7 +17,8 @@ import {FileService} from '../../shared/services/file-service/file.service';
 import {FileSystem} from '../../store/models/fileSystem.model';
 import {ReadFileAction} from '../../store/actions/fileSystem.action';
 import {FileSystemState} from '../../store/reducers/fileSystem.reducers'
-import { DialogOverviewExampleDialog } from '../../shared/component/mat-dialoge/dialoge-overview-example-dialoge.component';
+import { DialogOverviewExampleDialog } from '../../shared/component/mat-dialoge/save-copy-dialoge/dialoge-overview-example-dialoge.component';
+import { DeleteDialoge } from '../../shared/component/mat-dialoge/delete-dialoge/delete-dialoge.component';
 import { FileNode } from '../../shared/modals/Filenode';
 import { ArrayType } from '@angular/compiler/src/output/output_ast';
 
@@ -59,6 +60,7 @@ export class ExcelgenerationComponent{
   convertedData: any;
   setStep(index: number) {
     this.step = index;
+    this.selected.setValue(this.step);
   }
   
   setTapThreeStep(index: number){
@@ -108,6 +110,7 @@ export class ExcelgenerationComponent{
   selectedIndex: number = null;
   selectedFolder:any = [];
   fileActive: boolean = false;
+  selected = new FormControl(0);
   
 
   constructor(private service:FileService, private store : Store<AppState>, private stores: Store<AppStates>, private fb : FormBuilder, 
@@ -218,7 +221,7 @@ export class ExcelgenerationComponent{
       }
     }
     
-    console.log('selectedFolder', this.selectedFolder.length);
+    // console.log('selectedFolder', this.selectedFolder.length);
 
     var folderArr = this.selectedFolder;
 
@@ -232,7 +235,7 @@ export class ExcelgenerationComponent{
         return folder
       }
     });
-    console.log(this.FileSystemArrayList);
+    // console.log(this.FileSystemArrayList);
   }
 
   /**
@@ -276,6 +279,8 @@ export class ExcelgenerationComponent{
      
     });
     this.step = 1;
+  this.selected.setValue(this.step);
+
     var AutoTestFormData ={
       "endPointURL" : this.AutomationForm.value.endPointURL,
       "queryParams" : this.AutomationForm.value.queryParams,
@@ -464,7 +469,22 @@ export class ExcelgenerationComponent{
       });
     }
   }
+  deleteFileDialog(fileData): void {
+    console.log('fileData', fileData);
+    const dialogRef = this.dialog.open(DeleteDialoge, {
+      width: '50px',
+      data: {dirname: fileData.foldername, filename: fileData.filename, path: fileData.filepath}
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('result-->', result);
+      this.service.deleteFile(fileData).subscribe(res=> {
+        console.log('res', res);
+        this.openSnackBar(res);
+      });
+      // this.exportJsonFile(this.dirname, this.fileName);
+    });
+  }
   activateClass(index: number, file){
     this.fileActive = true;
     this.selectedIndex = index;
@@ -480,6 +500,10 @@ export class ExcelgenerationComponent{
     });
   }
 
+  goToTabThree(){
+    this.step = 2;
+    this.selected.setValue(this.step);
+  }
   onFileSubmit() {
     //console.log(this.files.value)
   }
@@ -493,7 +517,7 @@ export class ExcelgenerationComponent{
       let index = fileFormArray.controls.findIndex(x => x.value == file)
       fileFormArray.removeAt(index);
     }
-    console.log(fileFormArray.value)
+    // console.log(fileFormArray.value)
   }
 }
 
