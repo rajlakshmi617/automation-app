@@ -64,6 +64,9 @@ export class FileService {
   readFile(fileData){
     return this.http.post(`${this.baseURL}/read`, fileData, {responseType: 'text'});
   }
+  deleteFile(fileData){
+    return this.http.post(`${this.baseURL}/delete`, fileData, {responseType: 'text'});
+  }
   createDirectory(){
     const dirname = "test";
     return this.http.post(this.baseURL + 'createdir', dirname).subscribe(res => console.log('dir res', res));
