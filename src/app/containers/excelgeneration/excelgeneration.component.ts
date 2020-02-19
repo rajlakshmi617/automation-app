@@ -55,18 +55,23 @@ export class ExcelgenerationComponent{
    * steps for expand and collapse collasable area
    */
   step = 0;
+  tapThreeStep = 0;
   convertedData: any;
   setStep(index: number) {
     this.step = index;
+  }
+  
+  setTapThreeStep(index: number){
+    this.tapThreeStep = index;
   }
 
   public dataa:any;
   public data : any;
   public fileName: string;
   public endPointURL : string;
-  public testDescription : string;
+  public queryParams : string;
   public requestTypeControl : any;
-  public responseCodeControl : any;
+  // public responseCodeControl : any;
   public color = 'accent';
   public checked = false;
   public disabled = false;
@@ -109,9 +114,9 @@ export class ExcelgenerationComponent{
     public dialog: MatDialog, private _snackBar: MatSnackBar, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) { 
     this.AutomationForm = this.fb.group({
       endPointURL : ["", Validators.required],
-      testDescription : [""],
-      requestTypeControl : ["", Validators.required],
-      responseCodeControl : ["", Validators.required]
+      queryParams : [""],
+      requestTypeControl : ["", Validators.required]
+      // responseCodeControl : ["", Validators.required]
     });
     // Icon register icon
     iconRegistry.addSvgIcon(
@@ -273,9 +278,9 @@ export class ExcelgenerationComponent{
     this.step = 1;
     var AutoTestFormData ={
       "endPointURL" : this.AutomationForm.value.endPointURL,
-      "testDescription" : this.AutomationForm.value.testDescription,
+      "queryParams" : this.AutomationForm.value.queryParams,
       "requestTypeControl" : this.AutomationForm.value.requestTypeControl,
-      "responseCodeControl" : this.AutomationForm.value.responseCodeControl,
+      // "responseCodeControl" : this.AutomationForm.value.responseCodeControl,
       "path" : this.uploadFilePath
     };
   }
@@ -360,11 +365,11 @@ export class ExcelgenerationComponent{
         map(value => this._filter(value, this.requestType))
     );
 
-    this.responseTypeFilterOptions = formData.responseCodeControl.valueChanges
-      .pipe(
-        startWith(''),
-        map(value => this._filter(value, this.expectedResponseCode))
-    );     
+    // this.responseTypeFilterOptions = formData.responseCodeControl.valueChanges
+    //   .pipe(
+    //     startWith(''),
+    //     map(value => this._filter(value, this.expectedResponseCode))
+    // );     
   } 
   
   /**

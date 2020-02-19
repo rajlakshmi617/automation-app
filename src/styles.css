@@ -175,6 +175,16 @@ div.jsoneditor-menu > button {
     margin-top: 5%;
 }
 
+.formDatacontainer{
+    border: #9c9c9c;
+    border-style: solid;
+    border-width: 2px;
+    padding: 4px;
+    margin-left: 106% !important;
+    margin-top: -41%;
+    width: 137%;
+}
+
 #cdk-overlay-2 {
     width: 400px !important;
     height: 310px; 

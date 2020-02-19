@@ -16,9 +16,9 @@
                             <mat-error *ngIf="!AutomationForm.controls['endPointURL'].valid && !AutomationForm.controls['endPointURL'].touched"></mat-error>
                         </mat-form-field>
                         <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Test Description" formControlName = "testDescription">
-                            <!-- <textarea matInput rows="3" formControlName = "testDescription" placeholder="Test Description"></textarea> -->
-                            <mat-error *ngIf="!AutomationForm.controls['testDescription'].valid && !AutomationForm.controls['testDescription'].touched"></mat-error>
+                            <input matInput placeholder="Query Params" formControlName = "queryParams">
+                            <!-- <textarea matInput rows="3" formControlName = "queryParams" placeholder="Test Description"></textarea> -->
+                            <mat-error *ngIf="!AutomationForm.controls['queryParams'].valid && !AutomationForm.controls['queryParams'].touched"></mat-error>
                         </mat-form-field>
                         
                         <mat-form-field class="example-full-width">
@@ -31,7 +31,7 @@
                                 <mat-error *ngIf="!AutomationForm.controls['requestTypeControl'].touched"></mat-error>
                         </mat-form-field>
 
-                        <mat-form-field class="example-full-width">
+                        <!-- <mat-form-field class="example-full-width">
                             <input type="text" placeholder="Expected Response Code" aria-label="Number" matInput formControlName="responseCodeControl" [matAutocomplete]="autofill">
                                 <mat-autocomplete #autofill="matAutocomplete">
                                     <mat-option *ngFor="let res of responseTypeFilterOptions | async" [value]="res">
@@ -39,7 +39,7 @@
                                     </mat-option>
                                 </mat-autocomplete>
                                 <mat-error *ngIf="!AutomationForm.controls['responseCodeControl'].touched"></mat-error>
-                        </mat-form-field>
+                        </mat-form-field> -->
                     <div class="uploadfile">
                         <p class="formlabel">Upload Input JSON File</p>
                             <input type="file" #fileUploader name="files" accept=".json" (change)="uploadFile($event)" />
@@ -154,6 +154,37 @@
                             <button (click)="onFileSubmit()">submit</button>
                         </form>                     
                 </div>
+                <div class="row formDatacontainer" >
+                <mat-accordion>
+                        <mat-expansion-panel [expanded]="tapThreeStep === 0" (opened)="setTapThreeStep(0)">
+                                <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                                Select Directory
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                Validate output JSON
+                                            </mat-panel-description>
+                                </mat-expansion-panel-header>
+                                <div>
+                                    <h1>gsdfdsG</h1>
+                                    <h1>gsdfdsG</h1>
+                                </div>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel [expanded]="tapThreeStep === 1">
+                                <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                                Select sfsdfd
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                Validate input JSON
+                                            </mat-panel-description>
+                                </mat-expansion-panel-header>
+                                <div>
+                                    <h1>helllo</h1>
+                                </div>
+                        </mat-expansion-panel>
+                </mat-accordion>                  
+              </div>
             </div>
         </div>
     </mat-expansion-panel>
