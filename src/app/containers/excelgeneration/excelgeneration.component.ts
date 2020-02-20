@@ -324,6 +324,7 @@ export class ExcelgenerationComponent{
    */
   changed(){
     var convertedData = this.arrayToJson(this.nestedDataSource.data); 
+    
     this.data = JSON.parse("{"+convertedData+"}");
     if(this.changeFlag){
       this.service.myMethod(this.changedData, 'editor');
@@ -455,7 +456,7 @@ export class ExcelgenerationComponent{
       console.log('file already created');
     }else{
       const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
-        width: '50px',
+        //width: '50px',
         data: {dirname: this.dirname, filename: this.fileName}
       });
   
