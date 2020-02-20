@@ -1,24 +1,15 @@
-<mat-accordion>
-    
-    <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)">
-        <mat-expansion-panel-header>
-        <mat-panel-title>
-            Excel generation
-        </mat-panel-title>
-        <mat-panel-description>
-            Provide input details for excel generation
-        </mat-panel-description>
-        </mat-expansion-panel-header>
-        <div class="container">
+<mat-tab-group [selectedIndex]="selected.value">
+    <mat-tab label="Step 1">
+            <div class="container">
                 <form [formGroup] = "AutomationForm" class="example-form" novalidate autocomplete="off">    
                         <mat-form-field class="example-full-width">
                             <input matInput placeholder="API Endpoint URL" formControlName = "endPointURL" value="">
                             <mat-error *ngIf="!AutomationForm.controls['endPointURL'].valid && !AutomationForm.controls['endPointURL'].touched"></mat-error>
                         </mat-form-field>
                         <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Test Description" formControlName = "testDescription">
-                            <!-- <textarea matInput rows="3" formControlName = "testDescription" placeholder="Test Description"></textarea> -->
-                            <mat-error *ngIf="!AutomationForm.controls['testDescription'].valid && !AutomationForm.controls['testDescription'].touched"></mat-error>
+                            <input matInput placeholder="Query Params" formControlName = "queryParams">
+                            <!-- <textarea matInput rows="3" formControlName = "queryParams" placeholder="Test Description"></textarea> -->
+                            <mat-error *ngIf="!AutomationForm.controls['queryParams'].valid && !AutomationForm.controls['queryParams'].touched"></mat-error>
                         </mat-form-field>
                         
                         <mat-form-field class="example-full-width">
@@ -31,7 +22,7 @@
                                 <mat-error *ngIf="!AutomationForm.controls['requestTypeControl'].touched"></mat-error>
                         </mat-form-field>
 
-                        <mat-form-field class="example-full-width">
+                        <!-- <mat-form-field class="example-full-width">
                             <input type="text" placeholder="Expected Response Code" aria-label="Number" matInput formControlName="responseCodeControl" [matAutocomplete]="autofill">
                                 <mat-autocomplete #autofill="matAutocomplete">
                                     <mat-option *ngFor="let res of responseTypeFilterOptions | async" [value]="res">
@@ -39,7 +30,7 @@
                                     </mat-option>
                                 </mat-autocomplete>
                                 <mat-error *ngIf="!AutomationForm.controls['responseCodeControl'].touched"></mat-error>
-                        </mat-form-field>
+                        </mat-form-field> -->
                     <div class="uploadfile">
                         <p class="formlabel">Upload Input JSON File</p>
                             <input type="file" #fileUploader name="files" accept=".json" (change)="uploadFile($event)" />
@@ -62,102 +53,161 @@
             <!-- </div> -->
         </form>
         </div>
-    </mat-expansion-panel>
-    <mat-expansion-panel class="main-container" [expanded]="step === 1" *ngIf="!showContainer">
-        <mat-expansion-panel-header>
+    </mat-tab>
+    <mat-tab label="Step 2" [disabled]='step === 0'>
+            <div class="row">
+                <div class="col-md-7">
+                        <section class="toggle-section">
+                                <mat-slide-toggle
+                                    class="toggle-margin"
+                                    [color]="color"
+                                    [(ngModel)]="checked"
+                                    (change)="changed()">
+    
+                                    <span *ngIf="!checked">Tree View</span>
+                                    <span *ngIf="checked">Editor View</span>
+                                </mat-slide-toggle>
+                                </section>
+                    <div class="treecontainer">
+                            <ng-container *ngIf="!checked">
+                                <tree-editor [nestedDataSource]="nestedDataSource" [nestedTreeControl]="nestedTreeControl"></tree-editor>  
+                        </ng-container>
+                        <ng-container *ngIf = "checked">
+                                <json-editor [options]="options" [data]="data" (paste)="onPaste($event)"></json-editor>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="col-md-1 btnholder">
+                    <div class="row placebtn">
+                        <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data);openDialog()">Save</button>
+                    </div>
+                    <!-- <div class="row placebtn">
+                        <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data)">Save</button>
+                    </div> -->
+                    <!-- <div class="row placebtn">
+                        <button mat-raised-button color="primary">Duplicate</button>                    
+                    </div> -->
+                </div>
+                <ng-container *ngIf = "spinnerSuccess">
+                        <mat-spinner class="spinner-style"></mat-spinner>
+                </ng-container>
+                <div class="col-md-4 fileholder" *ngIf="FolderArrayList">                   
+                    <mat-form-field>
+                        <mat-label>Filter By Folder Name</mat-label>
+                        <mat-select [formControl]="FilterData"  multiple>
+                            <mat-option *ngFor="let folder of FolderArrayList" (onSelectionChange)="filterFileByFolder($event)" [value]="folder">{{folder}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div class="row filecontainer" *ngIf="FileSystemArrayList">
+                        <div>
+                            <ul class="sub_modules">
+                                <li (click)="activateClass(i, file)" *ngFor = "let file of FileSystemArrayList; let i = index" [class.active]="selectedIndex === i" class="filelength">{{file.filename}}
+                                    <div class="iconholder">
+                                        <mat-icon svgIcon="copy" aria-hidden="false" aria-label="Example thumbs up SVG icon" (click)="generateJson(nestedDataSource.data);openDialog()"></mat-icon>
+                                        <mat-icon svgIcon="delete" aria-hidden="false" aria-label="Example thumbs up SVG icon" style="margin-left: 14px;" (click)="deleteFileDialog(file)"></mat-icon>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="processinput">
+                <button mat-raised-button color="primary" (click)="goToTabThree()">Process Input Files</button>                    
+            </div>
+    </mat-tab>
+    <mat-tab label="Step 3" [disabled]='step === 0 || step === 1'>
+        <div class="row">
+            <div class="col-md-5"> <h4>Files to be selected:</h4>
+                
+                <div class="row filecontainer" *ngIf="FileSystemArrayList">                    
+                    <div *ngFor="let file of FileSystemArrayList; let i=index" [class.active]="selectedIndex === i" class="filelength">
+                        <input type="radio" name="file.filename" [value]="file.filename" (click)="selectFile(i, file)" />
+                        {{file.filename}}
+                    </div>                                         
+                </div>
+
+                <div class="row formDatacontainer">
+                <mat-accordion>
+                        <mat-expansion-panel [expanded]="tapThreeStep === 0" (opened)="setTapThreeStep(0)">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Select Directory
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Validate output JSON
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>                            
+                            <div class="treecontainer">
+                                <ng-container *ngIf="!checked">
+                                    <tree-editor [nestedDataSource]="nestedDataSource" [nestedTreeControl]="nestedTreeControl"></tree-editor>  
+                                </ng-container>
+                                <ng-container *ngIf = "checked">
+                                    <json-editor [options]="options" [data]="data" (paste)="onPaste($event)"></json-editor>
+                                </ng-container>
+                            </div>
+                        
+                        </mat-expansion-panel>
+                        <mat-expansion-panel [expanded]="tapThreeStep === 1">
+                                <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                                Select sfsdfd
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                Validate input JSON
+                                            </mat-panel-description>
+                                </mat-expansion-panel-header>
+                                <div>
+                                    <h1>helllo</h1>
+                                </div>
+                        </mat-expansion-panel>
+                </mat-accordion>                  
+              </div>
+            </div>
+        </div>
+    </mat-tab>
+</mat-tab-group>
+
+<!-- <mat-accordion> -->
+    
+    <!-- <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)"> -->
+        <!-- <mat-expansion-panel-header>
+        <mat-panel-title>
+            Excel generation
+        </mat-panel-title>
+        <mat-panel-description>
+            Provide input details for excel generation
+        </mat-panel-description>
+        </mat-expansion-panel-header> -->
+        
+    <!-- </mat-expansion-panel> -->
+    <!-- <mat-expansion-panel class="main-container" [expanded]="step === 1" *ngIf="!showContainer"> -->
+        <!-- <mat-expansion-panel-header>
         <mat-panel-title>
             JSON Panel
         </mat-panel-title>
         <mat-panel-description>
             Rendered Input JSON
         </mat-panel-description>
-        </mat-expansion-panel-header>
-        <ng-container *ngIf = "spinnerSuccess">
+        </mat-expansion-panel-header> -->
+        <!-- <ng-container *ngIf = "spinnerSuccess">
                 <mat-spinner class="spinner-style"></mat-spinner>
-        </ng-container>
-        <div class="row">
-            <div class="col-md-7">
-                    <section class="toggle-section">
-                            <mat-slide-toggle
-                                class="toggle-margin"
-                                [color]="color"
-                                [(ngModel)]="checked"
-                                (change)="changed()">
-
-                              <span *ngIf="!checked">Tree View</span>
-                              <span *ngIf="checked">Editor View</span>
-                            </mat-slide-toggle>
-                          </section>
-                <div class="treecontainer">
-                        <ng-container *ngIf="!checked">
-                            <tree-editor [nestedDataSource]="nestedDataSource" [nestedTreeControl]="nestedTreeControl"></tree-editor>  
-                    </ng-container>
-                    <ng-container *ngIf = "checked">
-                            <json-editor [options]="options" [data]="data" (paste)="onPaste($event)"></json-editor>
-                    </ng-container>
-                </div>
-            </div>
-            <div class="col-md-1 btnholder">
-                <div class="row placebtn">
-                    <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data);openDialog()">Save</button>
-                </div>
-                <!-- <div class="row placebtn">
-                    <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data)">Save</button>
-                </div> -->
-                <div class="row placebtn">
-                    <button mat-raised-button color="primary">Duplicate</button>                    
-                </div>
-            </div>
-            <div class="col-md-4 fileholder" *ngIf="FolderArrayList">                   
-                <mat-form-field>
-                    <mat-label>Filter By Folder Name</mat-label>
-                    <mat-select [formControl]="FilterData"  multiple>
-                        <mat-option *ngFor="let folder of FolderArrayList" (onSelectionChange)="filterFileByFolder($event)" [value]="folder">{{folder}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <div class="row filecontainer" *ngIf="FileSystemArrayList">
-                    <div>
-                        <ul class="sub_modules">
-                            <li (click)="activateClass(i, file)" *ngFor = "let file of FileSystemArrayList; let i = index" [class.active]="selectedIndex === i" class="filelength">{{file.filename}}
-                                <div class="iconholder">
-                                    <mat-icon svgIcon="copy" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon>
-                                    <mat-icon svgIcon="delete" aria-hidden="false" aria-label="Example thumbs up SVG icon" style="margin-left: 14px;"></mat-icon>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
-    </mat-expansion-panel>
-    <mat-expansion-panel [expanded]="step === 2" *ngIf="!showContainer">
-        <mat-expansion-panel-header>
+        </ng-container> -->
+        
+    <!-- </mat-expansion-panel> -->
+    <!-- <mat-expansion-panel [expanded]="step === 2" *ngIf="!showContainer"> -->
+        <!-- <mat-expansion-panel-header>
             <mat-panel-title>
                 Select Directory
             </mat-panel-title>
             <mat-panel-description>
                 Validate output JSON
             </mat-panel-description>
-        </mat-expansion-panel-header>
-        <div class="row">
-            <div class="col-md-5"> 
-                <div class="row filecontainer" *ngIf="FileSystemArrayList">
-                      <form [formGroup]="fileSelectionForm">
-                            <h4>Select files to be generated</h4>
-                            <div *ngFor="let file of fileArrayList; let i=index">
-                              <label>                                
-                                <input type="checkbox" (change)="onChange(file, $event.target.checked)">
-                                {{file.filename}}
-                              </label>
-                            </div>
-                            <button (click)="onFileSubmit()">submit</button>
-                        </form>                     
-                </div>
-            </div>
-        </div>
-    </mat-expansion-panel>
-</mat-accordion>
+        </mat-expansion-panel-header> -->
+        
+    <!-- </mat-expansion-panel> -->
+<!-- </mat-accordion> -->
 
 
     

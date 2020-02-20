@@ -6,7 +6,7 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-tab-label-container{
-  background-color: #4735b9;
+  background-color:#442c6f;
 }
 .mat-tab-label-content{
   color: #ffffff;
@@ -72,7 +72,7 @@ div.jsoneditor-menu > button {
   }
 .active{
     color:blue;
-    border-left:4px solid blue;
+    /* border-left:4px solid blue; */
 }
 .mat-tree-node{
     min-height: 40px !important;  
@@ -169,12 +169,29 @@ div.jsoneditor-menu > button {
     border: #9c9c9c;
     border-style: solid;
     border-width: 2px;
-    width: 100%;
+    width: 95%;
     padding: 4px;
     margin-left: 0px !important;
     margin-top: 5%;
 }
 
+.formDatacontainer{
+    border: #9c9c9c;
+    border-style: solid;
+    border-width: 2px;
+    padding: 4px;
+    margin-left: 106% !important;
+    margin-top: -41%;
+    width: 137%;
+}
+
+.mat-tab-body-content{
+    overflow: hidden !important;
+}
+.processinput{
+    text-align: center;
+    margin-top: 2%;
+}
 .snack-bar-container {
     color: #ffffff;
     font-size: 15px;

@@ -55,6 +55,9 @@ export class FileService {
   readFile(fileData){
     return this.http.post(`${this.baseURL}/read`, fileData, {responseType: 'text'});
   }
+  deleteFile(fileData){
+    return this.http.post(`${this.baseURL}/delete`, fileData, {responseType: 'text'});
+  }
   createDirectory(){
     const dirname = "test";
     return this.http.post(this.baseURL + 'createdir', dirname).subscribe(res => console.log('dir res', res));
@@ -63,7 +66,7 @@ export class FileService {
   readDirectory(){
     return this.http.get(`${this.baseURL}/readdir`);
   }
-  initialize(treedata, mode){
+  initialize(treedata, mode){ 
     // Parse the string to json object.
     const stringyData = JSON.stringify(treedata);
     const dataObject = JSON.parse(stringyData);

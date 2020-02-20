@@ -11,7 +11,8 @@ import {MatMenuModule,MatInputModule, MatButtonModule, MatSelectModule, MatIconM
   MatTabsModule, MatButtonToggleModule, MatTreeModule, MatAutocompleteModule, MatExpansionModule,
   MatDialogModule, MatSnackBarModule, MatSlideToggleModule, MatCheckboxModule } from '@angular/material';
 import { SnackBarComponent } from './shared/component/snack-bar/snack-bar.component';
-import { DialogOverviewExampleDialog } from './shared/component/mat-dialoge/dialoge-overview-example-dialoge.component';
+import { DialogOverviewExampleDialog } from './shared/component/mat-dialoge/save-copy-dialoge/dialoge-overview-example-dialoge.component';
+import { DeleteDialoge } from '../app/shared/component/mat-dialoge/delete-dialoge/delete-dialoge.component';
 import { ExcelgenerationComponent } from './containers/excelgeneration/excelgeneration.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
@@ -22,6 +23,7 @@ import {EffectsModule} from '@ngrx/effects';
 import {FileSystemEffects} from '../app/store/effects/fileSystem.effects';
 import { TreeEditorComponent } from './containers/tree-editor/tree-editor.component';
 import { LoadingIndicatorEffects } from "./store/effects/loading-spinner.effects";
+import { from } from 'rxjs';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,7 @@ import { LoadingIndicatorEffects } from "./store/effects/loading-spinner.effects
     FieldvalidationComponent,
     ExcelgenerationComponent,
     DialogOverviewExampleDialog,
+    DeleteDialoge,
     SnackBarComponent,
     TreeEditorComponent
   ],
@@ -63,7 +66,7 @@ import { LoadingIndicatorEffects } from "./store/effects/loading-spinner.effects
     }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production })
   ],
-  entryComponents: [DialogOverviewExampleDialog, SnackBarComponent],
+  entryComponents: [DialogOverviewExampleDialog, DeleteDialoge, SnackBarComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

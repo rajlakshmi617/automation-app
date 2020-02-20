@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
     fs.readdir(testFolder, (err, folders) => {
         folders.map(folder => {
             fs.readdir('../outputjson/'+folder,(err, files)=>{
-                // console.log('folder', folder);
+                console.log('folder', folder);
                 files.map((file) => {
                     fileList.push(file);
                     const relativePath = path.dirname(`../outputjson/${folder}/${file}`);

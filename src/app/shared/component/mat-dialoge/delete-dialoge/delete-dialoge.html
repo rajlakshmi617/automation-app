@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>Are you sure want to delete this file?</h1>
+<div mat-dialog-content>
+  <p>Folder Name : {{data.dirname}}</p>
+  <p>JSON File Name : {{data.filename}}</p> 
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="data.filename" cdkFocusInitial>Ok</button>
+</div>
