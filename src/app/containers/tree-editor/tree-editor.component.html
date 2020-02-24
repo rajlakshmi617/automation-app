@@ -26,7 +26,7 @@
             <button mat-icon-button aria-label="clear icon-button" (click)="deleteNode(node, nestedDataSource.data)">
                     <mat-icon>clear</mat-icon>
             </button>
-            <button mat-icon-button aria-label="add icon-button" (click)="addNode(node, nestedDataSource.data)">
+            <button mat-icon-button aria-label="add icon-button" (click)="addNode(node, nestedDataSource.data)" [ngClass]="{'hidden': indexValidation(node.filename) }">
                 <mat-icon>add</mat-icon>
             </button>
             </li>

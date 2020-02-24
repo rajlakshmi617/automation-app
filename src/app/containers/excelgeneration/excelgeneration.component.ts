@@ -56,18 +56,24 @@ export class ExcelgenerationComponent{
    * steps for expand and collapse collasable area
    */
   step = 0;
+  tapThreeStep = 0;
   convertedData: any;
   setStep(index: number) {
     this.step = index;
     this.selected.setValue(this.step);
   }
+  
+  setTapThreeStep(index: number){
+    this.tapThreeStep = index;
+  }
+
   public dataa:any;
   public data : any;
   public fileName: string;
   public endPointURL : string;
-  public testDescription : string;
+  public queryParams : string;
   public requestTypeControl : any;
-  public responseCodeControl : any;
+  // public responseCodeControl : any;
   public color = 'accent';
   public checked = false;
   public disabled = false;
@@ -111,9 +117,9 @@ export class ExcelgenerationComponent{
     public dialog: MatDialog, private _snackBar: MatSnackBar, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) { 
     this.AutomationForm = this.fb.group({
       endPointURL : ["", Validators.required],
-      testDescription : [""],
-      requestTypeControl : ["", Validators.required],
-      responseCodeControl : ["", Validators.required]
+      queryParams : [""],
+      requestTypeControl : ["", Validators.required]
+      // responseCodeControl : ["", Validators.required]
     });
     // Icon register icon
     iconRegistry.addSvgIcon(
@@ -158,6 +164,7 @@ export class ExcelgenerationComponent{
       const reader = new FileReader();
       reader.onloadend = (e) => {
         this.jsonData = reader.result;
+        this.service.isArrayFlag = Array.isArray(JSON.parse(this.jsonData));
         this.dataa = reader.result.toString();      
       };
       reader.readAsText(event.target.files[0]);
@@ -190,6 +197,8 @@ export class ExcelgenerationComponent{
           const reader = new FileReader();
           reader.onloadend = (e) => {
             this.jsonData = reader.result;
+            this.service.isArrayFlag = Array.isArray(this.jsonData);
+            console.log(this.jsonData)
             this.dataa = reader.result.toString();
           };
           reader.readAsText(ev.dataTransfer.files[0]);
@@ -277,9 +286,9 @@ export class ExcelgenerationComponent{
 
     var AutoTestFormData ={
       "endPointURL" : this.AutomationForm.value.endPointURL,
-      "testDescription" : this.AutomationForm.value.testDescription,
+      "queryParams" : this.AutomationForm.value.queryParams,
       "requestTypeControl" : this.AutomationForm.value.requestTypeControl,
-      "responseCodeControl" : this.AutomationForm.value.responseCodeControl,
+      // "responseCodeControl" : this.AutomationForm.value.responseCodeControl,
       "path" : this.uploadFilePath
     };
   }
@@ -364,11 +373,11 @@ export class ExcelgenerationComponent{
         map(value => this._filter(value, this.requestType))
     );
 
-    this.responseTypeFilterOptions = formData.responseCodeControl.valueChanges
-      .pipe(
-        startWith(''),
-        map(value => this._filter(value, this.expectedResponseCode))
-    );     
+    // this.responseTypeFilterOptions = formData.responseCodeControl.valueChanges
+    //   .pipe(
+    //     startWith(''),
+    //     map(value => this._filter(value, this.expectedResponseCode))
+    // );     
   } 
   
   /**
@@ -394,7 +403,11 @@ export class ExcelgenerationComponent{
    * @param data 
    */
   generateJson(data){ 
-    this.convertedData = "{" + this.arrayToJson(data) + "}";
+    if(this.service.isArrayFlag){
+      this.convertedData = "[" + this.arrayToJson(data) + "]";
+    }else{
+      this.convertedData = "{" + this.arrayToJson(data) + "}";
+    }      
     console.log(this.convertedData)
   }
 
@@ -406,14 +419,14 @@ export class ExcelgenerationComponent{
      array = array.filter(a => (a.filename!=undefined || a.type!=undefined) || a!={})
     let tree="";
     tree += array.map(e => {
-      let n, isArr=false, inArr=false;
+      let n, isArr=false;
       if(e.children && e.children.length > 0){
         if(isNaN(parseInt(e.filename))){
           n = '"'+e.filename+'":';
         } else {
           n = "";         
         }
-        if(!isNaN(parseInt(e.children[0].filename))){ isArr = true, inArr=true; }
+        if(!isNaN(parseInt(e.children[0].filename))){ isArr = true }
          
         n += (isArr) ? "[" : "{";
         n+=this.arrayToJson(e['children'])
@@ -434,7 +447,7 @@ export class ExcelgenerationComponent{
             n='"'+e.type+'"';
           }
         }else{
-          n = e.type; 
+          n = e.type;
         }
       }
       //console.log(n)
@@ -452,7 +465,7 @@ export class ExcelgenerationComponent{
       console.log('file already created');
     }else{
       const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
-        width: '50px',
+        //width: '50px',
         data: {dirname: this.dirname, filename: this.fileName}
       });
   
@@ -463,10 +476,11 @@ export class ExcelgenerationComponent{
       });
     }
   }
+
   deleteFileDialog(fileData): void {
     console.log('fileData', fileData);
     const dialogRef = this.dialog.open(DeleteDialoge, {
-      width: '50px',
+      // width: '50px',
       data: {dirname: fileData.foldername, filename: fileData.filename, path: fileData.filepath}
     });
 
@@ -479,6 +493,7 @@ export class ExcelgenerationComponent{
       // this.exportJsonFile(this.dirname, this.fileName);
     });
   }
+
   activateClass(index: number, file){
     this.fileActive = true;
     this.selectedIndex = index;
@@ -492,6 +507,20 @@ export class ExcelgenerationComponent{
         this.service.myMethod(res, 'tree');
       }
     });
+  }
+
+  selectFile(index: number, file){
+    this.fileActive = true;
+    this.selectedIndex = index; 
+    //console.log('this.selectedIndex', this.selectedIndex);
+    this.service.readFile(file).subscribe(res=>{
+      if(this.checked){
+        this.service.myMethod(JSON.parse(res), 'editor');
+        this.data = JSON.parse(res);        
+      }else{
+        this.service.myMethod(res, 'tree');
+      }
+    }); 
   }
 
   goToTabThree(){

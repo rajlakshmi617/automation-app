@@ -39,7 +39,6 @@ export class TreeEditorComponent implements OnInit {
    * @param dataSource // Tree data
    */  
   addNode(node, dataSource) {  
-       
     if(node == 'parentnode'){
       dataSource.push(new FileNode())
     } else {
@@ -68,9 +67,11 @@ export class TreeEditorComponent implements OnInit {
         }        
       });
     } 
-    //console.log(dataSource);
-    this.service.dataChange.next(dataSource)    //updating tree data
+    console.log(dataSource);
+    this.nestedDataSource.data = null
     this.nestedTreeControl.expand(node);        //expanding tree node where new node is added
+    this.nestedDataSource.data = dataSource;
+    this.service.dataChange.next(dataSource);   //updating tree data
   }
 
    /**
@@ -94,7 +95,7 @@ export class TreeEditorComponent implements OnInit {
         }
       }
     });
-    // console.log(dataSource);
+    //console.log(dataSource);
     this.service.dataChange.next(dataSource)
     
   }

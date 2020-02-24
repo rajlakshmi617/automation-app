@@ -6,7 +6,7 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-tab-label-container{
-  background-color:#442c6f;
+  background-color:#28026d;
 }
 .mat-tab-label-content{
   color: #ffffff;
@@ -15,8 +15,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   opacity: 1.6 !important;
 }
 .mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar{
-  background-color: #e01e19;
-  padding: 1px;
+  background-color: #51b513;
+  padding: 3px;
 }
 .example-tree-invisible {
   display: none;
@@ -164,6 +164,10 @@ div.jsoneditor-menu > button {
 .placebtn{
     text-align: center;
     padding: 3px;
+}
+.custommat{
+    background: #3a00a2 !important;
+    color: #fff;
 }
 .filecontainer{
     border: #9c9c9c;
