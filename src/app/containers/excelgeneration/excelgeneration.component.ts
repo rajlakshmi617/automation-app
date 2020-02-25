@@ -84,7 +84,8 @@ export class ExcelgenerationComponent{
   public FolderArrayList: any;
   public intialFileSystemArrayList: any;
   public spinnerSuccess : boolean;
-
+  public tabThree : boolean;
+  public tabTwo : boolean;
   isLoading: Observable<any>;
   loading$ : Observable<boolean>;
   error$ : Observable<Error>;
@@ -212,8 +213,20 @@ export class ExcelgenerationComponent{
     }
   }
 
-  filterFileByFolder(event){ 
-    
+  /**
+   * Use to set current tab state
+   * @param event 
+   */
+  tabHandler(event){
+    this.step = event.index;
+    this.selected.setValue(this.step);
+  }
+
+  /**
+   * This method is use to filter JSON file by folder name
+   * @param event 
+   */
+  filterFileByFolder(event){    
     var filterSelection = event.source.value; 
     if(event.source.selected == true){
       this.selectedFolder.push(filterSelection);
@@ -241,6 +254,8 @@ export class ExcelgenerationComponent{
     // console.log(this.FileSystemArrayList);
   }
 
+ 
+
   /**
    * Function call on drag over during file drop to prevent file being opened
    * @param ev 
@@ -254,36 +269,13 @@ export class ExcelgenerationComponent{
    * Function call to send tree data to service that will render JSON as a tree
    */
   renderjson(){
+    this.tabTwo = true;
     this.spinnerSuccess = true;
     this.showContainer = false;
     this.service.myMethod(this.dataa, 'tree');
-    this.service.readDirectory().subscribe(res => {
-      this.dirResponse = res;
-      this.fileArrayList = this.dirResponse.fileObject;
-      let storeData = this.store.select(res => res).pipe(
-        tap(dirRes => dirRes)
-       )
-       .subscribe(response=> {
-         let fileData = response.fileSystem.list;
-         this.FolderArrayList = fileData['folder'];
-         this.FileSystemArrayList = fileData['fileObject'];
-         this.intialFileSystemArrayList =  fileData['fileObject'];
-          //this.spinnerSuccess = false;      
-       });
-      this.loading$ = this.store.select(store => store.fileSystem.loading);
-      this.error$ = this.store.select(store => store.fileSystem.error);
-      this.store.dispatch(new ReadFileAction());
-
-      this.isLoading = this.stores.pipe(
-        select((states: AppStates) => this.spinnerSuccess = false)
-        )
-  
-      this.isLoading.subscribe(loadingres => this.spinnerSuccess = false);
-     
-    });
+    this.readDirectory();
     this.step = 1;
-  this.selected.setValue(this.step);
-
+    this.selected.setValue(this.step);
     var AutoTestFormData ={
       "endPointURL" : this.AutomationForm.value.endPointURL,
       "queryParams" : this.AutomationForm.value.queryParams,
@@ -303,22 +295,7 @@ export class ExcelgenerationComponent{
     this.service.generateJsonFile(this.convertedData, this.changedData, dirName, fileName).subscribe((res)=> {
       this.fileResponse = JSON.parse(res);
       this.openSnackBar(this.fileResponse);
-      this.service.readDirectory().subscribe(res => {
-        this.dirResponse = res;
-        this.fileArrayList = this.dirResponse.fileObject;
-        let storeData = this.store.select(res => res).pipe(
-          tap(dirRes => dirRes)
-         )
-         .subscribe(response=> {
-           let fileData = response.fileSystem.list;
-           this.FolderArrayList = fileData['folder'];
-           this.FileSystemArrayList = fileData['fileObject'];
-           this.intialFileSystemArrayList =  fileData['fileObject'];
-         });
-        this.loading$ = this.store.select(store => store.fileSystem.loading);
-        this.error$ = this.store.select(store => store.fileSystem.error);
-        this.store.dispatch(new ReadFileAction());
-      });
+      this.readDirectory();
     });
   }
 
@@ -359,6 +336,8 @@ export class ExcelgenerationComponent{
     this.uploadFileFlag =false;
     this.dropFileFlag = false;
     this.uploadFileCheck = false;
+    this.tabThree = false;
+    this.tabTwo = false;
     this.changeFlag = false;
     var formData = this.AutomationForm.controls;
     this.dataTypeFilterOptions = this.myControl.valueChanges
@@ -379,6 +358,36 @@ export class ExcelgenerationComponent{
     //     map(value => this._filter(value, this.expectedResponseCode))
     // );     
   } 
+
+  /**
+   * read file and load from store
+   */
+  readDirectory(){
+    this.service.readDirectory().subscribe(res => {
+      this.dirResponse = res;
+      this.fileArrayList = this.dirResponse.fileObject;
+      let storeData = this.store.select(res => res).pipe(
+        tap(dirRes => dirRes)
+       )
+       .subscribe(response=> {
+         let fileData = response.fileSystem.list;
+         this.FolderArrayList = fileData['folder'];
+         this.FileSystemArrayList = fileData['fileObject'];
+         this.intialFileSystemArrayList =  fileData['fileObject'];
+          //this.spinnerSuccess = false;      
+       });
+      this.loading$ = this.store.select(store => store.fileSystem.loading);
+      this.error$ = this.store.select(store => store.fileSystem.error);
+      this.store.dispatch(new ReadFileAction());
+
+      this.isLoading = this.stores.pipe(
+        select((states: AppStates) => this.spinnerSuccess = false)
+        )
+  
+      this.isLoading.subscribe(loadingres => this.spinnerSuccess = false);
+     
+    });
+  }
   
   /**
    * Filter autocomplete options
@@ -489,6 +498,7 @@ export class ExcelgenerationComponent{
       this.service.deleteFile(fileData).subscribe(res=> {
         console.log('res', res);
         this.openSnackBar(res);
+        this.readDirectory();
       });
       // this.exportJsonFile(this.dirname, this.fileName);
     });
@@ -524,6 +534,7 @@ export class ExcelgenerationComponent{
   }
 
   goToTabThree(){
+    this.tabThree = true;
     this.step = 2;
     this.selected.setValue(this.step);
   }
