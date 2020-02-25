@@ -349,7 +349,7 @@ export class ExcelgenerationComponent{
    */
   openSnackBar(message){
     this._snackBar.openFromComponent(SnackBarComponent, {
-      duration: this.durationInSeconds * 1000,
+      duration: this.durationInSeconds * 1000000,
       data: message,
     });
   }
@@ -485,10 +485,8 @@ export class ExcelgenerationComponent{
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('result-->', result);
       this.service.deleteFile(fileData).subscribe(res=> {
-        console.log('res', res);
-        this.openSnackBar(res);
+        this.openSnackBar(JSON.parse(res));
       });
       // this.exportJsonFile(this.dirname, this.fileName);
     });

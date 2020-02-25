@@ -12,5 +12,6 @@ import { MatSnackBarRef, MAT_SNACK_BAR_DATA } from '@angular/material';
 export class SnackBarComponent{
     constructor(public snackBarRef: MatSnackBarRef<SnackBarComponent>,
         @Inject(MAT_SNACK_BAR_DATA) public data: object){
+            console.log('data', data)
     }
 }

@@ -1,18 +1,18 @@
 <ng-container *ngIf="data && data.type === 'Warning'">
     <span class="snack-bar-container-warning">
-        <ng-container *ngIf="data && data.message2">{{data.message2}}! <br/></ng-container>
-              {{data.message}}!
+        <ng-container *ngIf="data && data.message2">{{data.message2}} <br/></ng-container>
+              {{data.message}}
       </span>
 </ng-container>
 <ng-container *ngIf="data && data.type === 'Sucess'">
     <span class="snack-bar-container">
         
-        <ng-container *ngIf="data && data.message2">{{data.message2}}! <br/></ng-container>
-              {{data.message}}!
+        <ng-container *ngIf="data && data.message2">{{data.message2}} <br/></ng-container>
+              {{data.message}}
       </span>
 </ng-container>
-<ng-container *ngIf="data && data.type === 'Sucess'">
+<ng-container *ngIf="data && data.message3">
     <span class="snack-bar-container">
-        <ng-container *ngIf="data && data.message3">{{data.message3}}! <br/></ng-container>
+        <ng-container *ngIf="data && data.message3">{{data.message3}}<br/></ng-container>
         </span>
 </ng-container>
