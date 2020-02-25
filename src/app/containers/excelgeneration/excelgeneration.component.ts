@@ -349,7 +349,7 @@ export class ExcelgenerationComponent{
    */
   openSnackBar(message){
     this._snackBar.openFromComponent(SnackBarComponent, {
-      duration: this.durationInSeconds * 1000000,
+      duration: this.durationInSeconds * 1000,
       data: message,
     });
   }
