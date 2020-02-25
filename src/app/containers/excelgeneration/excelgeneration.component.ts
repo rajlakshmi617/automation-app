@@ -131,7 +131,6 @@ export class ExcelgenerationComponent{
       sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/file_copy-24px.svg'));
     //json editor code
     this.options.mode = 'code';
-    this.options.modes = ['code', 'text', 'tree', 'view'];
     this.options.statusBar = false;
     this.options.onChange = () => {
       this.changeFlag = true;
