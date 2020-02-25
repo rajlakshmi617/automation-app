@@ -113,6 +113,11 @@ div.jsoneditor-menu > button {
 .btnwrapper{
     text-align: center;
 }
+.btnwrapper button{
+    text-align: center;
+    margin-right: 1rem;
+    margin-left: 1rem;
+}
 .mat-expansion-panel-header{
     background-color: whitesmoke;
 }
@@ -125,7 +130,9 @@ div.jsoneditor-menu > button {
     top: -2px;
     left: -12px;
 }
-
+.json-header{
+    
+}
 .textTree .mat-form-field-infix {
     
     padding: inherit !important;
@@ -181,7 +188,7 @@ div.jsoneditor-menu > button {
     border-width: 2px;
     padding: 4px;
     margin-left: 106% !important;
-    margin-top: -41%;
+    margin-top: -11%;
     width: 137%;
 }
 

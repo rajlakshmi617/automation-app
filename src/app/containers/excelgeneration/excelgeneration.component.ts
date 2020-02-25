@@ -56,8 +56,9 @@ export class ExcelgenerationComponent{
    * steps for expand and collapse collasable area
    */
   step = 0;
-  tapThreeStep = 0;
+  tapThreeStep:any;
   convertedData: any;
+  headerdata: any = [1,2,3];
   setStep(index: number) {
     this.step = index;
     this.selected.setValue(this.step);
@@ -118,7 +119,8 @@ export class ExcelgenerationComponent{
     this.AutomationForm = this.fb.group({
       endPointURL : ["", Validators.required],
       queryParams : [""],
-      requestTypeControl : ["", Validators.required]
+      requestTypeControl : ["", Validators.required],
+      header : [this.changedData]
       // responseCodeControl : ["", Validators.required]
     });
     // Icon register icon
@@ -135,6 +137,7 @@ export class ExcelgenerationComponent{
     this.options.onChange = () => {
       this.changeFlag = true;
       this.changedData = this.editor.get();
+      console.log(this.changedData)
     }
 
     this.nestedTreeControl = new NestedTreeControl<FileNode>
@@ -283,6 +286,7 @@ export class ExcelgenerationComponent{
     });
     this.step = 1;
   this.selected.setValue(this.step);
+  console.log(this.AutomationForm.value)
 
     var AutoTestFormData ={
       "endPointURL" : this.AutomationForm.value.endPointURL,
@@ -293,6 +297,10 @@ export class ExcelgenerationComponent{
     };
   }
 
+  setHeader(ev){
+    console.log(ev.target.value)
+    this.headerdata = ev.target.value;
+  }
   /**
    * Function called to generate JSON file using updated JSON tree data
    * @param dirName 
@@ -333,8 +341,9 @@ export class ExcelgenerationComponent{
    * Method to change tree view to editor view
    */
   changed(){
-    var convertedData = this.arrayToJson(this.nestedDataSource.data);
-    this.data = JSON.parse("{"+convertedData+"}");
+    //var convertedData = this.arrayToJson(this.nestedDataSource.data);
+    //this.data = JSON.parse("{"+convertedData+"}");
+    this.data = JSON.parse(this.generateJson(this.nestedDataSource.data))
     if(this.changeFlag){
       this.service.myMethod(this.changedData, 'editor');
       this.changeFlag = false;
@@ -409,6 +418,7 @@ export class ExcelgenerationComponent{
       this.convertedData = "{" + this.arrayToJson(data) + "}";
     }      
     console.log(this.convertedData)
+    return this.convertedData;
   }
 
   /**
@@ -521,6 +531,10 @@ export class ExcelgenerationComponent{
         this.service.myMethod(res, 'tree');
       }
     }); 
+    this.AutomationForm.patchValue({header:this.changedData})
+    this.AutomationForm.reset(this.AutomationForm.value)
+    this.setTapThreeStep(0);
+    console.log(this.AutomationForm.value)
   }
 
   goToTabThree(){
