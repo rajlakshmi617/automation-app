@@ -6,7 +6,7 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-tab-label-container{
-  background-color:#442c6f;
+  background-color:#28026d;
 }
 .mat-tab-label-content{
   color: #ffffff;
@@ -15,8 +15,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   opacity: 1.6 !important;
 }
 .mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar{
-  background-color: #e01e19;
-  padding: 1px;
+  background-color: #51b513;
+  padding: 3px;
 }
 .example-tree-invisible {
   display: none;
@@ -72,7 +72,7 @@ div.jsoneditor-menu > button {
   }
 .active{
     color:blue;
-    /* border-left:4px solid blue; */
+    border-left:4px solid blue;
 }
 .mat-tree-node{
     min-height: 40px !important;  
@@ -130,9 +130,7 @@ div.jsoneditor-menu > button {
     top: -2px;
     left: -12px;
 }
-.json-header{
-    
-}
+
 .textTree .mat-form-field-infix {
     
     padding: inherit !important;
@@ -172,6 +170,10 @@ div.jsoneditor-menu > button {
     text-align: center;
     padding: 3px;
 }
+.custommat{
+    background: #3a00a2 !important;
+    color: #fff;
+}
 .filecontainer{
     border: #9c9c9c;
     border-style: solid;
@@ -199,6 +201,11 @@ div.jsoneditor-menu > button {
     text-align: center;
     margin-top: 2%;
 }
+#cdk-overlay-2 {
+    width: 400px !important;
+    height: 310px; 
+} 
+
 .snack-bar-container {
     color: #ffffff;
     font-size: 15px;
@@ -245,4 +252,8 @@ div.jsoneditor-menu > button {
 .cdk-overlay-pane .mat-autocomplete-panel{
     /* width: fit-content; */
     height: fit-content;
+}
+
+.jsoneditor-menu a.jsoneditor-poweredBy {
+    display: none !important;
 }
