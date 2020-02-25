@@ -342,7 +342,7 @@ export class ExcelgenerationComponent{
       this.service.myMethod(JSON.stringify(this.data), 'tree');
     } 
   }
-  
+
   /**
    * Method to open snack bar
    * @param message 

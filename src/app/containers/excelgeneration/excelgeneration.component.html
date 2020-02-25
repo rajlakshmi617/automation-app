@@ -98,7 +98,7 @@
                             <mat-option *ngFor="let folder of FolderArrayList" (onSelectionChange)="filterFileByFolder($event)" [value]="folder">{{folder}}</mat-option>
                         </mat-select>
                     </mat-form-field>
-                    <div class="row filecontainer" *ngIf="FileSystemArrayList">
+                    <div class="row filecontainer" *ngIf="FileSystemArrayList" #test>
                         <div>
                             <ul class="sub_modules">
                                 <li (click)="activateClass(i, file)" *ngFor = "let file of FileSystemArrayList; let i = index" [class.active]="selectedIndex === i" class="filelength">{{file.filename}}

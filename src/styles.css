@@ -61,7 +61,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     font-weight: 500;
 }
 .iconholder{
-    text-align: center;
+    text-align: right;
     margin-top: -18px;
 }
 div.jsoneditor-menu > button {
