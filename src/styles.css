@@ -240,3 +240,7 @@ div.jsoneditor-menu > button {
     /* width: fit-content; */
     height: fit-content;
 }
+
+.jsoneditor-menu a.jsoneditor-poweredBy {
+    display: none !important;
+}
