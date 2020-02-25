@@ -15,7 +15,7 @@ router.post('/', (req, res) => {
     let folderName = req.body.foldername;
     fs.unlink(`../outputjson/${folderName}/${fileName}`, (err) => {
         if (err) {
-          throw err;
+          res.type('json').status(200).send({message: err, type: 'Warning'});
         }
         res.type('json').status(200).send({message3: 'File has been deleted sucessfully.', type: 'Sucess'});
         //file removed

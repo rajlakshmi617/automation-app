@@ -494,11 +494,9 @@ export class ExcelgenerationComponent{
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('result-->', result);
       this.service.deleteFile(fileData).subscribe(res=> {
-        console.log('res', res);
-        this.openSnackBar(res);
         this.readDirectory();
+        this.openSnackBar(JSON.parse(res));
       });
       // this.exportJsonFile(this.dirname, this.fileName);
     });
