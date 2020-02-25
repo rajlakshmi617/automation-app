@@ -1,60 +1,66 @@
 <mat-tab-group [selectedIndex]="selected.value" (selectedTabChange)="tabHandler($event)">
     
     <mat-tab label="Step 1">
-            <div class="container">
-                <form [formGroup] = "AutomationForm" class="example-form" novalidate autocomplete="off">    
-                        <mat-form-field class="example-full-width">
-                            <input matInput placeholder="API Endpoint URL" formControlName = "endPointURL" value="">
-                            <mat-error *ngIf="!AutomationForm.controls['endPointURL'].valid && !AutomationForm.controls['endPointURL'].touched"></mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Query Params" formControlName = "queryParams">
-                            <!-- <textarea matInput rows="3" formControlName = "queryParams" placeholder="Test Description"></textarea> -->
-                            <mat-error *ngIf="!AutomationForm.controls['queryParams'].valid && !AutomationForm.controls['queryParams'].touched"></mat-error>
-                        </mat-form-field>
-                        
-                        <mat-form-field class="example-full-width">
-                            <input type="text" placeholder="Request Type" aria-label="Number" matInput formControlName="requestTypeControl" [matAutocomplete]="auto">
-                                <mat-autocomplete #auto="matAutocomplete">
-                                    <mat-option *ngFor="let req of requestTypeFilteredOptions | async" [value]="req">
-                                    {{req}}
-                                    </mat-option>
-                                </mat-autocomplete>
-                                <mat-error *ngIf="!AutomationForm.controls['requestTypeControl'].touched"></mat-error>
-                        </mat-form-field>
+        <div class="container">
+            <form [formGroup]="AutomationForm" class="example-form" novalidate autocomplete="off">
+                <mat-form-field class="example-full-width">
+                    <input matInput placeholder="API Endpoint URL" formControlName="endPointURL" value="">
+                    <mat-error
+                        *ngIf="!AutomationForm.controls['endPointURL'].valid && !AutomationForm.controls['endPointURL'].touched">
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Query Params" formControlName="queryParams">
+                    <!-- <textarea matInput rows="3" formControlName = "queryParams" placeholder="Test Description"></textarea> -->
+                    <mat-error
+                        *ngIf="!AutomationForm.controls['queryParams'].valid && !AutomationForm.controls['queryParams'].touched">
+                    </mat-error>
+                </mat-form-field>
 
-                        <!-- <mat-form-field class="example-full-width">
-                            <input type="text" placeholder="Expected Response Code" aria-label="Number" matInput formControlName="responseCodeControl" [matAutocomplete]="autofill">
-                                <mat-autocomplete #autofill="matAutocomplete">
-                                    <mat-option *ngFor="let res of responseTypeFilterOptions | async" [value]="res">
-                                    {{res}}
-                                    </mat-option>
-                                </mat-autocomplete>
-                                <mat-error *ngIf="!AutomationForm.controls['responseCodeControl'].touched"></mat-error>
-                        </mat-form-field> -->
-                    <div class="uploadfile">
-                        <p class="formlabel">Upload Input JSON File</p>
-                            <input type="file" #fileUploader name="files" accept=".json" (change)="uploadFile($event)" />
-                            <div id="drop_zone" (drop)="dropHandler($event);" (dragover)="dragOverHandler($event)">
-                                <div *ngIf="!fileName">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
-                                    <p class="formlabel">Drop file here</p>
-                                </div>
-                                <div class="gallery" *ngIf="fileName != null">
-                                    <img class="thumb" src="https://img.icons8.com/dotty/80/000000/json.png" alt="{{fileName}}" title="{{fileName}}" />
-                                    <p class="formlabel">{{fileName}}</p>
-                                </div>
-                            </div>
+                <mat-form-field class="example-full-width">
+                    <input type="text" placeholder="Request Type" aria-label="Number" matInput
+                        formControlName="requestTypeControl" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete">
+                        <mat-option *ngFor="let req of requestTypeFilteredOptions | async" [value]="req">
+                            {{req}}
+                        </mat-option>
+                    </mat-autocomplete>
+                    <mat-error *ngIf="!AutomationForm.controls['requestTypeControl'].touched"></mat-error>
+                </mat-form-field>
+
+                <ng-container class="json-header">
+                    <json-editor [options]="options" formControlName="header">
+                    </json-editor>
+                </ng-container>
+
+                <div class="uploadfile">
+                    <p class="formlabel">Upload Input JSON File</p>
+                    <input type="file" #fileUploader name="files" accept=".json" (change)="uploadFile($event)" />
+                    <div id="drop_zone" (drop)="dropHandler($event);" (dragover)="dragOverHandler($event)">
+                        <div *ngIf="!fileName">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z" /></svg>
+                            <p class="formlabel">Drop file here</p>
+                        </div>
+                        <div class="gallery" *ngIf="fileName != null">
+                            <img class="thumb" src="https://img.icons8.com/dotty/80/000000/json.png" alt="{{fileName}}"
+                                title="{{fileName}}" />
+                            <p class="formlabel">{{fileName}}</p>
+                        </div>
                     </div>
-            <!-- <div class="row"> -->
+                </div>
+                <!-- <div class="row"> -->
                 <div class="btnwrapper">
-                    <button mat-raised-button color="primary" [disabled]="!(AutomationForm.valid && (fileName != null || uploadFileCheck))" class="generatebtn" (click)="renderjson()">Render Input JSON</button>
+                    <button mat-raised-button color="primary"
+                        [disabled]="!(AutomationForm.valid && (fileName != null || uploadFileCheck))"
+                        class="generatebtn" (click)="renderjson()">Render Input JSON</button>
                     <!-- <button mat-raised-button color="primary" class="generatebtn" (click)="renderjson()">Render Input JSON</button> -->
                 </div>
-            <!-- </div> -->
-        </form>
+                <!-- </div> -->
+            </form>
         </div>
     </mat-tab>
+
     <mat-tab label="Step 2" [disabled]='step === 0 && !tabTwo'>
             <div class="row">
                 <div class="col-md-7">
@@ -78,60 +84,63 @@
                         </ng-container>
                     </div>
                 </div>
-                <div class="col-md-1 btnholder">
-                    <div class="row placebtn">
-                        <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data);openDialog()">Save</button>
-                    </div>
-                    <!-- <div class="row placebtn">
-                        <button mat-raised-button color="primary" (click)="generateJson(nestedDataSource.data)">Save</button>
-                    </div> -->
-                    <!-- <div class="row placebtn">
-                        <button mat-raised-button color="primary">Duplicate</button>                    
-                    </div> -->
+            <!-- </div> -->
+            <div class="col-md-1 btnholder">
+                <div class="row placebtn">
+                    <button mat-raised-button color="primary"
+                        (click)="generateJson(nestedDataSource.data);openDialog()">Save</button>
                 </div>
-                <ng-container *ngIf = "spinnerSuccess">
-                        <mat-spinner class="spinner-style"></mat-spinner>
-                </ng-container>
-                <div class="col-md-4 fileholder" *ngIf="FolderArrayList">                   
-                    <mat-form-field>
-                        <mat-label>Filter By Folder Name</mat-label>
-                        <mat-select [formControl]="FilterData"  multiple>
-                            <mat-option *ngFor="let folder of FolderArrayList" (onSelectionChange)="filterFileByFolder($event)" [value]="folder">{{folder}}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <div class="row filecontainer" *ngIf="FileSystemArrayList" #test>
-                        <div>
-                            <ul class="sub_modules">
-                                <li (click)="activateClass(i, file)" *ngFor = "let file of FileSystemArrayList; let i = index" [class.active]="selectedIndex === i" class="filelength">{{file.filename}}
-                                    <div class="iconholder">
-                                        <mat-icon svgIcon="copy" aria-hidden="false" aria-label="Example thumbs up SVG icon" (click)="generateJson(nestedDataSource.data);openDialog()"></mat-icon>
-                                        <mat-icon svgIcon="delete" aria-hidden="false" aria-label="Example thumbs up SVG icon" style="margin-left: 14px;" (click)="deleteFileDialog(file)"></mat-icon>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        
+
+            </div>
+            <ng-container *ngIf="spinnerSuccess">
+                <mat-spinner class="spinner-style"></mat-spinner>
+            </ng-container>
+            <div class="col-md-4 fileholder" *ngIf="FolderArrayList">
+                <mat-form-field>
+                    <mat-label>Filter By Folder Name</mat-label>
+                    <mat-select [formControl]="FilterData" multiple>
+                        <mat-option *ngFor="let folder of FolderArrayList"
+                            (onSelectionChange)="filterFileByFolder($event)" [value]="folder">{{folder}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div class="row filecontainer" *ngIf="FileSystemArrayList">
+                    <div>
+                        <ul class="sub_modules">
+                            <li (click)="activateClass(i, file)" *ngFor="let file of FileSystemArrayList; let i = index"
+                                [class.active]="selectedIndex === i" class="filelength">{{file.filename}}
+                                <div class="iconholder">
+                                    <mat-icon svgIcon="copy" aria-hidden="false" aria-label="Example thumbs up SVG icon"
+                                        (click)="generateJson(nestedDataSource.data);openDialog()"></mat-icon>
+                                    <mat-icon svgIcon="delete" aria-hidden="false"
+                                        aria-label="Example thumbs up SVG icon" style="margin-left: 14px;"
+                                        (click)="deleteFileDialog(file)"></mat-icon>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-            <div class="processinput">
-                <button mat-raised-button color="primary" (click)="goToTabThree()">Process Input Files</button>                    
-            </div>
+        </div>
+        <div class="processinput">
+            <button mat-raised-button color="primary" (click)="goToTabThree()">Process Input Files</button>
+        </div>
     </mat-tab>
     <mat-tab label="Step 3" [disabled]='(step === 0 || step === 1) && !tabThree'>
         <div class="row">
-            <div class="col-md-5"> <h4>Files to be selected:</h4>
-                
-                <div class="row filecontainer" *ngIf="FileSystemArrayList">                    
-                    <div *ngFor="let file of FileSystemArrayList; let i=index" [class.active]="selectedIndex === i" class="filelength">
-                        <input type="radio" name="file.filename" [value]="file.filename" (click)="selectFile(i, file)" />
+            <div class="col-md-5">
+                <h4>Files to be selected:</h4>
+
+                <div class="row filecontainer" *ngIf="FileSystemArrayList">
+                    <div *ngFor="let file of FileSystemArrayList; let i=index" class="filelength">
+                        <input type="radio" name="file.filename" [value]="file.filename"
+                            (click)="selectFile(i, file)" />
                         {{file.filename}}
-                    </div>                                         
+                    </div>
                 </div>
 
                 <div class="row formDatacontainer">
-                <mat-accordion>
-                        <mat-expansion-panel [expanded]="tapThreeStep === 0" (opened)="setTapThreeStep(0)">
+                    <mat-accordion>
+                        <mat-expansion-panel [expanded]="tapThreeStep === 0">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
                                     Select Directory
@@ -139,76 +148,72 @@
                                 <mat-panel-description>
                                     Validate output JSON
                                 </mat-panel-description>
-                            </mat-expansion-panel-header>                            
-                            <div class="treecontainer">
-                                <ng-container *ngIf="!checked">
-                                    <tree-editor [nestedDataSource]="nestedDataSource" [nestedTreeControl]="nestedTreeControl"></tree-editor>  
+                            </mat-expansion-panel-header>
+                            <form [formGroup]="AutomationForm" class="example-form" novalidate autocomplete="off">
+
+                                <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="API Endpoint URL" formControlName="endPointURL"
+                                        value="">
+                                    <mat-error
+                                        *ngIf="!AutomationForm.controls['endPointURL'].valid && !AutomationForm.controls['endPointURL'].touched">
+                                    </mat-error>
+                                </mat-form-field>
+
+                                <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Query Params" formControlName="queryParams">
+                                    <!-- <textarea matInput rows="3" formControlName = "queryParams" placeholder="Test Description"></textarea> -->
+                                    <mat-error
+                                        *ngIf="!AutomationForm.controls['queryParams'].valid && !AutomationForm.controls['queryParams'].touched">
+                                    </mat-error>
+                                </mat-form-field>
+
+                                <mat-form-field class="example-full-width">
+                                    <input type="text" placeholder="Request Type" aria-label="Number" matInput
+                                        formControlName="requestTypeControl" [matAutocomplete]="auto">
+                                    <mat-autocomplete #auto="matAutocomplete">
+                                        <mat-option *ngFor="let req of requestTypeFilteredOptions | async"
+                                            [value]="req">
+                                            {{req}}
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                    <mat-error *ngIf="!AutomationForm.controls['requestTypeControl'].touched">
+                                    </mat-error>
+                                </mat-form-field>
+
+                                <ng-container class="json-header">
+                                    <json-editor [options]="options" [data]="data" formControlName="header">
+                                    </json-editor>
                                 </ng-container>
-                                <ng-container *ngIf = "checked">
-                                    <json-editor [options]="options" [data]="data" (paste)="onPaste($event)"></json-editor>
-                                </ng-container>
-                            </div>
-                        
+
+                                <!-- <div class="row"> -->
+                                <div class="btnwrapper">
+                                    <button mat-raised-button color="primary"
+                                        [disabled]="!(AutomationForm.valid && (fileName != null || uploadFileCheck))"
+                                        class="generatebtn" (click)="saveJson()">Save JSON</button>
+                                    <!-- <button mat-raised-button color="primary" class="generatebtn" (click)="renderjson()">Render Input JSON</button> -->
+                                    <button mat-raised-button color="primary"
+                                        [disabled]="!(AutomationForm.valid && (fileName != null || uploadFileCheck))"
+                                        class="generatebtn" (click)="generateOutput()">Generated Output JSON</button>
+                                </div>
+                                <!-- </div> -->
+                            </form>
                         </mat-expansion-panel>
                         <mat-expansion-panel [expanded]="tapThreeStep === 1">
-                                <mat-expansion-panel-header>
-                                        <mat-panel-title>
-                                                Select sfsdfd
-                                            </mat-panel-title>
-                                            <mat-panel-description>
-                                                Validate input JSON
-                                            </mat-panel-description>
-                                </mat-expansion-panel-header>
-                                <div>
-                                    <h1>helllo</h1>
-                                </div>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Select sfsdfd
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Validate input JSON
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <div>
+                                <h1>helllo</h1>
+                            </div>
                         </mat-expansion-panel>
-                </mat-accordion>                  
-              </div>
+                    </mat-accordion>
+                </div>
             </div>
         </div>
     </mat-tab>
 </mat-tab-group>
-
-<!-- <mat-accordion> -->
-    
-    <!-- <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)"> -->
-        <!-- <mat-expansion-panel-header>
-        <mat-panel-title>
-            Excel generation
-        </mat-panel-title>
-        <mat-panel-description>
-            Provide input details for excel generation
-        </mat-panel-description>
-        </mat-expansion-panel-header> -->
-        
-    <!-- </mat-expansion-panel> -->
-    <!-- <mat-expansion-panel class="main-container" [expanded]="step === 1" *ngIf="!showContainer"> -->
-        <!-- <mat-expansion-panel-header>
-        <mat-panel-title>
-            JSON Panel
-        </mat-panel-title>
-        <mat-panel-description>
-            Rendered Input JSON
-        </mat-panel-description>
-        </mat-expansion-panel-header> -->
-        <!-- <ng-container *ngIf = "spinnerSuccess">
-                <mat-spinner class="spinner-style"></mat-spinner>
-        </ng-container> -->
-        
-    <!-- </mat-expansion-panel> -->
-    <!-- <mat-expansion-panel [expanded]="step === 2" *ngIf="!showContainer"> -->
-        <!-- <mat-expansion-panel-header>
-            <mat-panel-title>
-                Select Directory
-            </mat-panel-title>
-            <mat-panel-description>
-                Validate output JSON
-            </mat-panel-description>
-        </mat-expansion-panel-header> -->
-        
-    <!-- </mat-expansion-panel> -->
-<!-- </mat-accordion> -->
-
-
-    
